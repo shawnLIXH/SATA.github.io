@@ -6,7 +6,7 @@
     <title>劇本上架 - 劇沙成塔</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 沿用 index.html 的全域變數與樣式 (保持一致) --- */
+        /* --- 沿用 index.html 的全域變數與樣式 --- */
         :root {
             --primary-brown: #5D4037;
             --sand-gold: #C5A065;
@@ -49,7 +49,7 @@
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
 
-        /* --- 頁面專屬樣式 (上架頁面) --- */
+        /* --- 頁面專屬樣式 --- */
         main { padding-top: 150px; max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
 
         .analysis-card {
@@ -97,7 +97,6 @@
             border-radius: 5px;
         }
 
-        /* 功能特點 Grid */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -126,10 +125,12 @@
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
         <a href="index.html">首頁</a>
-        <a href="analysis.html" style="color: var(--sand-gold); font-weight: bold;">劇本上架</a>
-        <a href="#">專業諮詢服務</a>
+        
+        <a href="Scriptupload.html" style="color: var(--sand-gold); font-weight: bold;">劇本上架</a>
+        
+        <a href="#">AI 劇本初步分析</a>
         <a href="#">投資媒合平台</a>
-        <a href="#">關於劇沙成塔</a>
+        <a href="#">專業諮詢服務</a>
     </div>
 
     <header>
@@ -157,9 +158,9 @@
             <div class="note-text">
                 <strong><i class="fas fa-exclamation-circle"></i> 上架審核標準：</strong>
                 <ul>
-                    [cite_start]<li><strong>格式合規：</strong> 劇本需符合標準電影/影集劇本格式 [cite: 141]。</li>
+                    <li><strong>格式合規：</strong> 劇本需符合標準電影/影集劇本格式。</li>
                     <li><strong>版權無虞：</strong> 必須為原創作品，且非已發行或具版權爭議之作品。</li>
-                    [cite_start]<li><strong>品質篩選：</strong> 經 AI 初步評估與平台審核無誤後，方可公開上架 [cite: 117]。</li>
+                    <li><strong>品質篩選：</strong> 經 AI 初步評估與平台審核無誤後，方可公開上架。</li>
                 </ul>
             </div>
 
@@ -175,17 +176,15 @@
             <div class="features-grid">
                 <div class="feature-item">
                     <h4><i class="fas fa-eye"></i> 大眾閱覽與曝光</h4>
-                    [cite_start]<p>通過審核的劇本將公開上架，讓您的故事被更多讀者與潛在合作夥伴看見，累積作品人氣與市場關注度 [cite: 117]。</p>
+                    <p>通過審核的劇本將公開上架，讓您的故事被更多讀者與潛在合作夥伴看見，累積作品人氣與市場關注度。</p>
                 </div>
-                
                 <div class="feature-item">
                     <h4><i class="fas fa-shoe-prints"></i> 閱覽足跡分析</h4>
-                    [cite_start]<p>系統將追蹤讀者的閱讀行為（如停留時間、棄讀點），分析劇本的「鉤子」是否有效，並提供作者具體的修改建議 [cite: 83, 84]。</p>
+                    <p>系統將追蹤讀者的閱讀行為（如停留時間、棄讀點），分析劇本的「鉤子」是否有效，並提供作者具體的修改建議。</p>
                 </div>
-                
                 <div class="feature-item">
                     <h4><i class="fas fa-hand-holding-usd"></i> 投資媒合推薦</h4>
-                    [cite_start]<p>基於閱覽數據表現優異的作品，系統將主動推薦給偏好該類型的投資者，讓數據成為您最有力的說服工具 [cite: 125, 126]。</p>
+                    <p>基於閱覽數據表現優異的作品，系統將主動推薦給偏好該類型的投資者，讓數據成為您最有力的說服工具。</p>
                 </div>
             </div>
         </div>
@@ -204,6 +203,5 @@
             }
         }
     </script>
-
 </body>
 </html>
