@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的個人網站</title>
+    <style>
+        /* 簡單的 CSS 樣式設定 */
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            color: #333;
+            background-color: var(--bg-color);
+        }
+
+        header {
+            background-color: #fff;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        h1 { margin: 0; color: var(--primary-color); }
+        h2 { border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; display: inline-block; }
+        
+        .profile-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .social-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .social-links a:hover { text-decoration: underline; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>你好，我是 [您的名字]</h1>
+        <p>開發者 | 設計師 | 寫作者</p>
+    </header>
+
+    <div class="container">
+        <section class="profile-section">
+            <h2>關於我</h2>
+            <p>歡迎來到我的個人網站！這裡是我分享專案、筆記與想法的地方。我熱愛學習新技術，並致力於解決有趣的問題。</p>
+        </section>
+
+        <section class="profile-section">
+            <h2>精選專案</h2>
+            <ul>
+                <li><strong>專案 A：</strong> 使用 Python 開發的自動化工具。</li>
+                <li><strong>專案 B：</strong> 響應式網頁設計作品集。</li>
+                <li><strong>專案 C：</strong> 資料分析視覺化儀表板。</li>
+            </ul>
+        </section>
+
+        <section class="profile-section" style="text-align: center;">
+            <h2>聯絡我</h2>
+            <div class="social-links">
+                <a href="#">GitHub</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Email</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 [您的名字]. Powered by GitHub Pages.</p>
+    </footer>
+
+</body>
+</html>
