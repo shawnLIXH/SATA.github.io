@@ -6,12 +6,13 @@
     <title>劇沙成塔 SATA - AI影視孵化與投資平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 全域設定 --- */
+        /* --- 全域變數：沙色/大地色主題 --- */
         :root {
-            --header-border-color: #333;
-            --text-color: #2c2c2c;
-            --primary-color: #bfa57d; /* 取自沙子的色調 */
-            --accent-color: #2c3e50;
+            --primary-brown: #5D4037;   /* 深棕色 (文字/標題) */
+            --sand-gold: #C5A065;       /* 金沙色 (重點強調/圖示) */
+            --warm-white: #FAF9F6;      /* 暖米白 (背景底色) */
+            --card-bg: rgba(255, 253, 245, 0.95); /* 卡片背景 (微透的奶油色) */
+            --border-color: #E0D0B0;    /* 邊框顏色 (淺沙色) */
         }
 
         body {
@@ -19,9 +20,10 @@
             padding: 0;
             font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
             min-height: 100vh;
-            color: #333;
+            color: var(--primary-brown);
             
-            /* 背景圖設定 (請確認您的圖片檔名是 2.jpg) */
+            /* --- 背景圖片設定 --- */
+            /* 請確保圖片檔名是 2.jpg，如果是 background.jpg 請自行修改 */
             background-image: url('2.jpg'); 
             background-position: center bottom;
             background-repeat: no-repeat;
@@ -30,13 +32,14 @@
             overflow-x: hidden;
         }
 
-        /* --- Header 設定 (保持不變) --- */
+        /* --- Header 設定 --- */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100px;
+            /* Header 改為半透明暖白色，與整體色調融合 */
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
@@ -45,7 +48,7 @@
             align-items: center;
             padding: 0 20px;
             box-sizing: border-box;
-            border-bottom: 2px solid var(--header-border-color);
+            border-bottom: 2px solid var(--border-color); /* 邊框改為沙色 */
             z-index: 1000;
         }
 
@@ -53,19 +56,23 @@
             font-size: 24px;
             cursor: pointer;
             padding: 10px;
-            border: 1px solid var(--header-border-color);
+            border: 1px solid var(--border-color);
+            color: var(--primary-brown);
             width: 50px;
             text-align: center;
+            transition: 0.3s;
         }
+        .menu-btn:hover { background-color: var(--warm-white); }
 
         .logo-section {
             font-size: 28px;
             font-weight: bold;
             letter-spacing: 2px;
             text-align: center;
-            border: 1px solid var(--header-border-color);
+            border: 2px solid var(--primary-brown); /* LOGO 框線加深 */
             padding: 10px 40px;
             background: #fff;
+            color: var(--primary-brown);
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -80,24 +87,27 @@
 
         .login-btn {
             text-decoration: none;
-            color: var(--text-color);
+            color: var(--primary-brown);
             font-weight: bold;
-            border: 1px solid var(--header-border-color);
+            border: 1px solid var(--border-color);
             padding: 5px 20px;
             background: #fff;
             display: inline-block;
             font-size: 14px;
+            transition: 0.3s;
         }
+        .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
 
         .search-container input {
             padding: 5px 10px;
-            border: 1px solid var(--header-border-color);
+            border: 1px solid var(--border-color);
             font-size: 14px;
             width: 250px;
             outline: none;
+            background-color: #fff;
         }
 
-        /* --- 側邊選單 (保持不變) --- */
+        /* --- 側邊選單 --- */
         .sidebar {
             height: 100%;
             width: 250px;
@@ -105,19 +115,19 @@
             z-index: 2000;
             top: 0;
             left: -250px;
-            background-color: rgba(255, 255, 255, 0.98);
-            border-right: 1px solid #ccc;
+            background-color: var(--warm-white); /* 改為暖白色 */
+            border-right: 1px solid var(--border-color);
             overflow-x: hidden;
             transition: 0.3s;
             padding-top: 60px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1);
         }
 
         .sidebar a {
             padding: 15px 25px;
             text-decoration: none;
             font-size: 18px;
-            color: #333;
+            color: var(--primary-brown);
             display: block;
             transition: 0.3s;
             border-bottom: 1px solid #eee;
@@ -125,6 +135,7 @@
 
         .sidebar a:hover {
             background-color: #f1f1f1;
+            color: var(--sand-gold);
         }
 
         .sidebar .close-btn {
@@ -136,6 +147,7 @@
             border: none;
             background: none;
             cursor: pointer;
+            color: var(--primary-brown);
         }
 
         #overlay {
@@ -147,15 +159,15 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(93, 64, 55, 0.4); /* 深棕色遮罩 */
             z-index: 1500;
         }
 
-        /* --- 主要內容區塊 (新增部分) --- */
+        /* --- 主要內容區塊 --- */
         main {
-            padding-top: 130px; /* 避開 Header */
-            padding-bottom: 50px;
-            max-width: 1200px;
+            padding-top: 150px; /* 避開 Header */
+            padding-bottom: 100px;
+            max-width: 1100px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -164,91 +176,129 @@
         /* Hero 標語區 */
         .hero-section {
             text-align: center;
-            margin-bottom: 60px;
-            padding: 40px 20px;
-            background: rgba(255, 255, 255, 0.85); /* 半透明背景 */
+            margin-bottom: 50px;
+            padding: 40px 30px;
+            /* 使用漸層背景，模擬沙漠的感覺 */
+            background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85));
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); /* 金色陰影 */
             max-width: 900px;
             margin-left: auto;
             margin-right: auto;
+            border: 1px solid var(--border-color);
         }
 
         .hero-title {
             font-size: 2.5rem;
-            color: var(--text-color);
+            color: var(--primary-brown);
             margin-bottom: 15px;
             letter-spacing: 3px;
         }
 
         .hero-subtitle {
             font-size: 1.2rem;
-            color: #555;
-            line-height: 1.6;
+            color: #6d5645;
+            line-height: 1.8;
         }
 
-        /* 卡片容器 */
+        /* 標題樣式 */
+        .section-heading {
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 60px;
+            margin-bottom: 30px;
+            color: var(--primary-brown);
+            /* 文字陰影增加可讀性 */
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+        }
+
+        /* 為什麼需要 SATA (寬版卡片) */
+        .wide-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
+            border-left: 5px solid var(--sand-gold); /* 左側金線裝飾 */
+        }
+        
+        .wide-card p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #4e342e;
+            text-align: justify;
+        }
+
+        /* 三欄式卡片容器 */
         .section-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 30px;
-            padding: 20px;
+            gap: 25px;
+            padding: 0 10px;
         }
 
-        /* 通用卡片樣式 */
+        /* 服務介紹卡片 */
         .info-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 30px;
             flex: 1;
-            min-width: 300px;
-            max-width: 350px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-width: 280px;
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
             transition: transform 0.3s ease;
             text-align: center;
+            border-top: 4px solid var(--primary-brown); /* 頂部深棕色線條 */
         }
 
         .info-card:hover {
-            transform: translateY(-5px); /* 滑鼠移過去會浮起來 */
+            transform: translateY(-8px);
+            background: #fff; /* 懸停時變亮 */
         }
 
         .card-icon {
             font-size: 3rem;
-            color: var(--primary-color);
+            color: var(--sand-gold);
             margin-bottom: 20px;
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 15px;
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--primary-color);
-            display: inline-block;
-            padding-bottom: 5px;
+            color: var(--primary-brown);
+            font-weight: bold;
         }
 
         .card-text {
             font-size: 1rem;
-            color: #666;
-            line-height: 1.8;
+            color: #5d4037;
+            line-height: 1.6;
             text-align: left;
         }
 
-        /* 願景與問題區塊 (寬版) */
-        .wide-card {
-            background: rgba(255, 255, 255, 0.95);
+        /* 痛點分析表格樣式 (搭配背景色) */
+        .pain-point-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .pain-point-box {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 40px;
-            margin: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 25px;
         }
 
-        .section-heading {
+        .pain-point-title {
+            font-size: 1.3rem;
+            color: var(--primary-brown);
+            margin-bottom: 15px;
+            border-bottom: 2px dashed var(--sand-gold);
+            padding-bottom: 10px;
             text-align: center;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            color: var(--text-color);
         }
 
         /* 列表樣式 */
@@ -256,19 +306,21 @@
             list-style: none;
             padding: 0;
             text-align: left;
+            margin-top: 10px;
         }
 
         .feature-list li {
-            margin-bottom: 15px;
-            padding-left: 30px;
+            margin-bottom: 12px;
+            padding-left: 25px;
             position: relative;
+            color: #4e342e;
         }
 
         .feature-list li::before {
-            content: "\f00c"; /* FontAwesome check icon */
+            content: "\f00c"; /* FontAwesome 打勾符號 */
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
-            color: var(--primary-color);
+            color: var(--sand-gold);
             position: absolute;
             left: 0;
             top: 2px;
@@ -283,17 +335,17 @@
             }
             header {
                 height: auto;
-                padding: 10px;
+                padding: 15px;
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 10px;
+                gap: 15px;
             }
             .right-section {
                 align-items: center;
                 width: 100%;
             }
             .hero-title { font-size: 1.8rem; }
-            main { padding-top: 180px; }
+            main { padding-top: 200px; } /* 手機版Header變高，內容往下推 */
         }
     </style>
 </head>
@@ -330,43 +382,42 @@
         <section class="hero-section">
             <h1 class="hero-title">聚文字之細沙，築光影之高塔</h1>
             <p class="hero-subtitle">
-                讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策。<br>
-                結合 AI 數據分析與專業孵化的影視投資平台。
+                [cite_start]AI 影視孵化與投資平台 [cite: 1]<br>
+                [cite_start]讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策 [cite: 11, 12]
             </p>
         </section>
 
         <div class="wide-card">
-            <h2 class="section-heading">為什麼需要 SATA？</h2>
-            <p style="font-size: 1.1rem; line-height: 1.8; color: #444; text-align: center;">
-                台灣影視產業正面臨「好內容無法被看見、有效資金找不到對的劇本」的斷層。<br>
-                創作者缺乏商業轉化能力，投資方缺乏客觀評估工具。我們致力於打破這個惡性循環，<br>
-                透過 AI 技術與專業顧問，搭建起創作與市場的橋樑。
+            <h2 style="margin-top:0; color:var(--primary-brown);">為什麼創立 SATA？</h2>
+            <p>
+                [cite_start]我們的團隊由一群電影愛好者組成，深知一部好電影背後潛藏的巨大商業價值，也遺憾許多有潛力的劇本因缺乏專業資金而石沉大海 [cite: 9, 10]。<br><br>
+                [cite_start]台灣影視產業正面臨「新進創作者難進入」與「投資需求方資訊不透明」的雙重困境。好內容無法被看見，有效資金找不到對的劇本 [cite: 45, 48][cite_start]。SATA 致力於填補這個市場缺口，成為連結創意與資本的橋樑 [cite: 49]。
             </p>
         </div>
 
-        <h2 class="section-heading" style="margin-top: 50px; text-shadow: 2px 2px 4px rgba(255,255,255,0.8);">三大核心服務</h2>
+        <h2 class="section-heading">三大核心服務</h2>
         <div class="section-container">
             
             <div class="info-card">
                 <i class="fas fa-brain card-icon"></i>
-                <h3 class="card-title">AI 劇本分析</h3>
+                <h3 class="card-title">AI 劇本分析系統</h3>
                 <p class="card-text">
                     不再依賴主觀直覺。我們的 AI 系統提供客觀的量化指標：
                 </p>
-                <ul class="feature-list" style="color: #666;">
-                    [cite_start]<li><strong>結構完整度：</strong> 檢查敘事節奏與鉤子偵測 [cite: 83]。</li>
-                    [cite_start]<li><strong>角色與情感：</strong> 分析角色深度與情感曲線 [cite: 61, 62]。</li>
-                    [cite_start]<li><strong>市場潛力：</strong> 提供票房預測與受眾分析 [cite: 73, 75]。</li>
+                <ul class="feature-list">
+                    [cite_start]<li><strong>結構分析：</strong> 檢查敘事節奏與鉤子偵測 [cite: 83]。</li>
+                    [cite_start]<li><strong>角色深度：</strong> 分析角色關係圖譜與情感曲線 [cite: 61, 62]。</li>
+                    [cite_start]<li><strong>市場預測：</strong> 提供票房預測與受眾分析 [cite: 73, 75]。</li>
                 </ul>
             </div>
 
             <div class="info-card">
                 <i class="fas fa-user-tie card-icon"></i>
-                <h3 class="card-title">專業諮詢孵化</h3>
+                <h3 class="card-title">專業諮詢服務</h3>
                 <p class="card-text">
                     AI 找出問題，專家協助解決。引入資深導演、編劇與製片人提供協助：
                 </p>
-                <ul class="feature-list" style="color: #666;">
+                <ul class="feature-list">
                     [cite_start]<li><strong>內容優化：</strong> 針對 AI 報告進行人工補強 [cite: 101]。</li>
                     [cite_start]<li><strong>商業包裝：</strong> 協助撰寫商業計畫書與提案 [cite: 103]。</li>
                     [cite_start]<li><strong>產業觀點：</strong> 確保作品具備市場競爭力 [cite: 106]。</li>
@@ -379,35 +430,33 @@
                 <p class="card-text">
                     建立透明高效的資金對接管道，降低搜尋與信任成本：
                 </p>
-                <ul class="feature-list" style="color: #666;">
+                <ul class="feature-list">
                     [cite_start]<li><strong>精準篩選：</strong> 只有經評估達標的優質劇本才能上架 [cite: 117]。</li>
-                    [cite_start]<li><strong>雙向媒合：</strong> 支援投資人主動搜尋與平台被動推薦 [cite: 120, 124]。</li>
+                    [cite_start]<li><strong>雙向媒合：</strong> 支援投資人主動搜尋與平台被動推薦 [cite: 119, 124]。</li>
                     [cite_start]<li><strong>資訊透明：</strong> 投資前即可查看關鍵量化指標 [cite: 118]。</li>
                 </ul>
             </div>
         </div>
 
-        <div class="wide-card" style="margin-top: 40px;">
-            <h2 class="section-heading">我們解決的痛點</h2>
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px;">
-                
-                <div style="flex: 1; min-width: 300px;">
-                    <h3 style="color: var(--accent-color); border-left: 5px solid var(--primary-color); padding-left: 15px;">對於創作者</h3>
-                    <ul class="feature-list" style="font-size: 1rem; color: #555;">
-                        [cite_start]<li>缺乏商業轉化能力，作品難以變現 [cite: 38]。</li>
-                        [cite_start]<li>缺少數據說服力，難以吸引投資目光 [cite: 40]。</li>
-                        [cite_start]<li>苦無門路，缺乏投資人脈與資源接觸 [cite: 128]。</li>
-                    </ul>
-                </div>
+        <h2 class="section-heading">我們解決的痛點</h2>
+        <div class="pain-point-container">
+            
+            <div class="pain-point-box">
+                <div class="pain-point-title">對於創作者</div>
+                <ul class="feature-list">
+                    [cite_start]<li><strong>缺乏商業轉化能力：</strong> 作品藝術性高但難以變現 [cite: 38]。</li>
+                    [cite_start]<li><strong>缺乏數據說服力：</strong> 無法證明潛力，難吸引投資 [cite: 40]。</li>
+                    [cite_start]<li><strong>門檻過高：</strong> 缺乏投資人脈與資源接觸 [cite: 37, 128]。</li>
+                </ul>
+            </div>
 
-                <div style="flex: 1; min-width: 300px;">
-                    <h3 style="color: var(--accent-color); border-left: 5px solid var(--primary-color); padding-left: 15px;">對於投資方</h3>
-                    <ul class="feature-list" style="font-size: 1rem; color: #555;">
-                        [cite_start]<li>篩選成本高，案源分散且品質不一 [cite: 42]。</li>
-                        [cite_start]<li>缺乏客觀評估工具，投資決策如同賭博 [cite: 43]。</li>
-                        [cite_start]<li>資訊不透明，難以辨識具潛力的原創作品 [cite: 47]。</li>
-                    </ul>
-                </div>
+            <div class="pain-point-box">
+                <div class="pain-point-title">對於投資方</div>
+                <ul class="feature-list">
+                    [cite_start]<li><strong>篩選成本高：</strong> 案源分散，篩選具潛力作品困難 [cite: 42]。</li>
+                    [cite_start]<li><strong>缺乏評估工具：</strong> 決策帶有高度不確定性 [cite: 43]。</li>
+                    [cite_start]<li><strong>資訊不透明：</strong> 缺乏標準化指標，難以辨識好劇本 [cite: 47]。</li>
+                </ul>
             </div>
         </div>
 
