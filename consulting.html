@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專業諮詢服務 & 聯繫團隊 - 劇沙成塔</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- 基礎設定 (保持一致) --- */
+        :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
+        body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
+        
+        /* Header & Sidebar */
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
+        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
+        .menu-btn:hover { background-color: var(--warm-white); }
+        .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
+        .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
+        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
+        .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
+        .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
+        .member-link:hover { color: var(--sand-gold); }
+        .divider { margin: 0 8px; color: #ccc; }
+        .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
+        
+        .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
+        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
+        .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
+        .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
+        #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
+        
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
+        .modal-box.wide { max-width: 800px; }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
+        .modal-close-btn:hover { color: var(--primary-brown); }
+        .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .manage-section { margin-bottom: 30px; }
+        .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
+        .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .script-table th, .script-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .script-table th { background-color: var(--warm-white); color: var(--sand-gold); }
+        .status-tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .tag-yes { background-color: #E8F5E9; color: #2E7D32; }
+
+        /* --- 本頁專屬樣式 --- */
+        main { padding-top: 150px; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; padding-left: 20px; padding-right: 20px;}
+
+        /* Section 1: 諮詢服務 */
+        .consulting-intro {
+            text-align: center; margin-bottom: 50px;
+            background: var(--card-bg); padding: 40px; border-radius: 15px;
+            border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
+        }
+        .section-title { font-size: 2rem; color: var(--primary-brown); margin-bottom: 20px; border-bottom: 2px solid var(--sand-gold); display: inline-block; padding-bottom: 10px; }
+        .services-grid { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .service-item { flex: 1; min-width: 280px; max-width: 350px; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left; transition: transform 0.3s; }
+        .service-item:hover { transform: translateY(-5px); }
+        .service-item h3 { color: var(--sand-gold); display: flex; align-items: center; gap: 10px; margin-top: 0; }
+        .service-item p { color: #555; line-height: 1.6; font-size: 0.95rem; }
+
+        /* Section 2: 團隊介紹 */
+        .team-section { margin-top: 60px; }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* RWD 自動排列 */
+            gap: 30px;
+        }
+        
+        .team-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s;
+        }
+        .team-card:hover { transform: translateY(-5px); border-color: var(--sand-gold); }
+
+        .team-img-box {
+            width: 100%;
+            height: 280px;
+            background-color: #e0e0e0;
+            overflow: hidden;
+            position: relative;
+        }
+        .team-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top; /* 確保人頭不被切掉 */
+        }
+
+        .team-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .team-name { font-size: 1.4rem; font-weight: bold; color: var(--primary-brown); margin: 0; }
+        .team-title { font-size: 0.9rem; color: var(--sand-gold); font-weight: bold; margin-bottom: 10px; display: block; }
+        .team-edu { font-size: 0.85rem; color: #888; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        .team-tags { margin-bottom: 15px; }
+        .expert-tag { 
+            display: inline-block; background: #f0f0f0; color: #555; 
+            padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; 
+            margin-right: 5px; margin-bottom: 5px;
+        }
+
+        .team-bio { font-size: 0.9rem; color: #444; line-height: 1.6; text-align: justify; flex-grow: 1; }
+
+        /* 聯繫我們區塊 */
+        .contact-cta {
+            margin-top: 50px; text-align: center; padding: 40px;
+            background: linear-gradient(to right, rgba(93, 64, 55, 0.9), rgba(197, 160, 101, 0.9));
+            color: #fff; border-radius: 12px;
+        }
+        .contact-cta h2 { margin-top: 0; color: #fff; }
+        .contact-btn {
+            background: #fff; color: var(--primary-brown); padding: 10px 30px;
+            border-radius: 30px; text-decoration: none; font-weight: bold;
+            display: inline-block; margin-top: 20px; transition: 0.3s;
+        }
+        .contact-btn:hover { background: var(--sand-gold); color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="toggleNav()"></div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
+        <a href="index.html">首頁</a>
+        <a href="Scriptupload.html">劇本上傳SATA</a>
+        <a href="ai_analysis.html">AI 劇本初步分析</a>
+        <a href="script_database.html">SATA劇本資料庫</a>
+        <a href="consulting.html" style="color: var(--sand-gold); font-weight: bold;">專業諮詢服務&聯繫團隊</a>
+    </div>
+
+    <div id="loginModal" class="modal-overlay"><div class="modal-box"><div class="modal-close-btn" onclick="toggleLoginModal()"><i class="fas fa-times"></i></div><h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員登入</h2><div class="login-form"><input type="text" id="username" placeholder="帳號 (預設: 123456)" value="123456"><input type="password" id="password" placeholder="密碼 (預設: 123456)" value="123456"><button class="login-submit-btn" onclick="performLogin()">登入</button></div></div></div>
+    <div id="memberModal" class="modal-overlay"><div class="modal-box wide"><div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div><h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2><div class="manage-section"><h3><i class="fas fa-book"></i> 劇本管理</h3><table class="script-table"><thead><tr><th>劇本名稱</th><th>點閱累積</th><th>潛在投資者</th></tr></thead><tbody><tr><td>《我的模擬劇本A》</td><td>80 次</td><td><span class="status-tag tag-yes">有</span></td></tr></tbody></table></div><div class="manage-section"><h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3><table class="script-table"><thead><tr><th>劇本名稱</th><th>類型</th><th>狀態</th></tr></thead><tbody id="investment-table-body"></tbody></table></div></div></div>
+
+    <header>
+        <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
+        <div class="logo-section">劇沙成塔</div>
+        <div class="right-section">
+            <div id="headerRightSection"><a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a></div>
+            <div class="search-container"><input type="text" placeholder="請輸入劇本名稱/編劇名稱"></div>
+        </div>
+    </header>
+
+    <main>
+        <section class="consulting-intro">
+            <h1 class="section-title">專業諮詢孵化服務</h1>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                AI 找出問題，專家協助解決。<br>
+                我們引入資深導演、編劇與製片人，為創作者提供從創意發想到市場對接的深度輔導 [cite: 96]。
+            </p>
+            
+            <div class="services-grid">
+                <div class="service-item">
+                    <h3><i class="fas fa-pen-fancy"></i> 內容優化</h3>
+                    <p>根據 AI 診斷報告結果，針對敘事節奏、角色動機與情感表現進行人工補強，提升劇本的藝術完整度 [cite: 100, 101]。</p>
+                </div>
+                <div class="service-item">
+                    <h3><i class="fas fa-briefcase"></i> 商業包裝</h3>
+                    <p>協助創作者將作品轉化為可投資的企劃案，包含撰寫商業計畫書、預算規劃與受眾定位，增強市場說服力 [cite: 102, 103]。</p>
+                </div>
+                <div class="service-item">
+                    <h3><i class="fas fa-chart-line"></i> 產業觀點</h3>
+                    <p>由具業界實戰經驗的顧問提供當前市場趨勢分析與製作可行性評估，確保作品具備市場競爭力 [cite: 105, 106]。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="team-section">
+            <h1 class="section-title" style="text-align: center; display: block; margin-bottom: 40px;">核心團隊成員</h1>
+            
+            <div class="team-grid">
+                
+                <div class="team-card">
+                    <div class="team-img-box">
+                        <img src="images/member_li.jpg" alt="李光翔">
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">李光翔</h3>
+                        <span class="team-title">執行長 兼 首席策略官 (CEO & CSO)</span>
+                        <div class="team-edu">國立中山大學 中國與亞太區域研究所 (經濟組碩士)<br>高雄師範大學 企業管理學系</div>
+                        <div class="team-tags">
+                            <span class="expert-tag">總體經濟分析</span>
+                            <span class="expert-tag">產業趨勢洞察</span>
+                            <span class="expert-tag">企業戰略規劃</span>
+                        </div>
+                        <div class="team-bio">
+                            作為團隊的掌舵者，結合亞太區域經濟研究與企業管理的雙重學術背景，具備宏觀的國際視野。擅長從龐雜的市場資訊中抽絲剝繭，精準定位產業缺口與市場機會，為團隊制定具前瞻性的發展藍圖與商業戰略。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-box">
+                        <img src="images/member_huang.jpg" alt="黃品文">
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">黃品文</h3>
+                        <span class="team-title">投資長 兼 量化分析總監 (CIO)</span>
+                        <div class="team-edu">國立臺北大學 金融與合作經營學系 碩士班</div>
+                        <div class="team-tags">
+                            <span class="expert-tag">財務工程</span>
+                            <span class="expert-tag">投資組合管理</span>
+                            <span class="expert-tag">證券商高級業務員</span>
+                        </div>
+                        <div class="team-bio">
+                            團隊的金融核心大腦，專精於統計學與財務管理。擁有深厚的量化分析能力，負責建構精密的財務估值模型與投資回測。持有高階證券與投信投顧資格，確保所有投資策略皆建立在嚴謹的數據分析與理論基礎之上。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-box">
+                        <img src="images/member_chiang.jpg" alt="江芸帆">
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">江芸帆</h3>
+                        <span class="team-title">財務長 兼 風險控管長 (CFO & CRO)</span>
+                        <div class="team-edu">財金與商業相關背景</div>
+                        <div class="team-tags">
+                            <span class="expert-tag">永續金融與ESG</span>
+                            <span class="expert-tag">全面風險管理</span>
+                            <span class="expert-tag">會計審計</span>
+                        </div>
+                        <div class="team-bio">
+                            團隊的穩健守護者，擁有跨領域的完整證照拼圖，涵蓋會計、證券、信託與保險。專責於財務報表的精確編制與法規遵循，並將ESG永續指標導入商業模式中。透過嚴謹的風險控管矩陣，為團隊的商業提案提供堅實的可行性保障。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-img-box">
+                        <img src="images/member_tsai.jpg" alt="蔡堡丞">
+                    </div>
+                    <div class="team-info">
+                        <h3 class="team-name">蔡堡丞</h3>
+                        <span class="team-title">行銷長 兼 產品技術總監 (CMO & CPO)</span>
+                        <div class="team-edu">國立臺北大學 金融與合作經營學系</div>
+                        <div class="team-tags">
+                            <span class="expert-tag">FinTech & Java</span>
+                            <span class="expert-tag">商業模式創新</span>
+                            <span class="expert-tag">行銷策略</span>
+                        </div>
+                        <div class="team-bio">
+                            兼具金融知識與程式語言能力的跨界人才。能將複雜的金融商品轉化為直觀的產品語言，負責商業模式的可視化與數位化落地。利用 Java 技術背景評估 FinTech 架構的可行性，並制定精準的行銷 4P 策略，是連結產品技術與終端市場的關鍵橋樑。
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="contact-cta">
+            <h2>有興趣合作或了解更多？</h2>
+            <p>我們的團隊隨時準備為您服務，歡迎創作者與投資人洽詢。</p>
+            <a href="mailto:contact@sata-script.com" class="contact-btn"><i class="fas fa-envelope"></i> 聯絡我們</a>
+        </div>
+
+    </main>
+
+    <script>
+        // 通用 UI 與登入邏輯
+        window.onload = function() { if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); } }
+        function toggleNav() { var s=document.getElementById("mySidebar");var o=document.getElementById("overlay");if(s.style.left==="0px"){s.style.left="-250px";o.style.display="none";}else{s.style.left="0px";o.style.display="block";} }
+        function toggleLoginModal() { var m=document.getElementById("loginModal");m.style.display=(m.style.display==="flex")?"none":"flex"; }
+        function toggleMemberModal() { var m=document.getElementById("memberModal");m.style.display=(m.style.display==="flex")?"none":"flex";if(m.style.display==="flex")renderMemberTable(); }
+        function performLogin() { var u=document.getElementById("username").value;var p=document.getElementById("password").value;if(u==="123456"&&p==="123456"){localStorage.setItem("sata_login","true");toggleLoginModal();updateHeaderToLoggedIn();}else{alert("帳號密碼錯誤");} }
+        function updateHeaderToLoggedIn() { document.getElementById("headerRightSection").innerHTML=`<span class="member-menu"><a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a><span class="divider">|</span><a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a></span>`; }
+        function performLogout() { if(confirm("確定登出?")){localStorage.removeItem("sata_login");document.getElementById("headerRightSection").innerHTML=`<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`;document.getElementById("memberModal").style.display="none";} }
+        function renderMemberTable() {
+            var tbody = document.getElementById("investment-table-body");
+            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
+            tbody.innerHTML = "";
+            if (investments.length === 0) { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>"; return; }
+            investments.forEach(item => { tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`; });
+        }
+    </script>
+</body>
+</html>
