@@ -1,50 +1,300 @@
-<!-- 請在 index.html 的 sidebar 中，將「投資媒合平台」改為： -->
-<a href="script_database.html">SATA劇本資料庫</a>
-
-<!-- 請替換 index.html 既有的 script -->
-<script>
-    window.onload = function() {
-        if (localStorage.getItem("sata_login") === "true") {
-            updateHeaderToLoggedIn();
-        }
-    }
-
-    function toggleNav() { var s = document.getElementById("mySidebar"); var o = document.getElementById("overlay"); if(s.style.left==="0px"){s.style.left="-250px";o.style.display="none";}else{s.style.left="0px";o.style.display="block";} }
-    function toggleLoginModal() { var m = document.getElementById("loginModal"); m.style.display = (m.style.display==="flex")?"none":"flex"; }
-    
-    function toggleMemberModal() { 
-        var m = document.getElementById("memberModal"); 
-        m.style.display = (m.style.display==="flex")?"none":"flex";
-        // [新增] 打開會員視窗時，重新讀取投資列表
-        if (m.style.display === "flex") renderMemberTable();
-    }
-
-    // [新增] 渲染投資表格 (讀取 localStorage)
-    function renderMemberTable() {
-        var tbody = document.querySelector(".manage-section:last-child tbody"); // 選取第二個表格的 tbody
-        // 如果您的 index.html 結構不同，請給表格 tbody 一個 id="investment-table-body" 比較保險
-        if (!tbody) return;
-
-        var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
-        tbody.innerHTML = "";
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>劇沙成塔 SATA - AI影視孵化與投資平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- 基礎 CSS --- */
+        :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
+        body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
         
-        if (investments.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>";
-        } else {
+        /* Header */
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
+        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
+        .menu-btn:hover { background-color: var(--warm-white); }
+        .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
+        
+        /* 右側區塊 */
+        .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
+        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
+        .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
+        .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
+        .member-link:hover { color: var(--sand-gold); }
+        .divider { margin: 0 8px; color: #ccc; }
+        .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
+
+        /* Sidebar */
+        .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
+        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
+        .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
+        .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
+        #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
+
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
+        .modal-box.wide { max-width: 800px; }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
+        .modal-close-btn:hover { color: var(--primary-brown); }
+        .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .login-submit-btn:hover { background-color: #4e342e; }
+
+        /* Manage Section */
+        .manage-section { margin-bottom: 30px; }
+        .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
+        .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .script-table th, .script-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .script-table th { background-color: var(--warm-white); color: var(--sand-gold); }
+        .growth-positive { color: #4CAF50; font-weight: bold; }
+        .growth-negative { color: #F44336; font-weight: bold; }
+        .status-tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .tag-yes { background-color: #E8F5E9; color: #2E7D32; }
+        .tag-no { background-color: #FFEBEE; color: #C62828; }
+        .action-btn { display: inline-block; padding: 4px 10px; margin-right: 5px; background-color: var(--warm-white); border: 1px solid var(--border-color); color: var(--primary-brown); border-radius: 3px; cursor: pointer; font-size: 12px; text-decoration: none; }
+        .action-btn:hover { background-color: var(--sand-gold); color: white; }
+
+        /* Main Content */
+        main { padding-top: 150px; padding-bottom: 100px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        .hero-section { text-align: center; margin-bottom: 50px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
+        .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 15px; letter-spacing: 3px; }
+        .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; }
+        .section-heading { text-align: center; font-size: 2rem; margin-top: 60px; margin-bottom: 30px; color: var(--primary-brown); text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
+        .wide-card { background: var(--card-bg); border-radius: 12px; padding: 40px; margin: 20px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); border-left: 5px solid var(--sand-gold); }
+        .wide-card p { font-size: 1.15rem; line-height: 1.8; color: #4e342e; text-align: justify; }
+        .section-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 25px; padding: 0 10px; }
+        .info-card { background: var(--card-bg); border-radius: 12px; padding: 30px; flex: 1; min-width: 280px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); transition: transform 0.3s ease; text-align: center; border-top: 4px solid var(--primary-brown); }
+        .info-card:hover { transform: translateY(-8px); background: #fff; }
+        .card-icon { font-size: 3rem; color: var(--sand-gold); margin-bottom: 20px; }
+        .card-title { font-size: 1.4rem; margin-bottom: 15px; color: var(--primary-brown); font-weight: bold; }
+        .card-text { font-size: 1rem; color: #5d4037; line-height: 1.6; text-align: left; }
+        .pain-point-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .pain-point-box { flex: 1; min-width: 300px; background: rgba(255, 255, 255, 0.9); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; }
+        .pain-point-title { font-size: 1.3rem; color: var(--primary-brown); margin-bottom: 15px; border-bottom: 2px dashed var(--sand-gold); padding-bottom: 10px; text-align: center; }
+        .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 10px; }
+        .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
+        .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
+        @media screen and (max-width: 768px) { .logo-section { position: static; transform: none; margin: 0 auto; } header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } .right-section { align-items: center; width: 100%; } .hero-title { font-size: 1.8rem; } main { padding-top: 200px; } }
+    </style>
+</head>
+<body>
+    <div id="overlay" onclick="toggleNav()"></div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
+        <a href="index.html">首頁</a>
+        <a href="Scriptupload.html">劇本上傳SATA</a>
+        <a href="#">AI 劇本初步分析</a>
+        <a href="script_database.html">SATA劇本資料庫</a>
+        <a href="#">專業諮詢服務</a>
+    </div>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-close-btn" onclick="toggleLoginModal()"><i class="fas fa-times"></i></div>
+            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員登入</h2>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="帳號 (預設: 123456)" value="123456">
+                <input type="password" id="password" placeholder="密碼 (預設: 123456)" value="123456">
+                <button class="login-submit-btn" onclick="performLogin()">登入</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="memberModal" class="modal-overlay">
+        <div class="modal-box wide">
+            <div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div>
+            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2>
+            
+            <div class="manage-section">
+                <h3><i class="fas fa-book"></i> 劇本管理</h3>
+                <table class="script-table">
+                    <thead><tr><th>劇本名稱</th><th>點閱累積 (週成長)</th><th>潛在投資者</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>《沙丘之影》</td><td>1,240 次 <span class="growth-positive">(+15%)</span></td><td><span class="status-tag tag-yes">有</span></td><td><a href="#" class="action-btn">劇本顧問服務</a><a href="#" class="action-btn">尋找投資人</a></td></tr>
+                        <tr><td>《台北夜行》</td><td>320 次 <span class="growth-negative">(-2%)</span></td><td><span class="status-tag tag-no">無</span></td><td><a href="#" class="action-btn">劇本顧問服務</a><a href="#" class="action-btn">尋找投資人</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="manage-section">
+                <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
+                <table class="script-table">
+                    <thead><tr><th>已標記投資意願之劇本</th><th>類型</th><th>狀態</th></tr></thead>
+                    <tbody id="investment-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
+        <div class="logo-section">劇沙成塔</div>
+        <div class="right-section">
+            <div id="headerRightSection">
+                <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
+            </div>
+            <div class="search-container">
+                <input type="text" placeholder="請輸入劇本名稱/編劇名稱">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <h1 class="hero-title">聚文字之細沙，築光影之高塔</h1>
+            <p class="hero-subtitle">AI 影視孵化與投資平台<br>讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策</p>
+        </section>
+
+        <div class="wide-card">
+            <h2 style="margin-top:0; color:var(--primary-brown);">為什麼創立 SATA？</h2>
+            <p>我們的團隊由一群電影愛好者組成，深知一部好電影背後潛藏的巨大商業價值，也遺憾許多有潛力的劇本因缺乏專業資金而石沉大海。<br><br>台灣影視產業正面臨「新進創作者難進入」與「投資需求方資訊不透明」的雙重困境。好內容無法被看見，有效資金找不到對的劇本。SATA 致力於填補這個市場缺口，成為連結創意與資本的橋樑。</p>
+        </div>
+
+        <h2 class="section-heading">三大核心服務</h2>
+        <div class="section-container">
+            <div class="info-card">
+                <i class="fas fa-brain card-icon"></i>
+                <h3 class="card-title">AI 劇本分析系統</h3>
+                <p class="card-text">不再依賴主觀直覺。我們的 AI 系統提供客觀的量化指標：</p>
+                <ul class="feature-list">
+                    <li><strong>結構分析：</strong> 檢查敘事節奏與鉤子偵測。</li>
+                    <li><strong>角色深度：</strong> 分析角色關係圖譜與情感曲線。</li>
+                    <li><strong>市場預測：</strong> 提供票房預測與受眾分析。</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-user-tie card-icon"></i>
+                <h3 class="card-title">專業諮詢服務</h3>
+                <p class="card-text">AI 找出問題，專家協助解決。引入資深導演、編劇與製片人提供協助：</p>
+                <ul class="feature-list">
+                    <li><strong>內容優化：</strong> 針對 AI 報告進行人工補強。</li>
+                    <li><strong>商業包裝：</strong> 協助撰寫商業計畫書與提案。</li>
+                    <li><strong>產業觀點：</strong> 確保作品具備市場競爭力。</li>
+                </ul>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-handshake card-icon"></i>
+                <h3 class="card-title">投資媒合機制</h3>
+                <p class="card-text">建立透明高效的資金對接管道，降低搜尋與信任成本：</p>
+                <ul class="feature-list">
+                    <li><strong>精準篩選：</strong> 只有經評估達標的優質劇本才能上架。</li>
+                    <li><strong>雙向媒合：</strong> 支援投資人主動搜尋與平台被動推薦。</li>
+                    <li><strong>資訊透明：</strong> 投資前即可查看關鍵量化指標。</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 class="section-heading">我們解決的痛點</h2>
+        <div class="pain-point-container">
+            <div class="pain-point-box">
+                <div class="pain-point-title">對於創作者</div>
+                <ul class="feature-list">
+                    <li><strong>缺乏商業轉化能力：</strong> 作品藝術性高但難以變現。</li>
+                    <li><strong>缺乏數據說服力：</strong> 無法證明潛力，難吸引投資。</li>
+                    <li><strong>門檻過高：</strong> 缺乏投資人脈與資源接觸。</li>
+                </ul>
+            </div>
+            <div class="pain-point-box">
+                <div class="pain-point-title">對於投資方</div>
+                <ul class="feature-list">
+                    <li><strong>篩選成本高：</strong> 案源分散，篩選具潛力作品困難。</li>
+                    <li><strong>缺乏評估工具：</strong> 決策帶有高度不確定性。</li>
+                    <li><strong>資訊不透明：</strong> 缺乏標準化指標，難以辨識好劇本。</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 頁面載入時檢查登入狀態
+        window.onload = function() {
+            if (localStorage.getItem("sata_login") === "true") {
+                updateHeaderToLoggedIn();
+            }
+        }
+
+        // --- UI 控制 ---
+        function toggleNav() {
+            var sidebar = document.getElementById("mySidebar");
+            var overlay = document.getElementById("overlay");
+            if (sidebar.style.left === "0px") { sidebar.style.left = "-250px"; overlay.style.display = "none"; }
+            else { sidebar.style.left = "0px"; overlay.style.display = "block"; }
+        }
+
+        function toggleLoginModal() {
+            var modal = document.getElementById("loginModal");
+            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+        }
+
+        function toggleMemberModal() {
+            var modal = document.getElementById("memberModal");
+            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+            if (modal.style.display === "flex") {
+                renderMemberTable(); // 打開時更新投資列表
+            }
+        }
+
+        // --- 登入邏輯 ---
+        function performLogin() {
+            var user = document.getElementById("username").value;
+            var pass = document.getElementById("password").value;
+            if (user === "123456" && pass === "123456") {
+                localStorage.setItem("sata_login", "true");
+                toggleLoginModal();
+                updateHeaderToLoggedIn();
+            } else {
+                alert("帳號或密碼錯誤，請重新輸入 (預設為 123456)");
+            }
+        }
+
+        function updateHeaderToLoggedIn() {
+            var headerRight = document.getElementById("headerRightSection");
+            headerRight.innerHTML = `
+                <span class="member-menu">
+                    <a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a>
+                    <span class="divider">|</span>
+                    <a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a>
+                </span>
+            `;
+        }
+
+        function performLogout() {
+            if(confirm("確定要登出嗎？")) {
+                localStorage.removeItem("sata_login");
+                var headerRight = document.getElementById("headerRightSection");
+                headerRight.innerHTML = `
+                    <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
+                `;
+                document.getElementById("memberModal").style.display = "none";
+            }
+        }
+
+        // --- 渲染投資表格 (關鍵更新) ---
+        function renderMemberTable() {
+            var tbody = document.getElementById("investment-table-body");
+            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
+            
+            tbody.innerHTML = ""; // 清空
+
+            if (investments.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>";
+                return;
+            }
+
             investments.forEach(item => {
-                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`;
+                var row = `<tr>
+                    <td>${item.title}</td>
+                    <td>${item.type}</td>
+                    <td><span class="status-tag tag-yes">${item.status}</span></td>
+                </tr>`;
+                tbody.innerHTML += row;
             });
         }
-    }
-
-    function performLogin() {
-        var u=document.getElementById("username").value; var p=document.getElementById("password").value;
-        if(u==="123456"&&p==="123456"){ localStorage.setItem("sata_login","true"); toggleLoginModal(); updateHeaderToLoggedIn(); } else { alert("帳號或密碼錯誤"); }
-    }
-    function updateHeaderToLoggedIn() {
-        document.getElementById("headerRightSection").innerHTML = `<span class="member-menu"><a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a><span class="divider">|</span><a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a></span>`;
-    }
-    function performLogout() {
-        if(confirm("確定要登出嗎？")){ localStorage.removeItem("sata_login"); document.getElementById("headerRightSection").innerHTML=`<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`; document.getElementById("memberModal").style.display="none"; }
-    }
-</script>
+    </script>
+</body>
+</html>
