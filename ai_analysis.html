@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- 基礎 CSS (保持一致) --- */
+        /* --- 基礎 CSS (與其他頁面保持一致) --- */
         :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
         
@@ -32,7 +32,7 @@
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
         
-        /* Modals (保持一致) */
+        /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
         .modal-box.wide { max-width: 800px; }
@@ -70,11 +70,25 @@
             border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
             box-sizing: border-box; resize: vertical;
         }
-        .api-input {
-            width: 100%; padding: 10px; margin-bottom: 15px;
-            border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
-            font-family: monospace; color: #666;
+        
+        /* [新增] 設定區塊樣式 */
+        .settings-group {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 15px;
         }
+        .settings-label {
+            font-size: 0.9rem; color: var(--primary-brown); font-weight: bold; margin-bottom: 5px; display: block;
+        }
+        .api-input, .model-select {
+            width: 100%; padding: 10px; margin-bottom: 10px;
+            border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
+            font-family: monospace; color: #333; font-size: 0.95rem;
+        }
+        .model-select { cursor: pointer; }
+
         .btn-analyze {
             background-color: var(--primary-brown); color: white; border: none; padding: 15px;
             border-radius: 5px; font-size: 1.1rem; cursor: pointer; transition: 0.3s;
@@ -157,9 +171,18 @@
                 <h3 style="margin-top:0; color:var(--primary-brown);">1. 輸入劇本內容</h3>
                 <textarea id="scriptInput" class="input-area" placeholder="請在此貼上您的劇本大綱或片段..."></textarea>
                 
-                <div style="margin-bottom: 10px;">
-                    <label style="font-size: 0.9rem; color: #666;">Google Gemini API Key (選填):</label>
+                <div class="settings-group">
+                    <label class="settings-label"><i class="fas fa-key"></i> Google Gemini API Key (選填):</label>
                     <input type="password" id="apiKeyInput" class="api-input" placeholder="若留空則使用模擬數據">
+                    
+                    <label class="settings-label"><i class="fas fa-robot"></i> 選擇 AI 模型版本:</label>
+                    <select id="modelSelect" class="model-select">
+                        <option value="gemini-1.5-pro">Gemini 1.5 Pro (推薦：最強大)</option>
+                        <option value="gemini-1.5-flash">Gemini 1.5 Flash (快速)</option>
+                        <option value="gemini-1.0-pro">Gemini 1.0 Pro (穩定)</option>
+                        <option value="custom">自訂模型名稱...</option>
+                    </select>
+                    <input type="text" id="customModelInput" class="api-input" style="display:none;" placeholder="例如: gemini-2.0-flash-exp">
                 </div>
 
                 <button class="btn-analyze" onclick="startAnalysis()" id="analyzeBtn">
@@ -169,67 +192,50 @@
 
             <div class="result-panel" id="textResultPanel" style="display: none;">
                 <h3 style="margin-top:0; color:var(--primary-brown);">2. 初步分析建議</h3>
-                
-                <div class="result-card">
-                    <div class="result-title"><i class="fas fa-tag"></i> 劇本類型定位</div>
-                    <div class="result-content" id="res-genre">正在分析...</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-title"><i class="fas fa-user-tie"></i> 潛在投資對象</div>
-                    <div class="result-content" id="res-investor">正在分析...</div>
-                </div>
-
-                <div class="result-card">
-                    <div class="result-title"><i class="fas fa-lightbulb"></i> 劇本優化建議</div>
-                    <div class="result-content" id="res-suggestion">正在分析...</div>
-                </div>
+                <div class="result-card"><div class="result-title"><i class="fas fa-tag"></i> 劇本類型定位</div><div class="result-content" id="res-genre">正在分析...</div></div>
+                <div class="result-card"><div class="result-title"><i class="fas fa-user-tie"></i> 潛在投資對象</div><div class="result-content" id="res-investor">正在分析...</div></div>
+                <div class="result-card"><div class="result-title"><i class="fas fa-lightbulb"></i> 劇本優化建議</div><div class="result-content" id="res-suggestion">正在分析...</div></div>
             </div>
         </div>
 
         <div class="charts-container" id="chartResultPanel" style="display: none;">
-            
             <div class="chart-box full-width">
                 <h3 style="text-align:center; color:var(--primary-brown);">3. 評分視覺總覽</h3>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                    <div style="width: 400px; height: 400px;">
-                        <canvas id="radarChart"></canvas>
-                    </div>
-                    <div style="width: 400px; height: 400px;">
-                        <canvas id="barChart"></canvas>
-                    </div>
+                    <div style="width: 400px; height: 400px;"><canvas id="radarChart"></canvas></div>
+                    <div style="width: 400px; height: 400px;"><canvas id="barChart"></canvas></div>
                 </div>
             </div>
-
             <div class="chart-box full-width">
                 <h3 style="text-align:center; color:var(--primary-brown);">4. 世界票房與受眾預測</h3>
                 <div style="text-align: center; margin-bottom: 20px;">
                     <span style="font-size: 1.2rem; color: #555;">全球總票房預估：</span>
                     <span id="global-revenue" style="font-size: 2rem; color: #C5A065; font-weight: bold;">$0</span>
                 </div>
-                
-                <div class="world-box-office" id="continent-container">
-                    </div>
+                <div class="world-box-office" id="continent-container"></div>
             </div>
-
         </div>
     </main>
 
-<script>
+    <script>
         // ==========================================
         //  設定與 API 控制
         // ==========================================
-        const CONFIG = {
-            useMockData: true,
-            // [修正] 將模型名稱與基礎網址分開，方便調整
-            baseUrl: "https://generativelanguage.googleapis.com/v1beta/models/",
-            // 目前最穩定的模型名稱，若失敗可嘗試改為 'gemini-1.0-pro'
-            modelName: "gemini-1.5-flash" 
-        };
-
-        // 全域變數儲存圖表實例
+        const BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
+        
         let radarChartInstance = null;
         let barChartInstance = null;
+
+        // 監聽模型選擇變更 (處理自訂輸入)
+        document.getElementById('modelSelect').addEventListener('change', function() {
+            var customInput = document.getElementById('customModelInput');
+            if (this.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.value = ''; // 清空讓使用者輸入
+            } else {
+                customInput.style.display = 'none';
+            }
+        });
 
         // ==========================================
         //  核心分析功能
@@ -238,6 +244,13 @@
             const scriptText = document.getElementById('scriptInput').value;
             const userKey = document.getElementById('apiKeyInput').value.trim();
             const btn = document.getElementById('analyzeBtn');
+            
+            // 取得選定的模型
+            let selectedModel = document.getElementById('modelSelect').value;
+            if (selectedModel === 'custom') {
+                selectedModel = document.getElementById('customModelInput').value.trim();
+                if (!selectedModel) { alert("請輸入自訂模型名稱"); return; }
+            }
 
             if (!scriptText) { alert("請先輸入劇本內容！"); return; }
 
@@ -245,40 +258,32 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 分析運算中...';
             btn.classList.add('loading');
             
-            // 決定使用真實 API 還是模擬數據
             let resultData;
             try {
                 if (userKey) {
-                    // 使用真實 API
-                    console.log(`正在使用模型: ${CONFIG.modelName}`); // 除錯用
-                    resultData = await callGeminiAPI(scriptText, userKey);
+                    console.log(`正在呼叫 API，使用模型: ${selectedModel}`);
+                    resultData = await callGeminiAPI(scriptText, userKey, selectedModel);
                 } else {
-                    // 使用模擬數據
                     await new Promise(r => setTimeout(r, 1500)); 
                     resultData = getMockData();
                 }
                 
-                // 渲染結果
                 renderResults(resultData);
-                
-                // 顯示隱藏區塊
                 document.getElementById('textResultPanel').style.display = 'flex';
                 document.getElementById('chartResultPanel').style.display = 'grid';
-                
-                // 捲動到結果區
                 document.getElementById('textResultPanel').scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
                 console.error(error);
-                alert("分析發生錯誤：\n" + error.message + "\n\n建議：請檢查 API Key 是否正確，或嘗試申請新的 Key。");
+                alert("API 錯誤：\n" + error.message + "\n\n建議嘗試切換不同模型版本 (例如 1.0 Pro)");
             } finally {
                 btn.innerHTML = '<i class="fas fa-magic"></i> 重新分析';
                 btn.classList.remove('loading');
             }
         }
 
-        // --- 1. 真實 API 呼叫 (修正版) ---
-        async function callGeminiAPI(script, key) {
+        // --- 1. 真實 API 呼叫 ---
+        async function callGeminiAPI(script, key, modelName) {
             const prompt = `
                 請扮演專業電影分析師，針對以下劇本內容進行分析。
                 請務必只回傳純 JSON 格式，不要有 markdown 標記 (不要有 \`\`\`json )。
@@ -304,8 +309,7 @@
                 ${script.substring(0, 2000)}
             `;
 
-            // [修正] 組合完整的 API URL
-            const apiUrl = `${CONFIG.baseUrl}${CONFIG.modelName}:generateContent?key=${key}`;
+            const apiUrl = `${BASE_URL}${modelName}:generateContent?key=${key}`;
 
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -315,24 +319,19 @@
 
             const data = await response.json();
             
-            // 處理 API 回傳的錯誤
             if (data.error) {
-                throw new Error(`Google API Error: ${data.error.message}`);
+                throw new Error(`${data.error.message} (Model: ${modelName})`);
             }
-            
             if (!data.candidates || !data.candidates[0].content) {
-                throw new Error("API 回傳格式不如預期，請重試。");
+                throw new Error("API 回傳格式異常，請重試");
             }
 
-            // 解析文字為 JSON
             let jsonString = data.candidates[0].content.parts[0].text;
-            // 清理可能出現的 markdown code block
             jsonString = jsonString.replace(/```json/g, "").replace(/```/g, "").trim();
-            
             return JSON.parse(jsonString);
         }
 
-        // --- 2. 模擬數據生成 (保持不變) ---
+        // --- 2. 模擬數據生成 ---
         function getMockData() {
             return {
                 genre: "科幻 / 懸疑驚悚",
@@ -351,7 +350,7 @@
             };
         }
 
-        // --- 3. 渲染畫面 (保持不變) ---
+        // --- 3. 渲染畫面 ---
         function renderResults(data) {
             document.getElementById('res-genre').innerText = data.genre;
             document.getElementById('res-investor').innerText = data.investors;
