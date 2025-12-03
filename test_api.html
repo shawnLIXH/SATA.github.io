@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>API Key 快速檢測器</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; }
+        button { padding: 10px 20px; background: #2196F3; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px; white-space: pre-wrap; word-break: break-all; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Google Gemini API Key 檢測器</h2>
+    <p>請輸入您的 Key，我們將測試它是否能連接 Google 伺服器。</p>
+    
+    <input type="text" id="apiKey" placeholder="貼上您的 API Key (AIza...)">
+    <button onclick="testKey()">開始測試</button>
+
+    <div id="result">等待測試...</div>
+
+    <script>
+        async function testKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            const resultBox = document.getElementById('result');
+            
+            if (!key) { resultBox.innerHTML = "請先輸入 Key"; return; }
+
+            resultBox.innerHTML = "正在連線 Google 伺服器檢查權限...";
+
+            // 測試方法：列出可用模型 (List Models)
+            // 這是最基礎的權限，如果這個不過，生成內容也一定不會過
+            const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${key}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 成功！
+                    let models = data.models.map(m => m.name.replace('models/', '')).join(', ');
+                    resultBox.innerHTML = `<span class="success">✅ 測試成功！您的 Key 是有效的。</span>\n\n此 Key 支援的模型有：\n${models}`;
+                } else {
+                    // 失敗
+                    resultBox.innerHTML = `<span class="error">❌ 測試失敗</span>\n\n錯誤代碼: ${data.error.code}\n錯誤訊息: ${data.error.message}\n\n狀態: ${data.error.status}`;
+                }
+            } catch (error) {
+                resultBox.innerHTML = `<span class="error">❌ 連線錯誤</span>\n\n可能是網路問題或 Key 格式完全錯誤。\n詳細資訊: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
