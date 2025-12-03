@@ -10,7 +10,7 @@
         :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
         
-        /* Header & Sidebar (一致) */
+        /* Header & Sidebar */
         header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
@@ -24,7 +24,6 @@
         .divider { margin: 0 8px; color: #ccc; }
         .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
         
-        /* Sidebar */
         .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
         .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
@@ -50,7 +49,7 @@
         /* --- SATA劇本資料庫 專屬樣式 --- */
         main { padding-top: 150px; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; }
         
-        /* A: 類別篩選按鈕 */
+        /* 類別篩選按鈕 */
         .category-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
         .cat-btn {
             padding: 10px 25px; border: 1px solid var(--primary-brown); background: rgba(255,255,255,0.8);
@@ -71,20 +70,21 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* B: 示意圖區塊 */
+        /* 卡片圖片區 */
         .card-image {
             width: 100%; height: 200px; background-color: #ddd; position: relative;
             display: flex; justify-content: center; align-items: center; color: #666; font-size: 1.2rem;
             overflow: hidden;
         }
+        /* 圖片填滿設定 */
         .card-image img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* C: 內容區 */
+        /* 卡片內容區 */
         .card-content { padding: 20px; }
         .script-title { margin: 0 0 10px 0; color: var(--primary-brown); font-size: 1.5rem; }
         .script-summary { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 15px; height: 4.8em; overflow: hidden; }
 
-        /* D: 資訊標籤 */
+        /* 資訊標籤 */
         .meta-info { display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.9rem; color: #888; margin-bottom: 15px; }
         .rating-score { color: #FF9800; font-weight: bold; }
 
@@ -92,12 +92,10 @@
         .card-actions { display: flex; gap: 10px; }
         .btn-invest, .btn-report { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 0.9rem; }
         
-        /* E: 投資意願按鈕 */
         .btn-invest { background-color: #fff; border: 1px solid var(--sand-gold); color: var(--sand-gold); }
         .btn-invest:hover { background-color: #fff8e1; }
-        .btn-invest.active { background-color: var(--sand-gold); color: #fff; } /* 已投資狀態 */
+        .btn-invest.active { background-color: var(--sand-gold); color: #fff; }
 
-        /* F: 完整報告按鈕 */
         .btn-report { background-color: var(--primary-brown); color: #fff; }
         .btn-report:hover { background-color: #4e342e; }
 
@@ -115,7 +113,6 @@
         <a href="#">專業諮詢服務</a>
     </div>
 
-    <!-- Modals (登入 & 會員) -->
     <div id="loginModal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-close-btn" onclick="toggleLoginModal()"><i class="fas fa-times"></i></div>
@@ -147,8 +144,7 @@
                 <table class="script-table">
                     <thead><tr><th>劇本名稱</th><th>類型</th><th>狀態</th></tr></thead>
                     <tbody id="investment-table-body">
-                        <!-- 這裡的內容會由 JS 動態生成 -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -169,7 +165,6 @@
         <h1 style="text-align: center; margin-bottom: 10px;">SATA 劇本資料庫</h1>
         <p style="text-align: center; color: #666; margin-bottom: 40px;">匯集優質原創劇本，連結資金與創意</p>
 
-        <!-- A: 類別選單 -->
         <div class="category-tabs">
             <button class="cat-btn active" onclick="filterScripts('all', this)">全部</button>
             <button class="cat-btn" onclick="filterScripts('suspense', this)">懸疑 / 犯罪</button>
@@ -177,43 +172,33 @@
             <button class="cat-btn" onclick="filterScripts('drama', this)">劇情 / 家庭</button>
         </div>
 
-        <!-- 劇本列表 -->
         <div class="scripts-grid">
             
-            <!-- 劇本 1: 消失的檢察官 (懸疑) -->
             <div class="script-card visible" data-category="suspense">
-                <!-- B: 示意圖 (請將 src 換成您的圖片路徑，如 images/pic1.jpg) -->
-                <div class="card-image" style="background: #2c3e50; color: #fff;">
-                    劇本示意圖 B (請上傳)
-                    <!-- <img src="images/消失的檢察官.jpg" alt="封面"> -->
+                <div class="card-image">
+                    <img src="images/investigator.jpg" alt="消失的檢察官">
                 </div>
                 <div class="card-content">
                     <h3 class="script-title">消失的檢察官</h3>
-                    <!-- C: 摘要 -->
                     <div class="script-summary">一名檢察官在調查高層弊案時離奇失蹤，他的助理發現案情線索竟隱藏在檢察官過去偵辦的懸案之中，層層謎團指向警局內部...</div>
-                    <!-- D: 資訊 -->
                     <div class="meta-info">
                         <span><i class="fas fa-tag"></i> 懸疑 / 犯罪</span>
                         <span><i class="fas fa-eye"></i> 1,520</span>
                         <span class="rating-score"><i class="fas fa-star"></i> 4.8</span>
                     </div>
-                    <!-- 按鈕區 -->
                     <div class="card-actions">
-                        <!-- E: 投資意願 (加入 data 屬性供 JS 辨識) -->
                         <button class="btn-invest" data-id="s001" data-title="消失的檢察官" data-type="懸疑 / 犯罪" onclick="toggleInvestment(this)">
                             <i class="far fa-heart"></i> 我有投資意願
                         </button>
-                        <!-- F: 完整報告 -->
-                        <button class="btn-report" onclick="showPaymentSim()">
-                            完整報告
-                        </button>
+                        <button class="btn-report" onclick="showPaymentSim()">完整報告</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 劇本 2: 迷霧追兇 (懸疑 - 創作) -->
             <div class="script-card visible" data-category="suspense">
-                <div class="card-image" style="background: #34495e; color: #fff;">劇本示意圖 B</div>
+                <div class="card-image">
+                    <img src="images/mist.jpg" alt="迷霧追兇">
+                </div>
                 <div class="card-content">
                     <h3 class="script-title">迷霧追兇</h3>
                     <div class="script-summary">山區小鎮發生連續失蹤案，大霧封鎖了對外道路。退休警探與年輕網紅意外聯手，在恐慌蔓延的48小時內尋找真兇。</div>
@@ -231,9 +216,10 @@
                 </div>
             </div>
 
-            <!-- 劇本 3: 愛在AI元年 (愛情/科幻) -->
             <div class="script-card visible" data-category="romance">
-                <div class="card-image" style="background: #e91e63; color: #fff;">劇本示意圖 B</div>
+                <div class="card-image">
+                    <img src="images/ai_love.jpg" alt="愛在AI元年">
+                </div>
                 <div class="card-content">
                     <h3 class="script-title">愛在AI元年</h3>
                     <div class="script-summary">2045年，人類可以訂製完美的AI伴侶。女主角愛上了她的AI管家，卻發現他似乎產生了「自由意志」，這段跨越物種的戀情該何去何從？</div>
@@ -251,9 +237,10 @@
                 </div>
             </div>
 
-            <!-- 劇本 4: 星際戀曲 (愛情/科幻 - 創作) -->
             <div class="script-card visible" data-category="romance">
-                <div class="card-image" style="background: #9c27b0; color: #fff;">劇本示意圖 B</div>
+                <div class="card-image">
+                    <img src="images/space.jpg" alt="星際戀曲">
+                </div>
                 <div class="card-content">
                     <h3 class="script-title">星際戀曲</h3>
                     <div class="script-summary">兩個敵對星球的指揮官在一次太空船難中被迫合作求生。在浩瀚孤寂的宇宙中，仇恨逐漸轉化為依賴與愛慕。</div>
@@ -271,9 +258,10 @@
                 </div>
             </div>
 
-            <!-- 劇本 5: 家的形狀 (劇情/家庭 - 創作) -->
             <div class="script-card visible" data-category="drama">
-                <div class="card-image" style="background: #795548; color: #fff;">劇本示意圖 B</div>
+                <div class="card-image">
+                    <img src="images/home.jpg" alt="家的形狀">
+                </div>
                 <div class="card-content">
                     <h3 class="script-title">家的形狀</h3>
                     <div class="script-summary">一位老木匠堅持用傳統工法修復祖厝，與急於賣房移民的兒子產生激烈衝突。在修復過程中，父子倆重新拼湊起破碎的親情。</div>
@@ -290,9 +278,11 @@
                     </div>
                 </div>
             </div>
-             <!-- 劇本 6: 聽見你的聲音 (劇情/家庭 - 創作) -->
-             <div class="script-card visible" data-category="drama">
-                <div class="card-image" style="background: #8d6e63; color: #fff;">劇本示意圖 B</div>
+
+            <div class="script-card visible" data-category="drama">
+                <div class="card-image">
+                    <img src="images/voice.jpg" alt="聽見你的聲音">
+                </div>
                 <div class="card-content">
                     <h3 class="script-title">聽見你的聲音</h3>
                     <div class="script-summary">失聰的鋼琴家與失語的畫家，在喧囂的都市中相遇。他們不需言語，透過藝術與心靈的共鳴，治癒了彼此的傷口。</div>
