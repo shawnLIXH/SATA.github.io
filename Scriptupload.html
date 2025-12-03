@@ -83,7 +83,7 @@
         <a href="index.html">首頁</a>
         <a href="Scriptupload.html" style="color: var(--sand-gold); font-weight: bold;">劇本上傳SATA</a>
         <a href="#">AI 劇本初步分析</a>
-        <a href="#">投資媒合平台</a>
+        <a href="script_database.html">SATA劇本資料庫</a>
         <a href="#">專業諮詢服務</a>
     </div>
 
@@ -103,6 +103,7 @@
         <div class="modal-box wide">
             <div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div>
             <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2>
+            
             <div class="manage-section">
                 <h3><i class="fas fa-book"></i> 劇本管理</h3>
                 <table class="script-table">
@@ -113,14 +114,13 @@
                     </tbody>
                 </table>
             </div>
+
             <div class="manage-section">
                 <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
                 <table class="script-table">
                     <thead><tr><th>已標記投資意願之劇本</th><th>類型</th><th>狀態</th></tr></thead>
-                    <tbody>
-                        <tr><td>《消失的檢察官》</td><td>懸疑 / 犯罪</td><td>洽談中</td></tr>
-                        <tr><td>《愛在AI元年》</td><td>愛情 / 科幻</td><td>等待回覆</td></tr>
-                    </tbody>
+                    <tbody id="investment-table-body">
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -177,35 +177,37 @@
     </main>
 
     <script>
-        // *** 核心邏輯：網頁載入時檢查 localStorage ***
+        // 頁面載入檢查登入狀態
         window.onload = function() {
             if (localStorage.getItem("sata_login") === "true") {
                 updateHeaderToLoggedIn();
             }
         }
 
+        // --- UI 控制 ---
         function toggleNav() {
             var sidebar = document.getElementById("mySidebar");
             var overlay = document.getElementById("overlay");
             if (sidebar.style.left === "0px") { sidebar.style.left = "-250px"; overlay.style.display = "none"; }
             else { sidebar.style.left = "0px"; overlay.style.display = "block"; }
         }
-
         function toggleLoginModal() {
             var modal = document.getElementById("loginModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
         }
-
         function toggleMemberModal() {
             var modal = document.getElementById("memberModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+            if (modal.style.display === "flex") {
+                renderMemberTable(); // 打開時更新列表
+            }
         }
 
+        // --- 登入邏輯 ---
         function performLogin() {
             var user = document.getElementById("username").value;
             var pass = document.getElementById("password").value;
             if (user === "123456" && pass === "123456") {
-                // 登入成功：寫入 localStorage
                 localStorage.setItem("sata_login", "true");
                 toggleLoginModal();
                 updateHeaderToLoggedIn();
@@ -213,7 +215,6 @@
                 alert("帳號或密碼錯誤，請重新輸入 (預設為 123456)");
             }
         }
-
         function updateHeaderToLoggedIn() {
             var headerRight = document.getElementById("headerRightSection");
             headerRight.innerHTML = `
@@ -224,18 +225,27 @@
                 </span>
             `;
         }
-
         function performLogout() {
             if(confirm("確定要登出嗎？")) {
-                // 登出：清除 localStorage
                 localStorage.removeItem("sata_login");
-                
                 var headerRight = document.getElementById("headerRightSection");
-                headerRight.innerHTML = `
-                    <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
-                `;
+                headerRight.innerHTML = `<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`;
                 document.getElementById("memberModal").style.display = "none";
             }
+        }
+
+        // --- 渲染投資表格 ---
+        function renderMemberTable() {
+            var tbody = document.getElementById("investment-table-body");
+            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
+            tbody.innerHTML = "";
+            if (investments.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>";
+                return;
+            }
+            investments.forEach(item => {
+                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`;
+            });
         }
 
         // --- 檔案上傳 ---
