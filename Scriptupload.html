@@ -124,10 +124,9 @@
     <div id="overlay" onclick="toggleNav()"></div>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
+        
         <a href="index.html">首頁</a>
-        
-        <a href="Scriptupload.html" style="color: var(--sand-gold); font-weight: bold;">劇本上架</a>
-        
+        <a href="Scriptupload.html" style="color: var(--sand-gold); font-weight: bold;">劇本上傳SATA</a>
         <a href="#">AI 劇本初步分析</a>
         <a href="#">投資媒合平台</a>
         <a href="#">專業諮詢服務</a>
@@ -149,10 +148,12 @@
             <h2>上傳您的劇本作品</h2>
             <p>將您的創意轉化為可見的機會。通過審核後，您的作品將上架至平台供大眾閱覽。</p>
             
-            <div class="upload-area" onclick="alert('這是靜態演示頁面。實際上傳功能將連接後端審核系統。')">
+            <input type="file" id="real-file-input" style="display: none;" accept=".pdf,.doc,.docx">
+            
+            <div class="upload-area" onclick="triggerFileUpload()">
                 <i class="fas fa-file-upload upload-icon"></i>
-                <h3>點擊上傳劇本檔案</h3>
-                <p style="color: #999;">支援格式：PDF (建議), Word</p>
+                <h3 id="upload-text">點擊上傳劇本檔案</h3>
+                <p style="color: #999;">支援格式：PDF, Word (doc/docx)</p>
             </div>
 
             <div class="note-text">
@@ -164,7 +165,7 @@
                 </ul>
             </div>
 
-            <button class="upload-btn" onclick="alert('劇本已提交！系統將開始進行格式與版權初審。')">提交審核</button>
+            <button class="upload-btn" onclick="checkSubmission()">提交審核</button>
         </div>
 
         <div class="analysis-card" style="text-align: left;">
@@ -191,6 +192,7 @@
     </main>
 
     <script>
+        // 選單開關
         function toggleNav() {
             var sidebar = document.getElementById("mySidebar");
             var overlay = document.getElementById("overlay");
@@ -200,6 +202,46 @@
             } else {
                 sidebar.style.left = "0px";
                 overlay.style.display = "block";
+            }
+        }
+
+        // 觸發真實的檔案上傳
+        function triggerFileUpload() {
+            document.getElementById('real-file-input').click();
+        }
+
+        // 監聽檔案選擇後的動作
+        document.getElementById('real-file-input').addEventListener('change', function() {
+            var file = this.files[0]; // 取得選到的第一個檔案
+            
+            if (file) {
+                var fileName = file.name;
+                var fileExtension = fileName.split('.').pop().toLowerCase();
+                
+                // 檢查副檔名
+                if (fileExtension === 'pdf' || fileExtension === 'doc' || fileExtension === 'docx') {
+                    // 符合規定
+                    alert("上傳成功，審核結果將發送通知。");
+                    // 變更介面文字提示已選擇
+                    document.getElementById('upload-text').innerText = "已選擇檔案：" + fileName;
+                    document.querySelector('.upload-icon').className = "fas fa-check-circle upload-icon";
+                    document.querySelector('.upload-icon').style.color = "#4CAF50"; // 變成綠色
+                } else {
+                    // 不符合規定
+                    alert("檔案上傳格式未符合規定，再麻煩重新確認");
+                    // 清空輸入，讓使用者可以重選
+                    this.value = ''; 
+                }
+            }
+        });
+
+        // 提交按鈕的簡單檢查
+        function checkSubmission() {
+            var input = document.getElementById('real-file-input');
+            if (input.files && input.files.length > 0) {
+                alert("申請已送出！請留意您的 Email 通知。");
+            } else {
+                alert("請先點擊上方區域上傳劇本檔案！");
             }
         }
     </script>
