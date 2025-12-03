@@ -38,6 +38,7 @@
         .modal-box.wide { max-width: 800px; }
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
+        .modal-close-btn:hover { color: var(--primary-brown); }
         .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .manage-section { margin-bottom: 30px; }
@@ -219,8 +220,9 @@
         //  設定與 API 控制
         // ==========================================
         const CONFIG = {
-            useMockData: true, // 預設使用模擬數據，若有輸入 Key 則自動切換
-            geminiUrl: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+            useMockData: true,
+            // [修正] 改用 gemini-pro 模型，解決 1.5-flash not found 問題
+            geminiUrl: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
         };
 
         // 全域變數儲存圖表實例 (以便銷毀重繪)
