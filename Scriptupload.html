@@ -6,7 +6,7 @@
     <title>劇本上架 - 劇沙成塔</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 沿用 index.html 的全域變數與樣式 --- */
+        /* --- 基礎設定 (與 index.html 一致) --- */
         :root {
             --primary-brown: #5D4037;
             --sand-gold: #C5A065;
@@ -16,107 +16,124 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
             min-height: 100vh;
             color: var(--primary-brown);
-            /* 背景圖設定 */
             background-image: url('background.png'); 
             background-position: center bottom;
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
+            overflow-x: hidden;
         }
 
-        /* Header 樣式 */
+        /* --- Header --- */
         header {
             position: fixed; top: 0; left: 0; width: 100%; height: 100px;
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
             display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
             box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000;
         }
-        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; }
+        
+        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
+        .menu-btn:hover { background-color: var(--warm-white); }
+        
         .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
-        .right-section { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; }
+        
+        /* 右側區塊設定 */
+        .right-section { 
+            display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; 
+        }
+        
+        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
+        .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
+
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
+        .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
+        .member-link:hover { color: var(--sand-gold); }
+        .divider { margin: 0 8px; color: #ccc; }
+
         .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
 
-        /* Sidebar 樣式 */
-        .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); padding-top: 60px; transition: 0.3s; }
-        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; border-bottom: 1px solid #eee; }
+        /* --- Sidebar --- */
+        .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
+        .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
-        .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; }
+        .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
+
+        /* --- Modal 樣式 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
+            z-index: 3000; display: none; justify-content: center; align-items: center;
+        }
+        .modal-box {
+            background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px;
+            position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold);
+            animation: slideIn 0.3s ease-out;
+        }
+        .modal-box.wide { max-width: 800px; }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
+        .modal-close-btn:hover { color: var(--primary-brown); }
+        .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .login-submit-btn:hover { background-color: #4e342e; }
+
+        .manage-section { margin-bottom: 30px; }
+        .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
+        .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .script-table th, .script-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .script-table th { background-color: var(--warm-white); color: var(--sand-gold); }
+        .growth-positive { color: #4CAF50; font-weight: bold; }
+        .growth-negative { color: #F44336; font-weight: bold; }
+        .status-tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .tag-yes { background-color: #E8F5E9; color: #2E7D32; }
+        .tag-no { background-color: #FFEBEE; color: #C62828; }
+        .action-btn { display: inline-block; padding: 4px 10px; margin-right: 5px; background-color: var(--warm-white); border: 1px solid var(--border-color); color: var(--primary-brown); border-radius: 3px; cursor: pointer; font-size: 12px; text-decoration: none; }
+        .action-btn:hover { background-color: var(--sand-gold); color: white; }
 
         /* --- 頁面專屬樣式 --- */
         main { padding-top: 150px; max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
 
         .analysis-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1);
-            text-align: center;
-            border-top: 5px solid var(--sand-gold);
-            margin-bottom: 40px;
+            background: var(--card-bg); border-radius: 12px; padding: 40px;
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); text-align: center;
+            border-top: 5px solid var(--sand-gold); margin-bottom: 40px;
         }
 
         .upload-area {
-            border: 2px dashed var(--sand-gold);
-            border-radius: 10px;
-            padding: 50px;
-            margin: 30px 0;
-            background: #fff;
-            cursor: pointer;
-            transition: 0.3s;
+            border: 2px dashed var(--sand-gold); border-radius: 10px; padding: 50px; margin: 30px 0;
+            background: #fff; cursor: pointer; transition: 0.3s;
         }
         .upload-area:hover { background-color: #fdfdfd; border-color: var(--primary-brown); }
         .upload-icon { font-size: 4rem; color: #ddd; margin-bottom: 20px; }
         
         .upload-btn {
-            background-color: var(--primary-brown);
-            color: #fff;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
+            background-color: var(--primary-brown); color: #fff; border: none; padding: 12px 30px;
+            font-size: 1.1rem; border-radius: 5px; cursor: pointer; transition: 0.3s;
         }
         .upload-btn:hover { background-color: #4e342e; }
 
         .note-text {
-            color: #6d5645;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            text-align: left;
-            margin-top: 15px;
-            background: rgba(255,255,255,0.6);
-            padding: 15px;
-            border-radius: 5px;
+            color: #6d5645; font-size: 0.95rem; line-height: 1.6; text-align: left;
+            margin-top: 15px; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 5px;
         }
 
         .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            text-align: left;
-            margin-top: 30px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px; text-align: left; margin-top: 30px;
         }
-
         .feature-item {
-            background: rgba(255,255,255,0.8);
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.2s;
+            background: rgba(255,255,255,0.8); padding: 25px; border-radius: 8px;
+            border: 1px solid var(--border-color); transition: transform 0.2s;
         }
         .feature-item:hover { transform: translateY(-5px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .feature-item h4 { margin-top: 0; color: var(--primary-brown); display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
         .feature-item i { color: var(--sand-gold); font-size: 1.4rem; }
         .feature-item p { color: #555; line-height: 1.5; font-size: 0.95rem; margin-bottom: 0; }
-
     </style>
 </head>
 <body>
@@ -124,7 +141,6 @@
     <div id="overlay" onclick="toggleNav()"></div>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
-        
         <a href="index.html">首頁</a>
         <a href="Scriptupload.html" style="color: var(--sand-gold); font-weight: bold;">劇本上傳SATA</a>
         <a href="#">AI 劇本初步分析</a>
@@ -132,12 +148,55 @@
         <a href="#">專業諮詢服務</a>
     </div>
 
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-close-btn" onclick="toggleLoginModal()"><i class="fas fa-times"></i></div>
+            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員登入</h2>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="帳號 (預設: 123456)" value="123456">
+                <input type="password" id="password" placeholder="密碼 (預設: 123456)" value="123456">
+                <button class="login-submit-btn" onclick="performLogin()">登入</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="memberModal" class="modal-overlay">
+        <div class="modal-box wide">
+            <div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div>
+            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2>
+            <div class="manage-section">
+                <h3><i class="fas fa-book"></i> 劇本管理</h3>
+                <table class="script-table">
+                    <thead><tr><th>劇本名稱</th><th>點閱累積 (週成長)</th><th>潛在投資者</th><th>操作</th></tr></thead>
+                    <tbody>
+                        <tr><td>《沙丘之影》</td><td>1,240 次 <span class="growth-positive">(+15%)</span></td><td><span class="status-tag tag-yes">有</span></td><td><a href="#" class="action-btn">劇本顧問服務</a><a href="#" class="action-btn">尋找投資人</a></td></tr>
+                        <tr><td>《台北夜行》</td><td>320 次 <span class="growth-negative">(-2%)</span></td><td><span class="status-tag tag-no">無</span></td><td><a href="#" class="action-btn">劇本顧問服務</a><a href="#" class="action-btn">尋找投資人</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="manage-section">
+                <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
+                <table class="script-table">
+                    <thead><tr><th>已標記投資意願之劇本</th><th>類型</th><th>狀態</th></tr></thead>
+                    <tbody>
+                        <tr><td>《消失的檢察官》</td><td>懸疑 / 犯罪</td><td>洽談中</td></tr>
+                        <tr><td>《愛在AI元年》</td><td>愛情 / 科幻</td><td>等待回覆</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
         <div class="logo-section">劇沙成塔</div>
         <div class="right-section">
-            <a href="#" class="login-btn">登入</a>
-            <div class="search-container"><input type="text" placeholder="請輸入劇本名稱/編劇名稱"></div>
+            <div id="headerRightSection">
+                <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
+            </div>
+            <div class="search-container">
+                <input type="text" placeholder="請輸入劇本名稱/編劇名稱">
+            </div>
         </div>
     </header>
 
@@ -149,7 +208,6 @@
             <p>將您的創意轉化為可見的機會。通過審核後，您的作品將上架至平台供大眾閱覽。</p>
             
             <input type="file" id="real-file-input" style="display: none;" accept=".pdf,.doc,.docx">
-            
             <div class="upload-area" onclick="triggerFileUpload()">
                 <i class="fas fa-file-upload upload-icon"></i>
                 <h3 id="upload-text">點擊上傳劇本檔案</h3>
@@ -170,72 +228,88 @@
 
         <div class="analysis-card" style="text-align: left;">
             <h2 style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 15px;">上架後的價值：從數據到投資</h2>
-            <p style="text-align: center; margin-bottom: 30px;">
-                不僅僅是展示，我們透過使用者的閱讀行為，為您提供深度洞察。
-            </p>
-            
+            <p style="text-align: center; margin-bottom: 30px;">不僅僅是展示，我們透過使用者的閱讀行為，為您提供深度洞察。</p>
             <div class="features-grid">
-                <div class="feature-item">
-                    <h4><i class="fas fa-eye"></i> 大眾閱覽與曝光</h4>
-                    <p>通過審核的劇本將公開上架，讓您的故事被更多讀者與潛在合作夥伴看見，累積作品人氣與市場關注度。</p>
-                </div>
-                <div class="feature-item">
-                    <h4><i class="fas fa-shoe-prints"></i> 閱覽足跡分析</h4>
-                    <p>系統將追蹤讀者的閱讀行為（如停留時間、棄讀點），分析劇本的「鉤子」是否有效，並提供作者具體的修改建議。</p>
-                </div>
-                <div class="feature-item">
-                    <h4><i class="fas fa-hand-holding-usd"></i> 投資媒合推薦</h4>
-                    <p>基於閱覽數據表現優異的作品，系統將主動推薦給偏好該類型的投資者，讓數據成為您最有力的說服工具。</p>
-                </div>
+                <div class="feature-item"><h4><i class="fas fa-eye"></i> 大眾閱覽與曝光</h4><p>通過審核的劇本將公開上架，讓您的故事被更多讀者與潛在合作夥伴看見，累積作品人氣與市場關注度。</p></div>
+                <div class="feature-item"><h4><i class="fas fa-shoe-prints"></i> 閱覽足跡分析</h4><p>系統將追蹤讀者的閱讀行為（如停留時間、棄讀點），分析劇本的「鉤子」是否有效，並提供作者具體的修改建議。</p></div>
+                <div class="feature-item"><h4><i class="fas fa-hand-holding-usd"></i> 投資媒合推薦</h4><p>基於閱覽數據表現優異的作品，系統將主動推薦給偏好該類型的投資者，讓數據成為您最有力的說服工具。</p></div>
             </div>
         </div>
     </main>
 
     <script>
-        // 選單開關
-        function toggleNav() {
-            var sidebar = document.getElementById("mySidebar");
-            var overlay = document.getElementById("overlay");
-            if (sidebar.style.left === "0px") {
-                sidebar.style.left = "-250px";
-                overlay.style.display = "none";
-            } else {
-                sidebar.style.left = "0px";
-                overlay.style.display = "block";
+        // 頁面載入檢查登入狀態
+        window.onload = function() {
+            if (localStorage.getItem("sata_login") === "true") {
+                updateHeaderToLoggedIn();
             }
         }
 
-        // 觸發真實的檔案上傳
-        function triggerFileUpload() {
-            document.getElementById('real-file-input').click();
+        // --- UI 控制 ---
+        function toggleNav() {
+            var sidebar = document.getElementById("mySidebar");
+            var overlay = document.getElementById("overlay");
+            if (sidebar.style.left === "0px") { sidebar.style.left = "-250px"; overlay.style.display = "none"; }
+            else { sidebar.style.left = "0px"; overlay.style.display = "block"; }
+        }
+        function toggleLoginModal() {
+            var modal = document.getElementById("loginModal");
+            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
+        }
+        function toggleMemberModal() {
+            var modal = document.getElementById("memberModal");
+            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
         }
 
-        // 監聽檔案選擇後的動作
+        // --- 登入邏輯 ---
+        function performLogin() {
+            var user = document.getElementById("username").value;
+            var pass = document.getElementById("password").value;
+            if (user === "123456" && pass === "123456") {
+                localStorage.setItem("sata_login", "true");
+                toggleLoginModal();
+                updateHeaderToLoggedIn();
+            } else {
+                alert("帳號或密碼錯誤，請重新輸入 (預設為 123456)");
+            }
+        }
+        function updateHeaderToLoggedIn() {
+            var headerRight = document.getElementById("headerRightSection");
+            headerRight.innerHTML = `
+                <span class="member-menu">
+                    <a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a>
+                    <span class="divider">|</span>
+                    <a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a>
+                </span>
+            `;
+        }
+        function performLogout() {
+            if(confirm("確定要登出嗎？")) {
+                localStorage.removeItem("sata_login");
+                var headerRight = document.getElementById("headerRightSection");
+                headerRight.innerHTML = `<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`;
+                document.getElementById("memberModal").style.display = "none";
+            }
+        }
+
+        // --- 檔案上傳邏輯 ---
+        function triggerFileUpload() { document.getElementById('real-file-input').click(); }
         document.getElementById('real-file-input').addEventListener('change', function() {
-            var file = this.files[0]; // 取得選到的第一個檔案
-            
+            var file = this.files[0];
             if (file) {
                 var fileName = file.name;
                 var fileExtension = fileName.split('.').pop().toLowerCase();
-                
-                // 檢查副檔名
                 if (fileExtension === 'pdf' || fileExtension === 'doc' || fileExtension === 'docx') {
-                    // 符合規定
                     alert("上傳成功，審核結果將發送通知。");
-                    // 變更介面文字提示已選擇
                     document.getElementById('upload-text').innerText = "已選擇檔案：" + fileName;
                     document.querySelector('.upload-icon').className = "fas fa-check-circle upload-icon";
-                    document.querySelector('.upload-icon').style.color = "#4CAF50"; // 變成綠色
+                    document.querySelector('.upload-icon').style.color = "#4CAF50";
                 } else {
-                    // 不符合規定
                     alert("檔案上傳格式未符合規定，再麻煩重新確認");
-                    // 清空輸入，讓使用者可以重選
                     this.value = ''; 
                 }
             }
         });
-
-        // 提交按鈕的簡單檢查
         function checkSubmission() {
             var input = document.getElementById('real-file-input');
             if (input.files && input.files.length > 0) {
