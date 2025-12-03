@@ -215,17 +215,19 @@
         </div>
     </main>
 
-    <script>
+<script>
         // ==========================================
         //  設定與 API 控制
         // ==========================================
         const CONFIG = {
             useMockData: true,
-            // [修正] 改用 gemini-pro 模型，解決 1.5-flash not found 問題
-            geminiUrl: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent"
+            // [修正] 將模型名稱與基礎網址分開，方便調整
+            baseUrl: "https://generativelanguage.googleapis.com/v1beta/models/",
+            // 目前最穩定的模型名稱，若失敗可嘗試改為 'gemini-1.0-pro'
+            modelName: "gemini-1.5-flash" 
         };
 
-        // 全域變數儲存圖表實例 (以便銷毀重繪)
+        // 全域變數儲存圖表實例
         let radarChartInstance = null;
         let barChartInstance = null;
 
@@ -248,10 +250,11 @@
             try {
                 if (userKey) {
                     // 使用真實 API
+                    console.log(`正在使用模型: ${CONFIG.modelName}`); // 除錯用
                     resultData = await callGeminiAPI(scriptText, userKey);
                 } else {
                     // 使用模擬數據
-                    await new Promise(r => setTimeout(r, 1500)); // 假裝跑了 1.5 秒
+                    await new Promise(r => setTimeout(r, 1500)); 
                     resultData = getMockData();
                 }
                 
@@ -267,27 +270,27 @@
 
             } catch (error) {
                 console.error(error);
-                alert("分析發生錯誤：" + error.message);
+                alert("分析發生錯誤：\n" + error.message + "\n\n建議：請檢查 API Key 是否正確，或嘗試申請新的 Key。");
             } finally {
                 btn.innerHTML = '<i class="fas fa-magic"></i> 重新分析';
                 btn.classList.remove('loading');
             }
         }
 
-        // --- 1. 真實 API 呼叫 ---
+        // --- 1. 真實 API 呼叫 (修正版) ---
         async function callGeminiAPI(script, key) {
             const prompt = `
                 請扮演專業電影分析師，針對以下劇本內容進行分析。
-                請務必只回傳純 JSON 格式，不要有 markdown 標記。
+                請務必只回傳純 JSON 格式，不要有 markdown 標記 (不要有 \`\`\`json )。
                 
                 JSON 結構如下：
                 {
-                    "genre": "劇本類型 (例如：懸疑/科幻)",
-                    "investors": "適合的潛在投資方 (列出3個)",
+                    "genre": "劇本類型",
+                    "investors": "3個適合的潛在投資方",
                     "suggestions": "3點具體劇本建議",
-                    "radar": [劇情分數, 角色分數, 節奏分數, 商業潛力, 創意分數] (1-10分),
-                    "bar": [結構完整度, 情感張力, 市場契合度, 預算可行性, 對白品質] (1-100分),
-                    "global_box_office": "預估金額 (例如：3.5億 USD)",
+                    "radar": [劇情分數, 角色分數, 節奏分數, 商業潛力, 創意分數] (填入1-10的數字),
+                    "bar": [結構完整度, 情感張力, 市場契合度, 預算可行性, 對白品質] (填入1-100的數字),
+                    "global_box_office": "預估金額",
                     "continents": [
                         {"name": "北美", "revenue": "金額", "age": "主要年齡層"},
                         {"name": "歐洲", "revenue": "金額", "age": "主要年齡層"},
@@ -298,33 +301,45 @@
                 }
 
                 劇本內容：
-                ${script.substring(0, 1000)}... (內容太長請自行截斷)
+                ${script.substring(0, 2000)}
             `;
 
-            const response = await fetch(`${CONFIG.geminiUrl}?key=${key}`, {
+            // [修正] 組合完整的 API URL
+            const apiUrl = `${CONFIG.baseUrl}${CONFIG.modelName}:generateContent?key=${key}`;
+
+            const response = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             });
 
             const data = await response.json();
-            if (data.error) throw new Error(data.error.message);
             
-            // 解析 Gemini 回傳的文字為 JSON
+            // 處理 API 回傳的錯誤
+            if (data.error) {
+                throw new Error(`Google API Error: ${data.error.message}`);
+            }
+            
+            if (!data.candidates || !data.candidates[0].content) {
+                throw new Error("API 回傳格式不如預期，請重試。");
+            }
+
+            // 解析文字為 JSON
             let jsonString = data.candidates[0].content.parts[0].text;
             // 清理可能出現的 markdown code block
             jsonString = jsonString.replace(/```json/g, "").replace(/```/g, "").trim();
+            
             return JSON.parse(jsonString);
         }
 
-        // --- 2. 模擬數據生成 ---
+        // --- 2. 模擬數據生成 (保持不變) ---
         function getMockData() {
             return {
                 genre: "科幻 / 懸疑驚悚",
                 investors: "Netflix 原創內容部、華納兄弟、騰訊影業",
                 suggestions: "1. 開場節奏稍慢，建議在前五分鐘加入視覺鉤子。\n2. 主角動機不夠強烈，建議增加回憶片段強化情感。\n3. 對白過於文藝，建議修改得更口語化。",
-                radar: [8, 7, 6, 9, 8], // 劇情, 角色, 節奏, 商業, 創意
-                bar: [85, 70, 92, 65, 78], // 結構, 情感, 市場, 預算, 對白
+                radar: [8, 7, 6, 9, 8],
+                bar: [85, 70, 92, 65, 78],
                 global_box_office: "1.2 億 USD",
                 continents: [
                     { name: "北美", revenue: "4,500 萬", age: "18-35 歲" },
@@ -336,15 +351,13 @@
             };
         }
 
-        // --- 3. 渲染畫面 ---
+        // --- 3. 渲染畫面 (保持不變) ---
         function renderResults(data) {
-            // 文字區塊
             document.getElementById('res-genre').innerText = data.genre;
             document.getElementById('res-investor').innerText = data.investors;
             document.getElementById('res-suggestion').innerText = data.suggestions;
             document.getElementById('global-revenue').innerText = data.global_box_office;
 
-            // 五大洲卡片
             const contContainer = document.getElementById('continent-container');
             contContainer.innerHTML = '';
             data.continents.forEach(c => {
@@ -356,17 +369,13 @@
                     </div>
                 `;
             });
-
-            // 繪製圖表
             drawCharts(data.radar, data.bar);
         }
 
         function drawCharts(radarData, barData) {
-            // 銷毀舊圖表
             if (radarChartInstance) radarChartInstance.destroy();
             if (barChartInstance) barChartInstance.destroy();
 
-            // 雷達圖
             const ctxRadar = document.getElementById('radarChart').getContext('2d');
             radarChartInstance = new Chart(ctxRadar, {
                 type: 'radar',
@@ -381,12 +390,9 @@
                         borderWidth: 2
                     }]
                 },
-                options: {
-                    scales: { r: { min: 0, max: 10, ticks: { display: false } } }
-                }
+                options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } } }
             });
 
-            // 橫條圖
             const ctxBar = document.getElementById('barChart').getContext('2d');
             barChartInstance = new Chart(ctxBar, {
                 type: 'bar',
@@ -395,32 +401,17 @@
                     datasets: [{
                         label: '細項指標 (滿分100)',
                         data: barData,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)',
-                            'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)',
-                            'rgba(153, 102, 255, 0.6)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)'
-                        ],
+                        backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    indexAxis: 'y', // 橫向
-                    scales: { x: { beginAtZero: true, max: 100 } }
-                }
+                options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 100 } } }
             });
         }
 
-        // ==========================================
-        //  通用 UI 與登入邏輯 (與其他頁面一致)
-        // ==========================================
-        window.onload = function() {
-            if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); }
-        }
+        // --- 通用 UI 與登入邏輯 ---
+        window.onload = function() { if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); } }
         function toggleNav() { var s=document.getElementById("mySidebar");var o=document.getElementById("overlay");if(s.style.left==="0px"){s.style.left="-250px";o.style.display="none";}else{s.style.left="0px";o.style.display="block";} }
         function toggleLoginModal() { var m=document.getElementById("loginModal");m.style.display=(m.style.display==="flex")?"none":"flex"; }
         function toggleMemberModal() { var m=document.getElementById("memberModal");m.style.display=(m.style.display==="flex")?"none":"flex";if(m.style.display==="flex")renderMemberTable(); }
