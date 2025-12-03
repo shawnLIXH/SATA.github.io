@@ -6,74 +6,36 @@
     <title>劇本上架 - 劇沙成塔</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 基礎設定 (與 index.html 一致) --- */
-        :root {
-            --primary-brown: #5D4037;
-            --sand-gold: #C5A065;
-            --warm-white: #FAF9F6;
-            --card-bg: rgba(255, 253, 245, 0.95);
-            --border-color: #E0D0B0;
-        }
-
-        body {
-            margin: 0; padding: 0;
-            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
-            min-height: 100vh;
-            color: var(--primary-brown);
-            background-image: url('background.png'); 
-            background-position: center bottom;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
-            overflow-x: hidden;
-        }
-
-        /* --- Header --- */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100px;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
-            box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000;
-        }
+        /* --- 基礎 CSS --- */
+        :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
+        body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
         
+        /* Header */
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
-        
         .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
         
-        /* 右側區塊設定 */
-        .right-section { 
-            display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; 
-        }
-        
+        /* 右側區塊 */
+        .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
         .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
-
         .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
         .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
         .divider { margin: 0 8px; color: #ccc; }
-
         .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
 
-        /* --- Sidebar --- */
+        /* Sidebar */
         .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
         .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
 
-        /* --- Modal 樣式 --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
-            z-index: 3000; display: none; justify-content: center; align-items: center;
-        }
-        .modal-box {
-            background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px;
-            position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold);
-            animation: slideIn 0.3s ease-out;
-        }
+        /* Modals */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
         .modal-box.wide { max-width: 800px; }
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
@@ -82,6 +44,7 @@
         .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .login-submit-btn:hover { background-color: #4e342e; }
 
+        /* Manage Section */
         .manage-section { margin-bottom: 30px; }
         .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
         .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -95,41 +58,17 @@
         .action-btn { display: inline-block; padding: 4px 10px; margin-right: 5px; background-color: var(--warm-white); border: 1px solid var(--border-color); color: var(--primary-brown); border-radius: 3px; cursor: pointer; font-size: 12px; text-decoration: none; }
         .action-btn:hover { background-color: var(--sand-gold); color: white; }
 
-        /* --- 頁面專屬樣式 --- */
+        /* Script Page Specific */
         main { padding-top: 150px; max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
-
-        .analysis-card {
-            background: var(--card-bg); border-radius: 12px; padding: 40px;
-            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); text-align: center;
-            border-top: 5px solid var(--sand-gold); margin-bottom: 40px;
-        }
-
-        .upload-area {
-            border: 2px dashed var(--sand-gold); border-radius: 10px; padding: 50px; margin: 30px 0;
-            background: #fff; cursor: pointer; transition: 0.3s;
-        }
+        .analysis-card { background: var(--card-bg); border-radius: 12px; padding: 40px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); text-align: center; border-top: 5px solid var(--sand-gold); margin-bottom: 40px; }
+        .upload-area { border: 2px dashed var(--sand-gold); border-radius: 10px; padding: 50px; margin: 30px 0; background: #fff; cursor: pointer; transition: 0.3s; }
         .upload-area:hover { background-color: #fdfdfd; border-color: var(--primary-brown); }
         .upload-icon { font-size: 4rem; color: #ddd; margin-bottom: 20px; }
-        
-        .upload-btn {
-            background-color: var(--primary-brown); color: #fff; border: none; padding: 12px 30px;
-            font-size: 1.1rem; border-radius: 5px; cursor: pointer; transition: 0.3s;
-        }
+        .upload-btn { background-color: var(--primary-brown); color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 5px; cursor: pointer; transition: 0.3s; }
         .upload-btn:hover { background-color: #4e342e; }
-
-        .note-text {
-            color: #6d5645; font-size: 0.95rem; line-height: 1.6; text-align: left;
-            margin-top: 15px; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 5px;
-        }
-
-        .features-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px; text-align: left; margin-top: 30px;
-        }
-        .feature-item {
-            background: rgba(255,255,255,0.8); padding: 25px; border-radius: 8px;
-            border: 1px solid var(--border-color); transition: transform 0.2s;
-        }
+        .note-text { color: #6d5645; font-size: 0.95rem; line-height: 1.6; text-align: left; margin-top: 15px; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 5px; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: left; margin-top: 30px; }
+        .feature-item { background: rgba(255,255,255,0.8); padding: 25px; border-radius: 8px; border: 1px solid var(--border-color); transition: transform 0.2s; }
         .feature-item:hover { transform: translateY(-5px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .feature-item h4 { margin-top: 0; color: var(--primary-brown); display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
         .feature-item i { color: var(--sand-gold); font-size: 1.4rem; }
@@ -238,34 +177,35 @@
     </main>
 
     <script>
-        // 頁面載入檢查登入狀態
+        // *** 核心邏輯：網頁載入時檢查 localStorage ***
         window.onload = function() {
             if (localStorage.getItem("sata_login") === "true") {
                 updateHeaderToLoggedIn();
             }
         }
 
-        // --- UI 控制 ---
         function toggleNav() {
             var sidebar = document.getElementById("mySidebar");
             var overlay = document.getElementById("overlay");
             if (sidebar.style.left === "0px") { sidebar.style.left = "-250px"; overlay.style.display = "none"; }
             else { sidebar.style.left = "0px"; overlay.style.display = "block"; }
         }
+
         function toggleLoginModal() {
             var modal = document.getElementById("loginModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
         }
+
         function toggleMemberModal() {
             var modal = document.getElementById("memberModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
         }
 
-        // --- 登入邏輯 ---
         function performLogin() {
             var user = document.getElementById("username").value;
             var pass = document.getElementById("password").value;
             if (user === "123456" && pass === "123456") {
+                // 登入成功：寫入 localStorage
                 localStorage.setItem("sata_login", "true");
                 toggleLoginModal();
                 updateHeaderToLoggedIn();
@@ -273,6 +213,7 @@
                 alert("帳號或密碼錯誤，請重新輸入 (預設為 123456)");
             }
         }
+
         function updateHeaderToLoggedIn() {
             var headerRight = document.getElementById("headerRightSection");
             headerRight.innerHTML = `
@@ -283,16 +224,21 @@
                 </span>
             `;
         }
+
         function performLogout() {
             if(confirm("確定要登出嗎？")) {
+                // 登出：清除 localStorage
                 localStorage.removeItem("sata_login");
+                
                 var headerRight = document.getElementById("headerRightSection");
-                headerRight.innerHTML = `<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`;
+                headerRight.innerHTML = `
+                    <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
+                `;
                 document.getElementById("memberModal").style.display = "none";
             }
         }
 
-        // --- 檔案上傳邏輯 ---
+        // --- 檔案上傳 ---
         function triggerFileUpload() { document.getElementById('real-file-input').click(); }
         document.getElementById('real-file-input').addEventListener('change', function() {
             var file = this.files[0];
