@@ -6,7 +6,7 @@
     <title>專業諮詢服務 & 聯繫團隊 - 劇沙成塔</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 基礎設定 (保持一致) --- */
+        /* --- 基礎設定 (與其他頁面一致) --- */
         :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
         
@@ -63,12 +63,16 @@
         .service-item h3 { color: var(--sand-gold); display: flex; align-items: center; gap: 10px; margin-top: 0; }
         .service-item p { color: #555; line-height: 1.6; font-size: 0.95rem; }
 
-        /* Section 2: 團隊介紹 */
+        /* Section 2: 團隊介紹 (Grid 2x2 排版) */
         .team-section { margin-top: 60px; }
+        
         .team-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* RWD 自動排列 */
-            gap: 30px;
+            /* 關鍵設定：強制兩欄 */
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px; /* 增加間距讓畫面不擁擠 */
+            max-width: 1000px; /* 限制最大寬度，讓卡片集中 */
+            margin: 0 auto;
         }
         
         .team-card {
@@ -85,35 +89,46 @@
 
         .team-img-box {
             width: 100%;
-            height: 280px;
-            background-color: #e0e0e0;
+            height: 350px; /* 增加圖片區塊高度 */
+            background-color: #f8f8f8; /* 淺灰背景，避免圖片比例不同時留白太突兀 */
             overflow: hidden;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+        
         .team-img-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: top; /* 確保人頭不被切掉 */
+            /* 關鍵設定：contain 確保整張圖都看得到，不會被切掉 */
+            object-fit: contain; 
+            /* 如果您希望圖片填滿格子且不怕切到頭頂，可改回 cover 並配合 top */
+            /* object-fit: cover; object-position: top; */
         }
 
-        .team-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .team-name { font-size: 1.4rem; font-weight: bold; color: var(--primary-brown); margin: 0; }
-        .team-title { font-size: 0.9rem; color: var(--sand-gold); font-weight: bold; margin-bottom: 10px; display: block; }
-        .team-edu { font-size: 0.85rem; color: #888; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .team-info { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .team-name { font-size: 1.5rem; font-weight: bold; color: var(--primary-brown); margin: 0; }
+        .team-title { font-size: 0.95rem; color: var(--sand-gold); font-weight: bold; margin-bottom: 15px; display: block; }
+        
+        /* 增加學歷區塊樣式 */
+        .team-edu { 
+            font-size: 0.9rem; color: #666; margin-bottom: 10px; 
+            padding-bottom: 10px; border-bottom: 1px dashed #eee;
+        }
         
         .team-tags { margin-bottom: 15px; }
         .expert-tag { 
             display: inline-block; background: #f0f0f0; color: #555; 
-            padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; 
+            padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; 
             margin-right: 5px; margin-bottom: 5px;
         }
 
-        .team-bio { font-size: 0.9rem; color: #444; line-height: 1.6; text-align: justify; flex-grow: 1; }
+        .team-bio { font-size: 0.95rem; color: #444; line-height: 1.7; text-align: justify; flex-grow: 1; }
 
         /* 聯繫我們區塊 */
         .contact-cta {
-            margin-top: 50px; text-align: center; padding: 40px;
+            margin-top: 60px; text-align: center; padding: 40px;
             background: linear-gradient(to right, rgba(93, 64, 55, 0.9), rgba(197, 160, 101, 0.9));
             color: #fff; border-radius: 12px;
         }
@@ -124,6 +139,11 @@
             display: inline-block; margin-top: 20px; transition: 0.3s;
         }
         .contact-btn:hover { background: var(--sand-gold); color: #fff; }
+
+        /* RWD: 手機版改回一欄 */
+        @media screen and (max-width: 768px) {
+            .team-grid { grid-template-columns: 1fr; }
+        }
 
     </style>
 </head>
@@ -156,21 +176,21 @@
             <h1 class="section-title">專業諮詢孵化服務</h1>
             <p style="font-size: 1.1rem; line-height: 1.8;">
                 AI 找出問題，專家協助解決。<br>
-                我們引入資深導演、編劇與製片人，為創作者提供從創意發想到市場對接的深度輔導 [cite: 96]。
+                我們引入資深導演、編劇與製片人，為創作者提供從創意發想到市場對接的深度輔導。
             </p>
             
             <div class="services-grid">
                 <div class="service-item">
                     <h3><i class="fas fa-pen-fancy"></i> 內容優化</h3>
-                    <p>根據 AI 診斷報告結果，針對敘事節奏、角色動機與情感表現進行人工補強，提升劇本的藝術完整度 [cite: 100, 101]。</p>
+                    <p>根據 AI 診斷報告結果，針對敘事節奏、角色動機與情感表現進行人工補強，提升劇本的藝術完整度。</p>
                 </div>
                 <div class="service-item">
                     <h3><i class="fas fa-briefcase"></i> 商業包裝</h3>
-                    <p>協助創作者將作品轉化為可投資的企劃案，包含撰寫商業計畫書、預算規劃與受眾定位，增強市場說服力 [cite: 102, 103]。</p>
+                    <p>協助創作者將作品轉化為可投資的企劃案，包含撰寫商業計畫書、預算規劃與受眾定位，增強市場說服力。</p>
                 </div>
                 <div class="service-item">
                     <h3><i class="fas fa-chart-line"></i> 產業觀點</h3>
-                    <p>由具業界實戰經驗的顧問提供當前市場趨勢分析與製作可行性評估，確保作品具備市場競爭力 [cite: 105, 106]。</p>
+                    <p>由具業界實戰經驗的顧問提供當前市場趨勢分析與製作可行性評估，確保作品具備市場競爭力。</p>
                 </div>
             </div>
         </section>
@@ -185,9 +205,12 @@
                         <img src="images/member_li.jpg" alt="李光翔">
                     </div>
                     <div class="team-info">
-                        <h3 class="team-name">李光翔</h3>
+                        <h3 class="team-name">李光翔 (Kuang-Hsiang Li)</h3>
                         <span class="team-title">執行長 兼 首席策略官 (CEO & CSO)</span>
-                        <div class="team-edu">國立中山大學 中國與亞太區域研究所 (經濟組碩士)<br>高雄師範大學 企業管理學系</div>
+                        <div class="team-edu">
+                            國立中山大學 中國與亞太區域研究所 (經濟組碩士)<br>
+                            高雄師範大學 企業管理學系
+                        </div>
                         <div class="team-tags">
                             <span class="expert-tag">總體經濟分析</span>
                             <span class="expert-tag">產業趨勢洞察</span>
@@ -204,16 +227,18 @@
                         <img src="images/member_huang.jpg" alt="黃品文">
                     </div>
                     <div class="team-info">
-                        <h3 class="team-name">黃品文</h3>
+                        <h3 class="team-name">黃品文 (Pin-Wen Huang)</h3>
                         <span class="team-title">投資長 兼 量化分析總監 (CIO)</span>
-                        <div class="team-edu">國立臺北大學 金融與合作經營學系 碩士班</div>
+                        <div class="team-edu">
+                            國立臺北大學 金融與合作經營學系 碩士班
+                        </div>
                         <div class="team-tags">
                             <span class="expert-tag">財務工程</span>
                             <span class="expert-tag">投資組合管理</span>
-                            <span class="expert-tag">證券商高級業務員</span>
+                            <span class="expert-tag">固定收益</span>
                         </div>
                         <div class="team-bio">
-                            團隊的金融核心大腦，專精於統計學與財務管理。擁有深厚的量化分析能力，負責建構精密的財務估值模型與投資回測。持有高階證券與投信投顧資格，確保所有投資策略皆建立在嚴謹的數據分析與理論基礎之上。
+                            團隊的金融核心大腦，專精於統計學與財務管理。擁有深厚的量化分析能力，負責建構精密的財務估值模型與投資回測。持有證券商高級業務員與投信投顧資格，確保所有投資策略皆建立在嚴謹的數據分析與理論基礎之上。
                         </div>
                     </div>
                 </div>
@@ -223,9 +248,11 @@
                         <img src="images/member_chiang.jpg" alt="江芸帆">
                     </div>
                     <div class="team-info">
-                        <h3 class="team-name">江芸帆</h3>
+                        <h3 class="team-name">江芸帆 (Yun-Fan Chiang)</h3>
                         <span class="team-title">財務長 兼 風險控管長 (CFO & CRO)</span>
-                        <div class="team-edu">財金與商業相關背景</div>
+                        <div class="team-edu">
+                            財金與商業相關背景
+                        </div>
                         <div class="team-tags">
                             <span class="expert-tag">永續金融與ESG</span>
                             <span class="expert-tag">全面風險管理</span>
@@ -242,9 +269,11 @@
                         <img src="images/member_tsai.jpg" alt="蔡堡丞">
                     </div>
                     <div class="team-info">
-                        <h3 class="team-name">蔡堡丞</h3>
+                        <h3 class="team-name">蔡堡丞 (Pao-Cheng Tsai)</h3>
                         <span class="team-title">行銷長 兼 產品技術總監 (CMO & CPO)</span>
-                        <div class="team-edu">國立臺北大學 金融與合作經營學系</div>
+                        <div class="team-edu">
+                            國立臺北大學 金融與合作經營學系
+                        </div>
                         <div class="team-tags">
                             <span class="expert-tag">FinTech & Java</span>
                             <span class="expert-tag">商業模式創新</span>
