@@ -3,156 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SATA 劇本資料庫 - 尋找潛力影視項目</title>
+    <title>SATA 劇本資料庫</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 基礎設定 (與 Index 一致) --- */
-        :root {
-            --primary-brown: #5D4037;
-            --sand-gold: #C5A065;
-            --warm-white: #FAF9F6;
-            --card-bg: rgba(255, 253, 245, 0.95);
-            --border-color: #E0D0B0;
-        }
-
-        body {
-            margin: 0; padding: 0;
-            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
-            min-height: 100vh;
-            /* 關鍵設定：讓 Footer 置底 */
-            display: flex;
-            flex-direction: column;
-            color: var(--primary-brown);
-            background-image: url('background.png'); 
-            background-position: center bottom;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-attachment: fixed;
-            overflow-x: hidden;
-        }
-
-        /* --- Header --- */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100px;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
-            box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000;
-        }
+        /* --- 基礎設定 --- */
+        :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         
+        /* [修改] 加入 display: flex; flex-direction: column; 以便讓 Footer 置底 */
+        body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; display: flex; flex-direction: column; }
+        
+        /* Header & Sidebar */
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
-        
         .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
-        
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
         .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
-
         .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
         .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
         .divider { margin: 0 8px; color: #ccc; }
-
-        /* --- Sidebar --- */
+        .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
+        
         .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
         .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
-
-        /* --- Login Modal --- */
+        
+        /* Modals (共用) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
+        .modal-box.wide { max-width: 800px; }
+        
+        /* 劇本內容視窗專用樣式 */
+        .modal-box.script-reader { 
+            max-width: 700px; 
+            height: 80vh; /* 固定高度 */
+            display: flex; 
+            flex-direction: column; 
+        }
+        .script-text-container {
+            flex-grow: 1;
+            overflow-y: auto; /* 內容過長自動捲動 */
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            font-family: "Courier New", Courier, monospace; /* 劇本常用字體 */
+            line-height: 1.8;
+            white-space: pre-wrap; /* 保留換行格式 */
+            text-align: left;
+        }
+
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
         .modal-close-btn:hover { color: var(--primary-brown); }
         .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        .login-submit-btn:hover { background-color: #4e342e; }
+        .manage-section { margin-bottom: 30px; }
+        .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
+        .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .script-table th, .script-table td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .script-table th { background-color: var(--warm-white); color: var(--sand-gold); }
+        .status-tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .tag-yes { background-color: #E8F5E9; color: #2E7D32; }
 
-        /* --- Database Page Specific Styles --- */
-        main {
-            flex: 1; /* 關鍵：讓 Main 撐開高度 */
-            padding-top: 150px;
-            padding-bottom: 50px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            padding-left: 20px; padding-right: 20px; box-sizing: border-box;
-        }
+        /* SATA劇本資料庫 專屬樣式 */
+        /* [修改] 加入 flex: 1; 讓內容撐開高度，把 Footer 擠下去 */
+        main { padding-top: 150px; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; flex: 1; width: 100%; padding-left: 20px; padding-right: 20px; box-sizing: border-box;}
+        
+        .category-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
+        .cat-btn { padding: 10px 25px; border: 1px solid var(--primary-brown); background: rgba(255,255,255,0.8); color: var(--primary-brown); font-size: 16px; cursor: pointer; border-radius: 30px; transition: 0.3s; }
+        .cat-btn:hover, .cat-btn.active { background: var(--primary-brown); color: #fff; }
 
-        .db-header {
-            text-align: center; margin-bottom: 40px;
-        }
-        .db-title {
-            font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 10px;
-        }
+        .scripts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; padding: 0 20px; }
+        .script-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); border: 1px solid var(--border-color); transition: transform 0.3s; display: none; height: 100%; display: flex; flex-direction: column; }
+        .script-card.visible { display: flex; animation: fadeIn 0.5s; }
+        .script-card:hover { transform: translateY(-5px); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 搜尋過濾區 */
-        .filter-section {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 10px rgba(93, 64, 55, 0.05);
-        }
-        .filter-input, .filter-select {
-            padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; outline: none; font-size: 1rem;
-        }
-        .filter-input { flex: 1; min-width: 200px; max-width: 400px; }
-        .filter-btn {
-            padding: 10px 25px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s;
-        }
-        .filter-btn:hover { background-color: var(--sand-gold); }
+        .card-image { width: 100%; height: 300px; background-color: #ddd; position: relative; overflow: hidden; }
+        .card-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+        .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .script-title { margin: 0 0 10px 0; color: var(--primary-brown); font-size: 1.5rem; }
+        .script-summary { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 15px; flex-grow: 1; }
+        .meta-info { display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.9rem; color: #888; margin-bottom: 15px; }
+        .rating-score { color: #FF9800; font-weight: bold; }
 
-        /* 劇本列表網格 */
-        .script-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-        }
+        /* 按鈕區 */
+        .card-actions { display: flex; gap: 10px; }
+        /* 統一樣式 */
+        .btn-invest, .btn-report, .btn-read { flex: 1; padding: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px;}
+        
+        .btn-invest { background-color: #fff; border: 1px solid var(--sand-gold); color: var(--sand-gold); }
+        .btn-invest:hover { background-color: #fff8e1; }
+        .btn-invest.active { background-color: var(--sand-gold); color: #fff; }
 
-        .script-card {
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
-            border: 1px solid #eee;
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: flex; flex-direction: column;
-        }
-        .script-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.2);
-            border-color: var(--sand-gold);
-        }
-        .card-img-placeholder {
-            height: 180px;
-            background-color: #eee;
-            display: flex; align-items: center; justify-content: center;
-            color: #aaa; font-size: 3rem;
-            position: relative;
-        }
-        .card-tag {
-            position: absolute; top: 10px; right: 10px;
-            background: var(--sand-gold); color: white;
-            padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
-        }
-        .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-        .script-title { font-size: 1.4rem; color: var(--primary-brown); margin: 0 0 10px 0; font-weight: bold; }
-        .script-meta { font-size: 0.9rem; color: #888; margin-bottom: 15px; display: flex; gap: 15px; }
-        .script-desc { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 20px; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-footer { border-top: 1px solid #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .ai-score { color: #2E7D32; font-weight: bold; }
-        .view-btn { text-decoration: none; color: var(--primary-brown); border: 1px solid var(--border-color); padding: 5px 15px; border-radius: 4px; font-size: 0.9rem; transition: 0.3s; }
-        .view-btn:hover { background-color: var(--primary-brown); color: white; }
+        .btn-read { background-color: #607d8b; color: #fff; }
+        .btn-read:hover { background-color: #455a64; }
 
-        /* --- Footer 樣式 (統一) --- */
+        .btn-report { background-color: var(--primary-brown); color: #fff; }
+        .btn-report:hover { background-color: #4e342e; }
+
+        /* --- [新增] Footer 頁腳樣式 --- */
         footer {
             background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
         }
@@ -168,22 +124,20 @@
         .footer-contact { color: var(--sand-gold); font-weight: bold; margin-bottom: 10px; font-size: 1rem; }
 
         @media screen and (max-width: 768px) { 
-            .logo-section { position: static; transform: none; margin: 0 auto; } 
-            header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } 
-            .right-section { align-items: center; width: 100%; } 
-            main { padding-top: 200px; }
+            .scripts-grid { grid-template-columns: 1fr; } 
             .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
         }
     </style>
 </head>
 <body>
+
     <div id="overlay" onclick="toggleNav()"></div>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
         <a href="index.html">首頁</a>
         <a href="Scriptupload.html">劇本上傳SATA</a>
         <a href="ai_analysis.html">AI 劇本初步分析</a>
-        <a href="script_database.html">SATA劇本資料庫</a>
+        <a href="script_database.html" style="color: var(--sand-gold); font-weight: bold;">SATA劇本資料庫</a>
         <a href="consulting.html">專業諮詢服務&聯繫團隊</a>
     </div>
 
@@ -199,6 +153,38 @@
         </div>
     </div>
 
+    <div id="memberModal" class="modal-overlay">
+        <div class="modal-box wide">
+            <div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div>
+            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2>
+            <div class="manage-section">
+                <h3><i class="fas fa-book"></i> 劇本管理 (模擬資料)</h3>
+                <table class="script-table">
+                    <thead><tr><th>劇本名稱</th><th>點閱累積</th><th>潛在投資者</th></tr></thead>
+                    <tbody>
+                        <tr><td>《我的模擬劇本A》</td><td>80 次</td><td><span class="status-tag tag-yes">有</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="manage-section">
+                <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
+                <table class="script-table">
+                    <thead><tr><th>劇本名稱</th><th>類型</th><th>狀態</th></tr></thead>
+                    <tbody id="investment-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="scriptContentModal" class="modal-overlay">
+        <div class="modal-box script-reader">
+            <div class="modal-close-btn" onclick="toggleScriptModal()"><i class="fas fa-times"></i></div>
+            <h2 id="modal-script-title" style="text-align: center; color: var(--primary-brown); margin-top: 0;">劇本標題</h2>
+            <div id="modal-script-body" class="script-text-container">
+                </div>
+        </div>
+    </div>
+
     <header>
         <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
         <div class="logo-section">劇沙成塔</div>
@@ -206,109 +192,119 @@
             <div id="headerRightSection">
                 <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
             </div>
+            <div class="search-container"><input type="text" placeholder="請輸入劇本名稱/編劇名稱"></div>
         </div>
     </header>
 
     <main>
-        <div class="db-header">
-            <h1 class="db-title">SATA 劇本資料庫</h1>
-            <p>透過 AI 篩選與數據分析，精準媒合最具潛力的影視項目</p>
+        <h1 style="text-align: center; margin-bottom: 10px;">SATA 劇本資料庫</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 40px;">匯集優質原創劇本，連結資金與創意</p>
+
+        <div class="category-tabs">
+            <button class="cat-btn active" onclick="filterScripts('all', this)">全部</button>
+            <button class="cat-btn" onclick="filterScripts('suspense', this)">懸疑 / 犯罪</button>
+            <button class="cat-btn" onclick="filterScripts('romance', this)">愛情 / 科幻</button>
+            <button class="cat-btn" onclick="filterScripts('drama', this)">劇情 / 家庭</button>
         </div>
 
-        <div class="filter-section">
-            <input type="text" class="filter-input" placeholder="搜尋劇本名稱、關鍵字...">
-            <select class="filter-select">
-                <option value="">所有類型</option>
-                <option value="scifi">科幻</option>
-                <option value="drama">劇情</option>
-                <option value="comedy">喜劇</option>
-                <option value="thriller">驚悚</option>
-            </select>
-            <select class="filter-select">
-                <option value="">預算範圍</option>
-                <option value="low">500萬以下</option>
-                <option value="mid">500萬 - 2000萬</option>
-                <option value="high">2000萬以上</option>
-            </select>
-            <button class="filter-btn"><i class="fas fa-search"></i> 搜尋</button>
-        </div>
-
-        <div class="script-grid">
-            <div class="script-card">
-                <div class="card-img-placeholder">
-                    <i class="fas fa-film"></i>
-                    <span class="card-tag">科幻</span>
-                </div>
-                <div class="card-body">
-                    <h3 class="script-title">沙丘之影</h3>
-                    <div class="script-meta">
-                        <span><i class="fas fa-user"></i> 王小明</span>
-                        <span><i class="fas fa-clock"></i> 120 min</span>
-                    </div>
-                    <p class="script-desc">在資源枯竭的未來台灣，一名年輕的氣象學家發現了控制沙塵暴的古老科技，卻引來了跨國企業的獵殺...</p>
-                    <div class="card-footer">
-                        <span class="ai-score"><i class="fas fa-chart-line"></i> AI 評分: 8.5</span>
-                        <a href="javascript:void(0)" class="view-btn" onclick="addToInvest('沙丘之影', '科幻')">標記興趣</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="script-card">
-                <div class="card-img-placeholder">
-                    <i class="fas fa-city"></i>
-                    <span class="card-tag">懸疑</span>
-                </div>
-                <div class="card-body">
-                    <h3 class="script-title">台北夜行</h3>
-                    <div class="script-meta">
-                        <span><i class="fas fa-user"></i> 林雅婷</span>
-                        <span><i class="fas fa-clock"></i> 105 min</span>
-                    </div>
-                    <p class="script-desc">一名計程車司機意外捲入了一場信義區的連環失蹤案，隨著調查深入，他發現所有線索都指向他失憶的那一年。</p>
-                    <div class="card-footer">
-                        <span class="ai-score"><i class="fas fa-chart-line"></i> AI 評分: 7.9</span>
-                        <a href="javascript:void(0)" class="view-btn" onclick="addToInvest('台北夜行', '懸疑')">標記興趣</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="script-card">
-                <div class="card-img-placeholder">
-                    <i class="fas fa-heart"></i>
-                    <span class="card-tag">愛情</span>
-                </div>
-                <div class="card-body">
-                    <h3 class="script-title">再見，淡水線</h3>
-                    <div class="script-meta">
-                        <span><i class="fas fa-user"></i> 張志豪</span>
-                        <span><i class="fas fa-clock"></i> 95 min</span>
-                    </div>
-                    <p class="script-desc">兩個相愛的人因為捷運末班車的錯過而展開了不同的人生軌跡，十年後在同一節車廂重逢。</p>
-                    <div class="card-footer">
-                        <span class="ai-score"><i class="fas fa-chart-line"></i> AI 評分: 8.2</span>
-                        <a href="javascript:void(0)" class="view-btn" onclick="addToInvest('再見，淡水線', '愛情')">標記興趣</a>
-                    </div>
-                </div>
-            </div>
+        <div class="scripts-grid">
             
-            <div class="script-card">
-                <div class="card-img-placeholder">
-                    <i class="fas fa-ghost"></i>
-                    <span class="card-tag">恐怖</span>
-                </div>
-                <div class="card-body">
-                    <h3 class="script-title">老宅錄音帶</h3>
-                    <div class="script-meta">
-                        <span><i class="fas fa-user"></i> 陳怡君</span>
-                        <span><i class="fas fa-clock"></i> 110 min</span>
+            <div class="script-card visible" data-category="suspense">
+                <div class="card-image"><img src="images/investigator.png" alt="消失的檢察官"></div>
+                <div class="card-content">
+                    <h3 class="script-title">消失的檢察官</h3>
+                    <div class="script-summary">一名檢察官在調查高層弊案時離奇失蹤，他的助理發現案情線索竟隱藏在檢察官過去偵辦的懸案之中，層層謎團指向警局內部...</div>
+                    <div class="meta-info">
+                        <span><i class="fas fa-tag"></i> 懸疑 / 犯罪</span><span><i class="fas fa-eye"></i> 1,520</span><span class="rating-score"><i class="fas fa-star"></i> 4.8</span>
                     </div>
-                    <p class="script-desc">YouTuber 為了流量闖入廢棄眷村，撿到一捲錄音帶，裡面錄的竟然是他明天死亡的聲音。</p>
-                    <div class="card-footer">
-                        <span class="ai-score"><i class="fas fa-chart-line"></i> AI 評分: 7.5</span>
-                        <a href="javascript:void(0)" class="view-btn" onclick="addToInvest('老宅錄音帶', '恐怖')">標記興趣</a>
+                    <div class="card-actions">
+                        <button class="btn-read" onclick="openScriptContent('s001')"><i class="fas fa-book-open"></i> 閱讀</button>
+                        <button class="btn-invest" data-id="s001" data-title="消失的檢察官" data-type="懸疑 / 犯罪" onclick="toggleInvestment(this)"><i class="far fa-heart"></i> 投資</button>
+                        <button class="btn-report" onclick="showPaymentSim()">報告</button>
                     </div>
                 </div>
             </div>
+
+            <div class="script-card visible" data-category="suspense">
+                <div class="card-image"><img src="images/mist.png" alt="迷霧追兇"></div>
+                <div class="card-content">
+                    <h3 class="script-title">迷霧追兇</h3>
+                    <div class="script-summary">山區小鎮發生連續失蹤案，大霧封鎖了對外道路。退休警探老陳（60歲，滿臉鬍渣）靠在警車旁抽煙。網紅艾米（22歲，拿著自拍棒）正在直播。</div>
+                    <div class="meta-info">
+                        <span><i class="fas fa-tag"></i> 懸疑 / 犯罪</span><span><i class="fas fa-eye"></i> 890</span><span class="rating-score"><i class="fas fa-star"></i> 4.5</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-read" onclick="openScriptContent('s002')"><i class="fas fa-book-open"></i> 閱讀</button>
+                        <button class="btn-invest" data-id="s002" data-title="迷霧追兇" data-type="懸疑 / 犯罪" onclick="toggleInvestment(this)"><i class="far fa-heart"></i> 投資</button>
+                        <button class="btn-report" onclick="showPaymentSim()">報告</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card visible" data-category="romance">
+                <div class="card-image"><img src="images/ai_love.png" alt="愛在AI元年"></div>
+                <div class="card-content">
+                    <h3 class="script-title">愛在AI元年</h3>
+                    <div class="script-summary">2045年，人類可以訂製完美的AI伴侶。女主角蘇菲（30歲）正在看書。AI管家亞當（外表完美的仿生人）端著紅茶走過來。</div>
+                    <div class="meta-info">
+                        <span><i class="fas fa-tag"></i> 愛情 / 科幻</span><span><i class="fas fa-eye"></i> 2,100</span><span class="rating-score"><i class="fas fa-star"></i> 4.9</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-read" onclick="openScriptContent('s003')"><i class="fas fa-book-open"></i> 閱讀</button>
+                        <button class="btn-invest" data-id="s003" data-title="愛在AI元年" data-type="愛情 / 科幻" onclick="toggleInvestment(this)"><i class="far fa-heart"></i> 投資</button>
+                        <button class="btn-report" onclick="showPaymentSim()">報告</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card visible" data-category="romance">
+                <div class="card-image"><img src="images/space.png" alt="星際戀曲"></div>
+                <div class="card-content">
+                    <h3 class="script-title">星際戀曲</h3>
+                    <div class="script-summary">兩個敵對星球的指揮官在一次太空船難中被迫合作求生。在浩瀚孤寂的宇宙中，仇恨逐漸轉化為依賴與愛慕。</div>
+                    <div class="meta-info">
+                        <span><i class="fas fa-tag"></i> 愛情 / 科幻</span><span><i class="fas fa-eye"></i> 1,200</span><span class="rating-score"><i class="fas fa-star"></i> 4.6</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-read" onclick="openScriptContent('s004')"><i class="fas fa-book-open"></i> 閱讀</button>
+                        <button class="btn-invest" data-id="s004" data-title="星際戀曲" data-type="愛情 / 科幻" onclick="toggleInvestment(this)"><i class="far fa-heart"></i> 投資</button>
+                        <button class="btn-report" onclick="showPaymentSim()">報告</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card visible" data-category="drama">
+                <div class="card-image"><img src="images/home.png" alt="家的形狀"></div>
+                <div class="card-content">
+                    <h3 class="script-title">家的形狀</h3>
+                    <div class="script-summary">一位老木匠堅持用傳統工法修復祖厝，與急於賣房移民的兒子產生激烈衝突。在修復過程中，父子倆重新拼湊起破碎的親情。</div>
+                    <div class="meta-info">
+                        <span><i class="fas fa-tag"></i> 劇情 / 家庭</span><span><i class="fas fa-eye"></i> 650</span><span class="rating-score"><i class="fas fa-star"></i> 4.3</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-read" onclick="openScriptContent('s005')"><i class="fas fa-book-open"></i> 閱讀</button>
+                        <button class="btn-invest" data-id="s005" data-title="家的形狀" data-type="劇情 / 家庭" onclick="toggleInvestment(this)"><i class="far fa-heart"></i> 投資</button>
+                        <button class="btn-report" onclick="showPaymentSim()">報告</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="script-card visible" data-category="drama">
+                <div class="card-image"><img src="images/voice.png" alt="聽見你的聲音"></div>
+                <div class="card-content">
+                    <h3 class="script-title">聽見你的聲音</h3>
+                    <div class="script-summary">失聰的鋼琴家與失語的畫家，在喧囂的都市中相遇。他們不需言語，透過藝術與心靈的共鳴，治癒了彼此的傷口。</div>
+                    <div class="meta-info">
+                        <span><i class="fas fa-tag"></i> 劇情 / 家庭</span><span><i class="fas fa-eye"></i> 980</span><span class="rating-score"><i class="fas fa-star"></i> 4.7</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-read" onclick="openScriptContent('s006')"><i class="fas fa-book-open"></i> 閱讀</button>
+                        <button class="btn-invest" data-id="s006" data-title="聽見你的聲音" data-type="劇情 / 家庭" onclick="toggleInvestment(this)"><i class="far fa-heart"></i> 投資</button>
+                        <button class="btn-report" onclick="showPaymentSim()">報告</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -343,78 +339,99 @@
     </footer>
 
     <script>
-        // 檢查登入狀態
-        window.onload = function() {
-            if (localStorage.getItem("sata_login") === "true") {
-                updateHeaderToLoggedIn();
-            }
-        }
-
-        // Sidebar 控制
-        function toggleNav() {
-            var sidebar = document.getElementById("mySidebar");
-            var overlay = document.getElementById("overlay");
-            if (sidebar.style.left === "0px") { sidebar.style.left = "-250px"; overlay.style.display = "none"; }
-            else { sidebar.style.left = "0px"; overlay.style.display = "block"; }
-        }
-
-        // Login Modal 控制
-        function toggleLoginModal() {
-            var modal = document.getElementById("loginModal");
-            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
-        }
-
-        // 登入功能
-        function performLogin() {
-            var user = document.getElementById("username").value;
-            var pass = document.getElementById("password").value;
-            if (user === "123456" && pass === "123456") {
-                localStorage.setItem("sata_login", "true");
-                toggleLoginModal();
-                updateHeaderToLoggedIn();
-            } else {
-                alert("帳號或密碼錯誤，請重新輸入 (預設為 123456)");
-            }
-        }
-
-        // 更新 Header 狀態
-        function updateHeaderToLoggedIn() {
-            var headerRight = document.getElementById("headerRightSection");
-            headerRight.innerHTML = `
-                <span class="member-menu">
-                    <span style="font-weight:bold; margin-right:10px;">Hi, 管理員</span>
-                    <a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a>
-                </span>
-            `;
-        }
-
-        // 登出功能
-        function performLogout() {
-            if(confirm("確定要登出嗎？")) {
-                localStorage.removeItem("sata_login");
-                window.location.reload();
-            }
-        }
-
-        // (模擬) 加入投資意願 - 會存入 LocalStorage 供 Index.html 讀取
-        function addToInvest(title, type) {
-            if (localStorage.getItem("sata_login") !== "true") {
-                alert("請先登入會員");
-                toggleLoginModal();
-                return;
-            }
+        // --- 劇本內容資料庫 (創作內容) ---
+        const scriptContents = {
+            "s001": `【劇本名稱】消失的檢察官\n【類型】懸疑/犯罪\n【場次】第一場\n【時間】夜晚\n【地點】檢察官辦公室\n\n(場景描述)\n辦公室內一片狼藉，文件散落一地。窗外的雨聲猛烈地拍打著玻璃。助理小林（25歲，神情緊張）推開門，手中的咖啡掉落在地。\n\n小林\n(顫抖)\n張檢...？\n\n房間裡空無一人，只有電腦螢幕發出幽幽的藍光。螢幕上顯示著一份檔案：『代號：黑鳶』。\n\n(鏡頭推進)\n小林蹲下身，在一堆散落的卷宗下，發現了一支舊式的錄音筆。他按下播放鍵。\n\n張檢的聲音 (V.O.)\n如果不把這個秘密帶進棺材，那就是把整個警局都陪葬進去。我別無選擇...\n\n(音效)\n錄音戛然而止，門外傳來沉重的腳步聲。`,
             
-            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
-            // 檢查是否已存在
-            if(investments.some(i => i.title === title)) {
-                alert("此劇本已在您的投資清單中！");
-                return;
-            }
+            "s002": `【劇本名稱】迷霧追兇\n【類型】懸疑/犯罪\n【場次】第五場\n【時間】清晨\n【地點】山區公路\n\n(場景描述)\n濃霧瀰漫，能見度不到五公尺。退休警探老陳（60歲，滿臉鬍渣）靠在警車旁抽煙。網紅艾米（22歲，拿著自拍棒）正在直播。\n\n艾米\n(對著鏡頭)\n各位寶寶們，我們現在就在案發的迷霧山莊入口，聽說這裡已經失蹤了第三個人...\n\n老陳\n(不耐煩)\n把那玩意關掉。兇手可能就在這片霧裡看著我們。\n\n艾米\n別這麼嚴肅嘛大叔，我這是在幫你蒐集線索，網友的力量是強大的。\n\n(動作)\n突然，霧中傳來一聲尖銳的煞車聲，緊接著是巨大的撞擊聲。\n\n老陳\n(丟掉煙頭)\n在前面！\n\n兩人衝入霧中，只見一輛空車停在路中央，駕駛座的門開著，引擎還在運轉，但人卻憑空消失了。`,
+            
+            "s003": `【劇本名稱】愛在AI元年\n【類型】愛情/科幻\n【場次】第十場\n【時間】午後\n【地點】現代化公寓客廳\n\n(場景描述)\n陽光灑落在潔白的傢俱上。女主角蘇菲（30歲）正在看書。AI管家亞當（外表完美的仿生人）端著紅茶走過來。\n\n亞當\n蘇菲，您的紅茶，加了兩顆方糖，溫度是您最喜歡的65度。\n\n蘇菲\n(微笑)\n謝謝你，亞當。你總是這麼完美。\n\n亞當\n(停頓)\n完美是我的程式設定。但是...蘇菲，今天早上系統檢測到我的核心處理器出現了異常波動。\n\n蘇菲\n(擔憂)\n是故障了嗎？需要送修嗎？\n\n亞當\n不是故障。數據顯示，當您對著我笑的時候，我的運算迴路會產生一種無法解釋的...溫暖。人類管這個叫什麼？\n\n蘇菲\n(愣住，隨後溫柔地)\n我們叫它...心動。`,
+            
+            "s004": `【劇本名稱】星際戀曲\n【類型】愛情/科幻\n【場次】第三場\n【時間】宇宙曆3055年\n【地點】廢棄太空站\n\n(場景描述)\n緊急照明燈閃爍著紅光。帝國指揮官雷恩（35歲，受傷）舉槍指著對面的聯邦女隊長諾拉（32歲）。\n\n雷恩\n放下武器，聯邦狗。\n\n諾拉\n(冷笑)\n看看外面，雷恩。你的艦隊毀了，我的也是。這座太空站的氧氣只剩兩小時。\n\n雷恩\n(咬牙)\n那我就在兩小時內解決妳。\n\n(動作)\n太空站劇烈震動，一塊殘骸砸落。雷恩本能地撲向諾拉，用身體護住她。\n\n諾拉\n(驚訝)\n你...\n\n雷恩\n(尷尬地爬起)\n別誤會。我只是想親手殺了妳，不想讓妳被石頭砸死。\n\n兩人對視，仇恨的眼神中，似乎多了一絲複雜的情緒。`,
+            
+            "s005": `【劇本名稱】家的形狀\n【類型】劇情/家庭\n【場次】第八場\n【時間】黃昏\n【地點】老舊的三合院\n\n(場景描述)\n院子裡堆滿了木材。父親阿得師（65歲）正專注地刨著木頭。兒子家豪（30歲，西裝筆挺）站在一旁，顯得格格不入。\n\n家豪\n爸，建商已經開價到兩千萬了。這房子破成這樣，修好了也沒人住，為什麼就是不肯賣？\n\n阿得師\n(頭也不抬)\n榫頭接不好，房子就會倒。做人也是一樣，根如果不見了，去哪裡都站不穩。\n\n家豪\n我在台北站得很穩！我要帶你去過好日子，這有錯嗎？\n\n阿得師\n(停下動作，摸著斑駁的柱子)\n你媽是在這個房間生下你的。這裡有她的味道。賣了，我就真的找不到她了。\n\n家豪愣住，看著父親佝僂的背影，眼眶泛紅。`,
+            
+            "s006": `【劇本名稱】聽見你的聲音\n【類型】劇情/家庭\n【場次】第十二場\n【時間】雨天\n【地點】公園涼亭\n\n(場景描述)\n雨很大，世界彷彿被隔絕。鋼琴家雨澤（28歲，失聰）坐在公共鋼琴前，手指在琴鍵上飛舞。但他聽不見任何聲音，只能感受指尖的震動。\n\n畫家小雅（26歲，失語）抱著畫板躲進涼亭。她看著雨澤的背影，被那種孤獨而激烈的演奏吸引。\n\n(動作)\n雨澤彈完一曲，頹然地垂下頭。他不知道自己彈得好不好，因為他聽不見。\n\n小雅走上前，輕輕拍了拍他的肩膀。她在畫紙上迅速畫了一幅畫：一隻在大雨中高歌的鳥，雖然淋濕了羽毛，但姿態昂揚。\n\n雨澤看著畫，轉頭看向小雅。小雅指了指畫，又指了指雨澤的心臟，露出燦爛的微笑。\n\n不需要言語，在這一刻，他們聽見了彼此。`
+        };
 
-            investments.push({ title: title, type: type, status: "已標記" });
-            localStorage.setItem("sata_investments", JSON.stringify(investments));
-            alert("已成功將《" + title + "》加入投資意願清單！\n您可以在首頁的會員中心查看。");
+        // --- 核心 JS 邏輯 ---
+        window.onload = function() {
+            if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); }
+            initInvestmentButtons();
         }
+
+        // 開啟劇本閱讀視窗
+        function openScriptContent(id) {
+            var content = scriptContents[id];
+            var modal = document.getElementById("scriptContentModal");
+            
+            // 這裡可以透過 id 去查標題，或者直接傳入標題，這邊簡單處理直接改內容
+            var titleMap = {
+                "s001": "消失的檢察官", "s002": "迷霧追兇", "s003": "愛在AI元年",
+                "s004": "星際戀曲", "s005": "家的形狀", "s006": "聽見你的聲音"
+            };
+
+            document.getElementById("modal-script-title").innerText = titleMap[id];
+            document.getElementById("modal-script-body").innerText = content;
+            modal.style.display = "flex";
+        }
+
+        function toggleScriptModal() {
+            var modal = document.getElementById("scriptContentModal");
+            modal.style.display = "none";
+        }
+
+        // ... (以下維持原本的 toggleInvestment, login, renderMemberTable 等邏輯) ...
+        function toggleInvestment(btn) {
+            if (localStorage.getItem("sata_login") !== "true") { alert("請先登入會員才能登記投資意願！"); toggleLoginModal(); return; }
+            var id = btn.getAttribute("data-id"); var title = btn.getAttribute("data-title"); var type = btn.getAttribute("data-type");
+            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
+            var index = investments.findIndex(item => item.id === id);
+            
+            if (index > -1) {
+                investments.splice(index, 1); alert("已取消對《" + title + "》的投資意願。");
+                btn.classList.remove("active"); btn.innerHTML = '<i class="far fa-heart"></i> 投資';
+            } else {
+                investments.push({ id: id, title: title, type: type, status: "等待回覆" });
+                alert("成功登記！\n您對《" + title + "》的投資意願已送出。");
+                btn.classList.add("active"); btn.innerHTML = '<i class="fas fa-heart"></i> 已登記';
+            }
+            localStorage.setItem("sata_investments", JSON.stringify(investments));
+            renderMemberTable();
+        }
+
+        function initInvestmentButtons() {
+            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
+            document.querySelectorAll(".btn-invest").forEach(btn => {
+                if (investments.some(item => item.id === btn.getAttribute("data-id"))) {
+                    btn.classList.add("active"); btn.innerHTML = '<i class="fas fa-heart"></i> 已登記';
+                }
+            });
+        }
+
+        function renderMemberTable() {
+            var tbody = document.getElementById("investment-table-body");
+            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
+            tbody.innerHTML = "";
+            if (investments.length === 0) { tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>"; return; }
+            investments.forEach(item => { tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`; });
+        }
+
+        function filterScripts(category, btn) {
+            document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active")); btn.classList.add("active");
+            document.querySelectorAll(".script-card").forEach(card => {
+                if (category === "all" || card.getAttribute("data-category") === category) { card.classList.add("visible"); card.style.display = "flex"; }
+                else { card.classList.remove("visible"); card.style.display = "none"; }
+            });
+        }
+
+        function showPaymentSim() { alert("【系統模擬】\n正在導向第三方支付平台...\n\n付款完成後將自動下載完整劇本分析報告。"); }
+        function toggleNav() { var s=document.getElementById("mySidebar");var o=document.getElementById("overlay");if(s.style.left==="0px"){s.style.left="-250px";o.style.display="none";}else{s.style.left="0px";o.style.display="block";} }
+        function toggleLoginModal() { var m=document.getElementById("loginModal");m.style.display=(m.style.display==="flex")?"none":"flex"; }
+        function toggleMemberModal() { var m=document.getElementById("memberModal");m.style.display=(m.style.display==="flex")?"none":"flex";if(m.style.display==="flex")renderMemberTable(); }
+        function performLogin() { var u=document.getElementById("username").value;var p=document.getElementById("password").value;if(u==="123456"&&p==="123456"){localStorage.setItem("sata_login","true");toggleLoginModal();updateHeaderToLoggedIn();}else{alert("帳號密碼錯誤");} }
+        function updateHeaderToLoggedIn() { document.getElementById("headerRightSection").innerHTML=`<span class="member-menu"><a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a><span class="divider">|</span><a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a></span>`; }
+        function performLogout() { if(confirm("確定登出?")){localStorage.removeItem("sata_login");document.getElementById("headerRightSection").innerHTML=`<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`;document.getElementById("memberModal").style.display="none";} }
     </script>
 </body>
 </html>
