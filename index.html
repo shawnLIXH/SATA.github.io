@@ -40,7 +40,25 @@
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
         
-        .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
+        /* 修改 Logo 區域樣式，以適應圖片 */
+        .logo-section { 
+            position: absolute; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            display: flex; /* 確保圖片垂直居中 */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-section a {
+            display: block; /* 讓超連結包含整張圖片 */
+        }
+
+        .logo-section img {
+            height: 60px; /* 設定圖片高度，可依需求調整 */
+            width: auto;  /* 寬度自動 */
+            display: block;
+        }
         
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
         .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
@@ -211,7 +229,11 @@
 
     <header>
         <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
-        <div class="logo-section">劇沙成塔</div>
+        <div class="logo-section">
+            <a href="index.html">
+                <img src="images/logo_name.jpg" alt="劇沙成塔">
+            </a>
+        </div>
         <div class="right-section">
             <div id="headerRightSection">
                 <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
