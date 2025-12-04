@@ -85,46 +85,12 @@
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 15px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; }
         
-        /* [新增] 角色導航區塊樣式 */
-        .role-nav-container {
-            text-align: center;
-            margin-bottom: 50px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .role-nav-title {
-            font-size: 1.1rem; color: #666; margin-bottom: 20px; font-weight: normal; letter-spacing: 1px;
-        }
-        .role-nav-grid {
-            display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;
-        }
-        .role-card {
-            flex: 1; min-width: 300px; max-width: 450px;
-            border-radius: 12px; overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            background: #fff;
-            position: relative;
-        }
-        .role-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); /* 金色光暈 */
-        }
-        .role-card a {
-            display: block; width: 100%; height: 100%; text-decoration: none;
-        }
-        .role-card img {
-            width: 100%; height: auto; display: block;
-            border-bottom: 4px solid var(--sand-gold);
-        }
-        
-        /* [調整] 數字區塊 */
+        /* 數字區塊 */
         .stats-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 60px; padding: 0 10px; }
         .stat-card { background: rgba(255, 255, 255, 0.95); border-radius: 12px; padding: 25px 20px; text-align: center; border-bottom: 4px solid var(--sand-gold); box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1); flex: 1; min-width: 250px; max-width: 320px; transition: transform 0.3s; }
         .stat-card:hover { transform: translateY(-5px); }
         .stat-label { font-size: 1rem; color: #666; margin-bottom: 10px; font-weight: bold; }
+        /* 數字大小調整區 */
         .stat-number { font-size: 4.5rem; font-weight: 800; color: var(--primary-brown); line-height: 1.2; }
         .stat-unit { font-size: 1rem; color: #888; font-weight: normal; margin-left: 5px; }
         .stat-sub { font-size: 0.9rem; margin-top: 8px; color: #2E7D32; font-weight: bold; }
@@ -147,6 +113,53 @@
         .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 10px; }
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
         .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
+
+        /* [新增] 角色導航區塊樣式 (放在底部) */
+        .role-nav-container {
+            text-align: center;
+            margin-top: 80px; /* 與上方區塊的距離 */
+            margin-bottom: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+        .role-nav-title {
+            font-size: 1.5rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold;
+        }
+        .role-nav-subtitle {
+            font-size: 1rem; color: #666; margin-bottom: 30px;
+        }
+        .role-nav-grid {
+            display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+        }
+        .role-card {
+            flex: 1; min-width: 300px; max-width: 400px;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+            position: relative;
+            border: 1px solid #eee;
+        }
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.4); /* 金色光暈 */
+        }
+        .role-card a {
+            display: block; width: 100%; height: 100%; text-decoration: none;
+        }
+        .role-card img {
+            width: 100%; height: auto; display: block;
+            border-bottom: 4px solid var(--sand-gold);
+        }
+        .role-label {
+            padding: 15px; font-size: 1.1rem; color: var(--primary-brown); font-weight: bold; background: #fff;
+        }
         
         @media screen and (max-width: 768px) { .logo-section { position: static; transform: none; margin: 0 auto; } header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } .right-section { align-items: center; width: 100%; } .hero-title { font-size: 1.8rem; } main { padding-top: 200px; } }
     </style>
@@ -177,263 +190,4 @@
     <div id="memberModal" class="modal-overlay">
         <div class="modal-box wide">
             <div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div>
-            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2>
-            <div class="manage-section">
-                <h3><i class="fas fa-book"></i> 劇本管理</h3>
-                <table class="script-table">
-                    <thead><tr><th>劇本名稱</th><th>點閱累積 (週成長)</th><th>潛在投資者</th><th>操作</th></tr></thead>
-                    <tbody>
-                        <tr><td>《沙丘之影》</td><td>1,240 次 <span class="growth-positive">(+15%)</span></td><td><span class="status-tag tag-yes">有</span></td><td><a href="#" class="action-btn">劇本顧問服務</a><a href="#" class="action-btn">尋找投資人</a></td></tr>
-                        <tr><td>《台北夜行》</td><td>320 次 <span class="growth-negative">(-2%)</span></td><td><span class="status-tag tag-no">無</span></td><td><a href="#" class="action-btn">劇本顧問服務</a><a href="#" class="action-btn">尋找投資人</a></td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="manage-section">
-                <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
-                <table class="script-table">
-                    <thead><tr><th>已標記投資意願之劇本</th><th>類型</th><th>狀態</th></tr></thead>
-                    <tbody id="investment-table-body">
-                        </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <header>
-        <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
-        <div class="logo-section">劇沙成塔</div>
-        <div class="right-section">
-            <div id="headerRightSection">
-                <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
-            </div>
-            <div class="search-container">
-                <input type="text" placeholder="請輸入劇本名稱/編劇名稱">
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <section class="hero-section">
-            <h1 class="hero-title">聚文字之細沙，築光影之高塔</h1>
-            <p class="hero-subtitle">AI 影視孵化與投資平台<br>讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策</p>
-        </section>
-
-        <div class="role-nav-container">
-            <p class="role-nav-title">請選擇您的身分，開始探索 SATA 平台服務</p>
-            <div class="role-nav-grid">
-                <div class="role-card">
-                    <a href="ai_analysis.html">
-                        <img src="images/creator_nav.png" alt="我是創作者 - 開始劇本分析">
-                    </a>
-                </div>
-                <div class="role-card">
-                    <a href="script_database.html">
-                        <img src="images/investor_nav.png" alt="我是投資方 - 尋找劇本投資">
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-container" id="statsSection">
-            <div class="stat-card">
-                <div class="stat-label">2025 台灣國片總票房</div>
-                <div class="stat-number" data-target="7.58">0</div>
-                <span class="stat-unit">億 (TWD)</span>
-                <div class="stat-sub"><i class="fas fa-arrow-up"></i> 年增長 26%</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">2024 全球劇本軟體市場</div>
-                <div class="stat-number" data-target="1.78">0</div>
-                <span class="stat-unit">億 (USD)</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">2033 市場規模預估</div>
-                <div class="stat-number" data-target="4.94">0</div>
-                <span class="stat-unit">億 (USD)</span>
-                <div class="stat-trend"><i class="fas fa-chart-line"></i> 複合成長率 12%</div>
-            </div>
-        </div>
-
-        <div class="wide-card">
-            <h2 style="margin-top:0; color:var(--primary-brown);">為什麼創立 SATA？</h2>
-            <p>我們的團隊由一群電影愛好者組成，深知一部好電影背後潛藏的巨大商業價值，也遺憾許多有潛力的劇本因缺乏專業資金而石沉大海。<br><br>台灣影視產業正面臨「新進創作者難進入」與「投資需求方資訊不透明」的雙重困境。好內容無法被看見，有效資金找不到對的劇本。SATA 致力於填補這個市場缺口，成為連結創意與資本的橋樑。</p>
-        </div>
-
-        <h2 class="section-heading">三大核心服務</h2>
-        <div class="section-container">
-            <div class="info-card">
-                <i class="fas fa-brain card-icon"></i>
-                <h3 class="card-title">AI 劇本分析系統</h3>
-                <p class="card-text">不再依賴主觀直覺。我們的 AI 系統提供客觀的量化指標：</p>
-                <ul class="feature-list">
-                    <li><strong>結構分析：</strong> 檢查敘事節奏與鉤子偵測。</li>
-                    <li><strong>角色深度：</strong> 分析角色關係圖譜與情感曲線。</li>
-                    <li><strong>市場預測：</strong> 提供票房預測與受眾分析。</li>
-                </ul>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-user-tie card-icon"></i>
-                <h3 class="card-title">專業諮詢服務</h3>
-                <p class="card-text">AI 找出問題，專家協助解決。引入資深導演、編劇與製片人提供協助：</p>
-                <ul class="feature-list">
-                    <li><strong>內容優化：</strong> 針對 AI 報告進行人工補強。</li>
-                    <li><strong>商業包裝：</strong> 協助撰寫商業計畫書與提案。</li>
-                    <li><strong>產業觀點：</strong> 確保作品具備市場競爭力。</li>
-                </ul>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-handshake card-icon"></i>
-                <h3 class="card-title">投資媒合機制</h3>
-                <p class="card-text">建立透明高效的資金對接管道，降低搜尋與信任成本：</p>
-                <ul class="feature-list">
-                    <li><strong>精準篩選：</strong> 只有經評估達標的優質劇本才能上架。</li>
-                    <li><strong>雙向媒合：</strong> 支援投資人主動搜尋與平台被動推薦。</li>
-                    <li><strong>資訊透明：</strong> 投資前即可查看關鍵量化指標。</li>
-                </ul>
-            </div>
-        </div>
-
-        <h2 class="section-heading">我們解決的痛點</h2>
-        <div class="pain-point-container">
-            <div class="pain-point-box">
-                <div class="pain-point-title">對於創作者</div>
-                <ul class="feature-list">
-                    <li><strong>缺乏商業轉化能力：</strong> 作品藝術性高但難以變現。</li>
-                    <li><strong>缺乏數據說服力：</strong> 無法證明潛力，難吸引投資。</li>
-                    <li><strong>門檻過高：</strong> 缺乏投資人脈與資源接觸。</li>
-                </ul>
-            </div>
-            <div class="pain-point-box">
-                <div class="pain-point-title">對於投資方</div>
-                <ul class="feature-list">
-                    <li><strong>篩選成本高：</strong> 案源分散，篩選具潛力作品困難。</li>
-                    <li><strong>缺乏評估工具：</strong> 決策帶有高度不確定性。</li>
-                    <li><strong>資訊不透明：</strong> 缺乏標準化指標，難以辨識好劇本。</li>
-                </ul>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        window.onload = function() {
-            if (localStorage.getItem("sata_login") === "true") {
-                updateHeaderToLoggedIn();
-            }
-            startCountingAnimation();
-        }
-
-        function startCountingAnimation() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const numbers = entry.target.querySelectorAll('.stat-number');
-                        numbers.forEach(num => animateValue(num));
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            const statsSection = document.getElementById('statsSection');
-            if (statsSection) observer.observe(statsSection);
-        }
-
-        function animateValue(obj) {
-            const target = parseFloat(obj.getAttribute('data-target'));
-            let start = 0;
-            const duration = 2000;
-            const startTime = performance.now();
-
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 4);
-                
-                const current = start + (target - start) * ease;
-                obj.innerText = current.toFixed(2);
-
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    obj.innerText = target;
-                }
-            }
-            requestAnimationFrame(update);
-        }
-
-        function toggleNav() {
-            var sidebar = document.getElementById("mySidebar");
-            var overlay = document.getElementById("overlay");
-            if (sidebar.style.left === "0px") { sidebar.style.left = "-250px"; overlay.style.display = "none"; }
-            else { sidebar.style.left = "0px"; overlay.style.display = "block"; }
-        }
-
-        function toggleLoginModal() {
-            var modal = document.getElementById("loginModal");
-            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
-        }
-
-        function toggleMemberModal() {
-            var modal = document.getElementById("memberModal");
-            modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
-            if (modal.style.display === "flex") {
-                renderMemberTable();
-            }
-        }
-
-        function performLogin() {
-            var user = document.getElementById("username").value;
-            var pass = document.getElementById("password").value;
-            if (user === "123456" && pass === "123456") {
-                localStorage.setItem("sata_login", "true");
-                toggleLoginModal();
-                updateHeaderToLoggedIn();
-            } else {
-                alert("帳號或密碼錯誤，請重新輸入 (預設為 123456)");
-            }
-        }
-
-        function updateHeaderToLoggedIn() {
-            var headerRight = document.getElementById("headerRightSection");
-            headerRight.innerHTML = `
-                <span class="member-menu">
-                    <a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a>
-                    <span class="divider">|</span>
-                    <a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a>
-                </span>
-            `;
-        }
-
-        function performLogout() {
-            if(confirm("確定要登出嗎？")) {
-                localStorage.removeItem("sata_login");
-                var headerRight = document.getElementById("headerRightSection");
-                headerRight.innerHTML = `
-                    <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
-                `;
-                document.getElementById("memberModal").style.display = "none";
-            }
-        }
-
-        function renderMemberTable() {
-            var tbody = document.getElementById("investment-table-body");
-            var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
-            
-            tbody.innerHTML = "";
-
-            if (investments.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>";
-                return;
-            }
-
-            investments.forEach(item => {
-                var row = `<tr>
-                    <td>${item.title}</td>
-                    <td>${item.type}</td>
-                    <td><span class="status-tag tag-yes">${item.status}</span></td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-        }
-    </script>
-</body>
-</html>
+            <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理
