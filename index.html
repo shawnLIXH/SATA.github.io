@@ -19,6 +19,7 @@
             margin: 0; padding: 0;
             font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
             min-height: 100vh;
+            display: flex; flex-direction: column; /* 讓 footer 能置底 */
             color: var(--primary-brown);
             background-image: url('background.png'); 
             background-position: center bottom;
@@ -84,18 +85,15 @@
         .action-btn:hover { background-color: var(--sand-gold); color: white; }
 
         /* --- Main Content --- */
-        main { padding-top: 150px; padding-bottom: 100px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        main { flex: 1; padding-top: 150px; padding-bottom: 50px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
         
         .hero-section { text-align: center; margin-bottom: 40px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 10px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; margin-top: 10px; }
         
-        /* [新增] Logo 樣式 */
+        /* Logo 樣式 */
         .hero-logo {
-            max-width: 180px; /* 控制 Logo 大小 */
-            height: auto;
-            margin: 15px auto; /* 上下間距 */
-            display: block;
+            max-width: 180px; height: auto; margin: 15px auto; display: block;
         }
 
         /* 數字統計區塊 */
@@ -126,54 +124,41 @@
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
         .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
 
-        /* [新增] 角色導航區塊樣式 (置於底部) */
+        /* 角色導航區塊樣式 */
         .role-nav-container {
-            text-align: center;
-            margin-top: 80px; /* 與上方區塊保持距離 */
-            margin-bottom: 50px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-            background: rgba(255, 253, 245, 0.95); /* 與其他卡片風格一致 */
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
+            text-align: center; margin-top: 80px; margin-bottom: 50px; max-width: 1000px; margin-left: auto; margin-right: auto; background: rgba(255, 253, 245, 0.95); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
         }
-        .role-nav-title {
-            font-size: 1.8rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold;
-        }
-        .role-nav-subtitle {
-            font-size: 1.1rem; color: #666; margin-bottom: 30px;
-        }
-        .role-nav-grid {
-            display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
-        }
-        /* 圖片卡片樣式 */
-        .role-card {
-            flex: 1; min-width: 300px; max-width: 400px;
-            border-radius: 12px; overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            background: #fff;
-            position: relative;
-            text-decoration: none; /* 移除連結底線 */
-            display: block;
-        }
-        .role-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); /* 金色光暈 */
-        }
-        .role-card img {
-            width: 100%; height: auto; display: block;
-            border-bottom: 4px solid var(--sand-gold);
-        }
-        .role-label {
-            padding: 20px; font-size: 1.2rem; color: var(--primary-brown); font-weight: bold; background: #fff;
-        }
+        .role-nav-title { font-size: 1.8rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold; }
+        .role-nav-subtitle { font-size: 1.1rem; color: #666; margin-bottom: 30px; }
+        .role-nav-grid { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
+        .role-card { flex: 1; min-width: 300px; max-width: 400px; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; background: #fff; position: relative; text-decoration: none; display: block; }
+        .role-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); }
+        .role-card img { width: 100%; height: auto; display: block; border-bottom: 4px solid var(--sand-gold); }
+        .role-label { padding: 20px; font-size: 1.2rem; color: var(--primary-brown); font-weight: bold; background: #fff; }
         
-        @media screen and (max-width: 768px) { .logo-section { position: static; transform: none; margin: 0 auto; } header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } .right-section { align-items: center; width: 100%; } .hero-title { font-size: 1.8rem; } main { padding-top: 200px; } }
+        /* --- [新增] Footer 頁腳樣式 --- */
+        footer {
+            background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
+        }
+        .footer-container { max-width: 1000px; margin: 0 auto; text-align: center; }
+        .footer-slogan { font-size: 1.6rem; font-weight: bold; color: var(--sand-gold); margin-bottom: 40px; letter-spacing: 3px; }
+        .footer-links-container { display: flex; justify-content: center; gap: 80px; margin-bottom: 50px; flex-wrap: wrap; text-align: left; }
+        .footer-column h4 { color: var(--sand-gold); font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid rgba(197, 160, 101, 0.5); padding-bottom: 10px; display: inline-block; }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li { margin-bottom: 15px; }
+        .footer-column ul li a { color: rgba(250, 249, 246, 0.8); text-decoration: none; transition: 0.3s; font-size: 1.1rem; }
+        .footer-column ul li a:hover { color: var(--sand-gold); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid rgba(250, 249, 246, 0.1); padding-top: 25px; font-size: 0.9rem; color: rgba(250, 249, 246, 0.6); line-height: 1.8; }
+        .footer-contact { color: var(--sand-gold); font-weight: bold; margin-bottom: 10px; font-size: 1rem; }
+
+        @media screen and (max-width: 768px) { 
+            .logo-section { position: static; transform: none; margin: 0 auto; } 
+            header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } 
+            .right-section { align-items: center; width: 100%; } 
+            .hero-title { font-size: 1.8rem; } 
+            main { padding-top: 200px; padding-bottom: 20px; } 
+            .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
+        }
     </style>
 </head>
 <body>
@@ -337,8 +322,37 @@
                 </a>
             </div>
         </div>
-
     </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-slogan">
+                聚文字之細沙，築光影之高塔
+            </div>
+
+            <div class="footer-links-container">
+                <div class="footer-column">
+                    <h4>推砌沙堡</h4>
+                    <ul>
+                        <li><a href="Scriptupload.html">劇本上傳SATA</a></li>
+                        <li><a href="script_database.html">SATA劇本資料庫</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>沙堡服務</h4>
+                    <ul>
+                        <li><a href="ai_analysis.html">AI 劇本初步分析</a></li>
+                        <li><a href="consulting.html">專業諮詢服務&聯繫團隊</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-contact">電子郵件地址：steff0932@gmail.com</div>
+                <div>Copyright © 2025 劇沙成塔 | SATA. All Rights Reserved.</div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         window.onload = function() {
