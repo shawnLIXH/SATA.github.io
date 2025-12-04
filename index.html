@@ -6,34 +6,60 @@
     <title>劇沙成塔 SATA - AI影視孵化與投資平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 基礎 CSS --- */
-        :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
-        body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; }
+        /* --- 基礎設定 --- */
+        :root {
+            --primary-brown: #5D4037;
+            --sand-gold: #C5A065;
+            --warm-white: #FAF9F6;
+            --card-bg: rgba(255, 253, 245, 0.95);
+            --border-color: #E0D0B0;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
+            min-height: 100vh;
+            color: var(--primary-brown);
+            background-image: url('background.png'); 
+            background-position: center bottom;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100px;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
+            box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000;
+        }
         
-        /* Header */
-        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
+        
         .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
         
-        /* 右側區塊 */
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
         .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
+        
         .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
         .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
         .divider { margin: 0 8px; color: #ccc; }
+
         .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
 
-        /* Sidebar */
+        /* --- Sidebar --- */
         .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
         .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
 
-        /* Modals */
+        /* --- Modals --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
         .modal-box.wide { max-width: 800px; }
@@ -44,7 +70,6 @@
         .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .login-submit-btn:hover { background-color: #4e342e; }
 
-        /* Manage Section */
         .manage-section { margin-bottom: 30px; }
         .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
         .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -58,26 +83,60 @@
         .action-btn { display: inline-block; padding: 4px 10px; margin-right: 5px; background-color: var(--warm-white); border: 1px solid var(--border-color); color: var(--primary-brown); border-radius: 3px; cursor: pointer; font-size: 12px; text-decoration: none; }
         .action-btn:hover { background-color: var(--sand-gold); color: white; }
 
-        /* Main Content */
+        /* --- Main Content --- */
         main { padding-top: 150px; padding-bottom: 100px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
-        .hero-section { text-align: center; margin-bottom: 50px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
+        
+        .hero-section { text-align: center; margin-bottom: 40px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 15px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; }
+        
+        /* [新增] 動態數字區塊樣式 */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+            padding: 0 10px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--sand-gold);
+            box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1);
+            flex: 1;
+            min-width: 250px;
+            max-width: 320px;
+            transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-label { font-size: 1rem; color: #666; margin-bottom: 10px; font-weight: bold; }
+        .stat-number { font-size: 2.8rem; font-weight: 800; color: var(--primary-brown); line-height: 1.2; }
+        .stat-unit { font-size: 1rem; color: #888; font-weight: normal; margin-left: 5px; }
+        .stat-sub { font-size: 0.9rem; margin-top: 8px; color: #2E7D32; font-weight: bold; }
+        .stat-trend { color: var(--sand-gold); font-weight: bold; font-size: 0.9rem; margin-top: 8px; }
+
         .section-heading { text-align: center; font-size: 2rem; margin-top: 60px; margin-bottom: 30px; color: var(--primary-brown); text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
+        
         .wide-card { background: var(--card-bg); border-radius: 12px; padding: 40px; margin: 20px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); border-left: 5px solid var(--sand-gold); }
         .wide-card p { font-size: 1.15rem; line-height: 1.8; color: #4e342e; text-align: justify; }
+        
         .section-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 25px; padding: 0 10px; }
         .info-card { background: var(--card-bg); border-radius: 12px; padding: 30px; flex: 1; min-width: 280px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); transition: transform 0.3s ease; text-align: center; border-top: 4px solid var(--primary-brown); }
         .info-card:hover { transform: translateY(-8px); background: #fff; }
         .card-icon { font-size: 3rem; color: var(--sand-gold); margin-bottom: 20px; }
         .card-title { font-size: 1.4rem; margin-bottom: 15px; color: var(--primary-brown); font-weight: bold; }
         .card-text { font-size: 1rem; color: #5d4037; line-height: 1.6; text-align: left; }
+        
         .pain-point-container { display: flex; gap: 20px; flex-wrap: wrap; }
         .pain-point-box { flex: 1; min-width: 300px; background: rgba(255, 255, 255, 0.9); border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; }
         .pain-point-title { font-size: 1.3rem; color: var(--primary-brown); margin-bottom: 15px; border-bottom: 2px dashed var(--sand-gold); padding-bottom: 10px; text-align: center; }
         .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 10px; }
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
         .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
+        
         @media screen and (max-width: 768px) { .logo-section { position: static; transform: none; margin: 0 auto; } header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } .right-section { align-items: center; width: 100%; } .hero-title { font-size: 1.8rem; } main { padding-top: 200px; } }
     </style>
 </head>
@@ -108,7 +167,6 @@
         <div class="modal-box wide">
             <div class="modal-close-btn" onclick="toggleMemberModal()"><i class="fas fa-times"></i></div>
             <h2 style="text-align: center; color: var(--primary-brown); margin-top: 0;">會員管理中心</h2>
-            
             <div class="manage-section">
                 <h3><i class="fas fa-book"></i> 劇本管理</h3>
                 <table class="script-table">
@@ -119,7 +177,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="manage-section">
                 <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
                 <table class="script-table">
@@ -149,6 +206,26 @@
             <h1 class="hero-title">聚文字之細沙，築光影之高塔</h1>
             <p class="hero-subtitle">AI 影視孵化與投資平台<br>讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策</p>
         </section>
+
+        <div class="stats-container" id="statsSection">
+            <div class="stat-card">
+                <div class="stat-label">2025 台灣國片總票房</div>
+                <div class="stat-number" data-target="7.58">0</div>
+                <span class="stat-unit">億 (TWD)</span>
+                <div class="stat-sub"><i class="fas fa-arrow-up"></i> 年增長 26%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">2024 全球劇本軟體市場</div>
+                <div class="stat-number" data-target="1.78">0</div>
+                <span class="stat-unit">億 (USD)</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">2033 市場規模預估</div>
+                <div class="stat-number" data-target="4.94">0</div>
+                <span class="stat-unit">億 (USD)</span>
+                <div class="stat-trend"><i class="fas fa-chart-line"></i> 複合成長率 12%</div>
+            </div>
+        </div>
 
         <div class="wide-card">
             <h2 style="margin-top:0; color:var(--primary-brown);">為什麼創立 SATA？</h2>
@@ -216,6 +293,48 @@
             if (localStorage.getItem("sata_login") === "true") {
                 updateHeaderToLoggedIn();
             }
+            startCountingAnimation(); // 啟動數字動畫偵測
+        }
+
+        // --- 動態數字動畫邏輯 ---
+        function startCountingAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const numbers = entry.target.querySelectorAll('.stat-number');
+                        numbers.forEach(num => animateValue(num));
+                        observer.unobserve(entry.target); // 動畫只跑一次
+                    }
+                });
+            }, { threshold: 0.5 }); // 50% 可見時觸發
+
+            const statsSection = document.getElementById('statsSection');
+            if (statsSection) observer.observe(statsSection);
+        }
+
+        function animateValue(obj) {
+            const target = parseFloat(obj.getAttribute('data-target'));
+            let start = 0;
+            const duration = 2000; // 動畫時間 2秒
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 使用 easeOutQuart 讓動畫更平滑
+                const ease = 1 - Math.pow(1 - progress, 4);
+                
+                const current = start + (target - start) * ease;
+                obj.innerText = current.toFixed(2); // 保留兩位小數
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    obj.innerText = target; // 確保最後數字精準
+                }
+            }
+            requestAnimationFrame(update);
         }
 
         // --- UI 控制 ---
