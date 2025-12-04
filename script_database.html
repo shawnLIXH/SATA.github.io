@@ -9,15 +9,34 @@
         /* --- 基礎設定 --- */
         :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         
-        /* [修改] 加入 display: flex; flex-direction: column; 以便讓 Footer 置底 */
+        /* 加入 flex: column 讓 Footer 置底 */
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; display: flex; flex-direction: column; }
         
-        /* Header & Sidebar */
-        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--border-color); z-index: 1000; }
-        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
-        .menu-btn:hover { background-color: var(--warm-white); }
+        /* --- Header (修改配色) --- */
+        header { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100px; 
+            /* [修改] 背景改為深咖啡色 (與頁尾一致) */
+            background: var(--primary-brown); 
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
+            box-sizing: border-box; 
+            border-bottom: 2px solid var(--sand-gold); /* 邊框改為金色，增加質感 */
+            z-index: 1000; 
+        }
+
+        /* [修改] 選單按鈕改為淺色 */
+        .menu-btn { 
+            font-size: 24px; cursor: pointer; padding: 10px; 
+            border: 1px solid var(--warm-white); 
+            color: var(--warm-white); /* 淺色文字 */
+            width: 50px; text-align: center; transition: 0.3s; 
+        }
+        .menu-btn:hover { 
+            background-color: var(--sand-gold); 
+            color: var(--primary-brown); 
+            border-color: var(--sand-gold);
+        }
         
-        /* [修改] Logo 區域樣式，以適應圖片並置中 */
+        /* Logo 區域樣式 (圖片) */
         .logo-section { 
             position: absolute; 
             left: 50%; 
@@ -25,26 +44,34 @@
             display: flex; 
             align-items: center;
             justify-content: center;
-            background: transparent; /* 移除白色背景 */
-            border: none; /* 移除邊框 */
-            padding: 0;
         }
         .logo-section a { display: block; }
         .logo-section img {
             height: 60px; /* 控制 Logo 高度 */
             width: auto;
             display: block;
+            border-radius: 5px; /* 選用：若圖片背景與 Header 融合不佳，可加圓角或邊框 */
         }
 
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
-        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
-        .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
-        .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
-        .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
-        .member-link:hover { color: var(--sand-gold); }
-        .divider { margin: 0 8px; color: #ccc; }
-        .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
         
+        /* 登入按鈕保持白色背景，以突顯 */
+        .login-btn { 
+            text-decoration: none; color: var(--primary-brown); font-weight: bold; 
+            border: 1px solid var(--sand-gold); padding: 5px 20px; 
+            background: #fff; display: inline-block; font-size: 14px; 
+            transition: 0.3s; cursor: pointer; border-radius: 3px;
+        }
+        .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
+        
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); } /* 修改文字顏色 */
+        .member-link { cursor: pointer; color: var(--warm-white); text-decoration: none; transition: 0.3s; }
+        .member-link:hover { color: var(--sand-gold); }
+        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); } /* 修改分隔線顏色 */
+        
+        .search-container input { padding: 5px 10px; border: none; font-size: 14px; width: 250px; outline: none; background-color: rgba(255,255,255,0.9); border-radius: 3px; }
+        
+        /* Sidebar */
         .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
         .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
@@ -91,7 +118,6 @@
         .tag-yes { background-color: #E8F5E9; color: #2E7D32; }
 
         /* SATA劇本資料庫 專屬樣式 */
-        /* [修改] 加入 flex: 1; 讓內容撐開高度，把 Footer 擠下去 */
         main { padding-top: 150px; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; flex: 1; width: 100%; padding-left: 20px; padding-right: 20px; box-sizing: border-box;}
         
         .category-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
@@ -114,7 +140,6 @@
 
         /* 按鈕區 */
         .card-actions { display: flex; gap: 10px; }
-        /* 統一樣式 */
         .btn-invest, .btn-report, .btn-read { flex: 1; padding: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px;}
         
         .btn-invest { background-color: #fff; border: 1px solid var(--sand-gold); color: var(--sand-gold); }
@@ -127,7 +152,7 @@
         .btn-report { background-color: var(--primary-brown); color: #fff; }
         .btn-report:hover { background-color: #4e342e; }
 
-        /* --- [新增] Footer 頁腳樣式 --- */
+        /* --- Footer 頁腳樣式 --- */
         footer {
             background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
         }
