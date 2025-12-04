@@ -17,23 +17,22 @@
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
         
-        /* [修改] Logo 區域樣式，以適應圖片 */
+        /* [修改] Logo 區域樣式，以適應圖片並置中 */
         .logo-section { 
             position: absolute; 
             left: 50%; 
             transform: translateX(-50%); 
-            display: flex; /* 確保圖片垂直居中 */
+            display: flex; 
             align-items: center;
             justify-content: center;
+            background: transparent; /* 移除白色背景 */
+            border: none; /* 移除邊框 */
+            padding: 0;
         }
-
-        .logo-section a {
-            display: block; /* 讓超連結包含整張圖片 */
-        }
-
+        .logo-section a { display: block; }
         .logo-section img {
-            height: 60px; /* 設定圖片高度，可依需求調整 */
-            width: auto;  /* 寬度自動 */
+            height: 60px; /* 控制 Logo 高度 */
+            width: auto;
             display: block;
         }
 
