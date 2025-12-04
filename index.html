@@ -90,27 +90,9 @@
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 15px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; }
         
-        /* [新增] 動態數字區塊樣式 */
-        .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 60px;
-            padding: 0 10px;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 25px 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--sand-gold);
-            box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1);
-            flex: 1;
-            min-width: 250px;
-            max-width: 320px;
-            transition: transform 0.3s;
-        }
+        /* 數字統計區塊 */
+        .stats-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 60px; padding: 0 10px; }
+        .stat-card { background: rgba(255, 255, 255, 0.95); border-radius: 12px; padding: 25px 20px; text-align: center; border-bottom: 4px solid var(--sand-gold); box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1); flex: 1; min-width: 250px; max-width: 320px; transition: transform 0.3s; }
         .stat-card:hover { transform: translateY(-5px); }
         .stat-label { font-size: 1rem; color: #666; margin-bottom: 10px; font-weight: bold; }
         .stat-number { font-size: 4rem; font-weight: 800; color: var(--primary-brown); line-height: 1.2; }
@@ -119,7 +101,6 @@
         .stat-trend { color: var(--sand-gold); font-weight: bold; font-size: 0.9rem; margin-top: 8px; }
 
         .section-heading { text-align: center; font-size: 2rem; margin-top: 60px; margin-bottom: 30px; color: var(--primary-brown); text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
-        
         .wide-card { background: var(--card-bg); border-radius: 12px; padding: 40px; margin: 20px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); border-left: 5px solid var(--sand-gold); }
         .wide-card p { font-size: 1.15rem; line-height: 1.8; color: #4e342e; text-align: justify; }
         
@@ -136,6 +117,53 @@
         .feature-list { list-style: none; padding: 0; text-align: left; margin-top: 10px; }
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
         .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
+
+        /* [新增] 角色導航區塊樣式 (置於底部) */
+        .role-nav-container {
+            text-align: center;
+            margin-top: 80px; /* 與上方區塊保持距離 */
+            margin-bottom: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(255, 253, 245, 0.95); /* 與其他卡片風格一致 */
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
+        }
+        .role-nav-title {
+            font-size: 1.8rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold;
+        }
+        .role-nav-subtitle {
+            font-size: 1.1rem; color: #666; margin-bottom: 30px;
+        }
+        .role-nav-grid {
+            display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+        }
+        /* 圖片卡片樣式 */
+        .role-card {
+            flex: 1; min-width: 300px; max-width: 400px;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+            position: relative;
+            text-decoration: none; /* 移除連結底線 */
+            display: block;
+        }
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); /* 金色光暈 */
+        }
+        .role-card img {
+            width: 100%; height: auto; display: block;
+            border-bottom: 4px solid var(--sand-gold);
+        }
+        .role-label {
+            padding: 20px; font-size: 1.2rem; color: var(--primary-brown); font-weight: bold; background: #fff;
+        }
         
         @media screen and (max-width: 768px) { .logo-section { position: static; transform: none; margin: 0 auto; } header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } .right-section { align-items: center; width: 100%; } .hero-title { font-size: 1.8rem; } main { padding-top: 200px; } }
     </style>
@@ -285,28 +313,42 @@
                 </ul>
             </div>
         </div>
+
+        <div class="role-nav-container">
+            <h2 class="role-nav-title">立即開始您的旅程</h2>
+            <p class="role-nav-subtitle">選擇您的身分，體驗 SATA 平台帶來的影視創新</p>
+            <div class="role-nav-grid">
+                <a href="ai_analysis.html" class="role-card">
+                    <img src="images/creator_nav.png" alt="我是創作者 - 開始劇本分析">
+                    <div class="role-label">我是創作者：開始劇本分析</div>
+                </a>
+                <a href="script_database.html" class="role-card">
+                    <img src="images/investor_nav.png" alt="我是投資方 - 尋找劇本投資">
+                    <div class="role-label">我是投資方：尋找潛力劇本</div>
+                </a>
+            </div>
+        </div>
+
     </main>
 
     <script>
-        // 頁面載入時檢查登入狀態
         window.onload = function() {
             if (localStorage.getItem("sata_login") === "true") {
                 updateHeaderToLoggedIn();
             }
-            startCountingAnimation(); // 啟動數字動畫偵測
+            startCountingAnimation();
         }
 
-        // --- 動態數字動畫邏輯 ---
         function startCountingAnimation() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const numbers = entry.target.querySelectorAll('.stat-number');
                         numbers.forEach(num => animateValue(num));
-                        observer.unobserve(entry.target); // 動畫只跑一次
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.5 }); // 50% 可見時觸發
+            }, { threshold: 0.5 });
 
             const statsSection = document.getElementById('statsSection');
             if (statsSection) observer.observe(statsSection);
@@ -315,29 +357,26 @@
         function animateValue(obj) {
             const target = parseFloat(obj.getAttribute('data-target'));
             let start = 0;
-            const duration = 2000; // 動畫時間 2秒
+            const duration = 2000;
             const startTime = performance.now();
 
             function update(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
-                // 使用 easeOutQuart 讓動畫更平滑
                 const ease = 1 - Math.pow(1 - progress, 4);
                 
                 const current = start + (target - start) * ease;
-                obj.innerText = current.toFixed(2); // 保留兩位小數
+                obj.innerText = current.toFixed(2);
 
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 } else {
-                    obj.innerText = target; // 確保最後數字精準
+                    obj.innerText = target;
                 }
             }
             requestAnimationFrame(update);
         }
 
-        // --- UI 控制 ---
         function toggleNav() {
             var sidebar = document.getElementById("mySidebar");
             var overlay = document.getElementById("overlay");
@@ -354,11 +393,10 @@
             var modal = document.getElementById("memberModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
             if (modal.style.display === "flex") {
-                renderMemberTable(); // 打開時更新投資列表
+                renderMemberTable();
             }
         }
 
-        // --- 登入邏輯 ---
         function performLogin() {
             var user = document.getElementById("username").value;
             var pass = document.getElementById("password").value;
@@ -393,12 +431,11 @@
             }
         }
 
-        // --- 渲染投資表格 (關鍵更新) ---
         function renderMemberTable() {
             var tbody = document.getElementById("investment-table-body");
             var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
             
-            tbody.innerHTML = ""; // 清空
+            tbody.innerHTML = "";
 
             if (investments.length === 0) {
                 tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>";
