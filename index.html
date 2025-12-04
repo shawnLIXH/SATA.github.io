@@ -87,17 +87,17 @@
         main { padding-top: 150px; padding-bottom: 100px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
         
         .hero-section { text-align: center; margin-bottom: 40px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
-        .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 15px; letter-spacing: 3px; }
-        .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; }
+        .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 10px; letter-spacing: 3px; }
+        .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; margin-top: 10px; }
         
-        /* 新增 Logo 樣式 */
+        /* [新增] Logo 樣式 */
         .hero-logo {
-            width: 150px; /* 調整 Logo 大小 */
+            max-width: 180px; /* 控制 Logo 大小 */
             height: auto;
+            margin: 15px auto; /* 上下間距 */
             display: block;
-            margin: 10px auto 20px auto; /* 上下邊距，置中 */
         }
-        
+
         /* 數字統計區塊 */
         .stats-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 60px; padding: 0 10px; }
         .stat-card { background: rgba(255, 255, 255, 0.95); border-radius: 12px; padding: 25px 20px; text-align: center; border-bottom: 4px solid var(--sand-gold); box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1); flex: 1; min-width: 250px; max-width: 320px; transition: transform 0.3s; }
@@ -240,9 +240,7 @@
     <main>
         <section class="hero-section">
             <h1 class="hero-title">聚文字之細沙，築光影之高塔</h1>
-            
-            <img src="logo.jpg" alt="SATA Logo" class="hero-logo">
-            
+            <img src="images/logo.jpg" alt="SATA Logo" class="hero-logo">
             <p class="hero-subtitle">AI 影視孵化與投資平台<br>讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策</p>
         </section>
 
