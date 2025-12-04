@@ -38,18 +38,14 @@
         
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
-        
         .logo-section { font-size: 28px; font-weight: bold; letter-spacing: 2px; text-align: center; border: 2px solid var(--primary-brown); padding: 10px 40px; background: #fff; color: var(--primary-brown); position: absolute; left: 50%; transform: translateX(-50%); }
-        
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
         .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--border-color); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
-        
         .member-menu { font-size: 14px; font-weight: bold; color: var(--primary-brown); }
         .member-link { cursor: pointer; color: var(--primary-brown); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
         .divider { margin: 0 8px; color: #ccc; }
-
         .search-container input { padding: 5px 10px; border: 1px solid var(--border-color); font-size: 14px; width: 250px; outline: none; background-color: #fff; }
 
         /* --- Sidebar --- */
@@ -69,7 +65,6 @@
         .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .login-submit-btn:hover { background-color: #4e342e; }
-
         .manage-section { margin-bottom: 30px; }
         .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
         .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -86,40 +81,56 @@
         /* --- Main Content --- */
         main { padding-top: 150px; padding-bottom: 100px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
         
-        .hero-section { text-align: center; margin-bottom: 40px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
+        .hero-section { text-align: center; margin-bottom: 30px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 15px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; }
         
-        /* [新增] 動態數字區塊樣式 */
-        .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 60px;
-            padding: 0 10px;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 25px 20px;
+        /* [新增] 角色導航區塊樣式 */
+        .role-nav-container {
             text-align: center;
-            border-bottom: 4px solid var(--sand-gold);
-            box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1);
-            flex: 1;
-            min-width: 250px;
-            max-width: 320px;
-            transition: transform 0.3s;
+            margin-bottom: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
         }
+        .role-nav-title {
+            font-size: 1.1rem; color: #666; margin-bottom: 20px; font-weight: normal; letter-spacing: 1px;
+        }
+        .role-nav-grid {
+            display: flex; gap: 30px; justify-content: center; flex-wrap: wrap;
+        }
+        .role-card {
+            flex: 1; min-width: 300px; max-width: 450px;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+            position: relative;
+        }
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); /* 金色光暈 */
+        }
+        .role-card a {
+            display: block; width: 100%; height: 100%; text-decoration: none;
+        }
+        .role-card img {
+            width: 100%; height: auto; display: block;
+            border-bottom: 4px solid var(--sand-gold);
+        }
+        
+        /* [調整] 數字區塊 */
+        .stats-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 60px; padding: 0 10px; }
+        .stat-card { background: rgba(255, 255, 255, 0.95); border-radius: 12px; padding: 25px 20px; text-align: center; border-bottom: 4px solid var(--sand-gold); box-shadow: 0 8px 20px rgba(93, 64, 55, 0.1); flex: 1; min-width: 250px; max-width: 320px; transition: transform 0.3s; }
         .stat-card:hover { transform: translateY(-5px); }
         .stat-label { font-size: 1rem; color: #666; margin-bottom: 10px; font-weight: bold; }
-        .stat-number { font-size: 4rem; font-weight: 800; color: var(--primary-brown); line-height: 1.2; }
+        .stat-number { font-size: 4.5rem; font-weight: 800; color: var(--primary-brown); line-height: 1.2; }
         .stat-unit { font-size: 1rem; color: #888; font-weight: normal; margin-left: 5px; }
         .stat-sub { font-size: 0.9rem; margin-top: 8px; color: #2E7D32; font-weight: bold; }
         .stat-trend { color: var(--sand-gold); font-weight: bold; font-size: 0.9rem; margin-top: 8px; }
 
         .section-heading { text-align: center; font-size: 2rem; margin-top: 60px; margin-bottom: 30px; color: var(--primary-brown); text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
-        
         .wide-card { background: var(--card-bg); border-radius: 12px; padding: 40px; margin: 20px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); border-left: 5px solid var(--sand-gold); }
         .wide-card p { font-size: 1.15rem; line-height: 1.8; color: #4e342e; text-align: justify; }
         
@@ -207,6 +218,22 @@
             <p class="hero-subtitle">AI 影視孵化與投資平台<br>讓影視投資不再是高風險的盲盒遊戲，而是基於數據的精準決策</p>
         </section>
 
+        <div class="role-nav-container">
+            <p class="role-nav-title">請選擇您的身分，開始探索 SATA 平台服務</p>
+            <div class="role-nav-grid">
+                <div class="role-card">
+                    <a href="ai_analysis.html">
+                        <img src="images/creator_nav.png" alt="我是創作者 - 開始劇本分析">
+                    </a>
+                </div>
+                <div class="role-card">
+                    <a href="script_database.html">
+                        <img src="images/investor_nav.png" alt="我是投資方 - 尋找劇本投資">
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <div class="stats-container" id="statsSection">
             <div class="stat-card">
                 <div class="stat-label">2025 台灣國片總票房</div>
@@ -288,25 +315,23 @@
     </main>
 
     <script>
-        // 頁面載入時檢查登入狀態
         window.onload = function() {
             if (localStorage.getItem("sata_login") === "true") {
                 updateHeaderToLoggedIn();
             }
-            startCountingAnimation(); // 啟動數字動畫偵測
+            startCountingAnimation();
         }
 
-        // --- 動態數字動畫邏輯 ---
         function startCountingAnimation() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const numbers = entry.target.querySelectorAll('.stat-number');
                         numbers.forEach(num => animateValue(num));
-                        observer.unobserve(entry.target); // 動畫只跑一次
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.5 }); // 50% 可見時觸發
+            }, { threshold: 0.5 });
 
             const statsSection = document.getElementById('statsSection');
             if (statsSection) observer.observe(statsSection);
@@ -315,29 +340,26 @@
         function animateValue(obj) {
             const target = parseFloat(obj.getAttribute('data-target'));
             let start = 0;
-            const duration = 2000; // 動畫時間 2秒
+            const duration = 2000;
             const startTime = performance.now();
 
             function update(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
-                // 使用 easeOutQuart 讓動畫更平滑
                 const ease = 1 - Math.pow(1 - progress, 4);
                 
                 const current = start + (target - start) * ease;
-                obj.innerText = current.toFixed(2); // 保留兩位小數
+                obj.innerText = current.toFixed(2);
 
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 } else {
-                    obj.innerText = target; // 確保最後數字精準
+                    obj.innerText = target;
                 }
             }
             requestAnimationFrame(update);
         }
 
-        // --- UI 控制 ---
         function toggleNav() {
             var sidebar = document.getElementById("mySidebar");
             var overlay = document.getElementById("overlay");
@@ -354,11 +376,10 @@
             var modal = document.getElementById("memberModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
             if (modal.style.display === "flex") {
-                renderMemberTable(); // 打開時更新投資列表
+                renderMemberTable();
             }
         }
 
-        // --- 登入邏輯 ---
         function performLogin() {
             var user = document.getElementById("username").value;
             var pass = document.getElementById("password").value;
@@ -393,12 +414,11 @@
             }
         }
 
-        // --- 渲染投資表格 (關鍵更新) ---
         function renderMemberTable() {
             var tbody = document.getElementById("investment-table-body");
             var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
             
-            tbody.innerHTML = ""; // 清空
+            tbody.innerHTML = "";
 
             if (investments.length === 0) {
                 tbody.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>尚無投資意願</td></tr>";
