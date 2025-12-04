@@ -40,23 +40,20 @@
         .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--border-color); color: var(--primary-brown); width: 50px; text-align: center; transition: 0.3s; }
         .menu-btn:hover { background-color: var(--warm-white); }
         
-        /* 修改 Logo 區域樣式，以適應圖片 */
+        /* [修改] Logo 區域樣式，改為適應圖片 */
         .logo-section { 
             position: absolute; 
             left: 50%; 
             transform: translateX(-50%); 
-            display: flex; /* 確保圖片垂直居中 */
-            align-items: center;
+            display: flex; 
+            align-items: center; 
             justify-content: center;
         }
 
-        .logo-section a {
-            display: block; /* 讓超連結包含整張圖片 */
-        }
-
+        /* [新增] 讓 Logo 圖片有合適的高度 */
         .logo-section img {
-            height: 60px; /* 設定圖片高度，可依需求調整 */
-            width: auto;  /* 寬度自動 */
+            height: 60px; /* 根據 Header 高度 (100px) 設定適當大小 */
+            width: auto;
             display: block;
         }
         
@@ -103,13 +100,13 @@
         .action-btn:hover { background-color: var(--sand-gold); color: white; }
 
         /* --- Main Content --- */
-        main { flex: 1; padding-top: 150px; padding-bottom: 50px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        main { padding-top: 150px; padding-bottom: 100px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
         
         .hero-section { text-align: center; margin-bottom: 40px; padding: 40px 30px; background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(250, 245, 230, 0.85)); border-radius: 15px; box-shadow: 0 4px 20px rgba(197, 160, 101, 0.15); max-width: 900px; margin-left: auto; margin-right: auto; border: 1px solid var(--border-color); }
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 10px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; margin-top: 10px; }
         
-        /* Logo 樣式 */
+        /* Logo 樣式 (中間內容區塊的 Logo) */
         .hero-logo {
             max-width: 180px; height: auto; margin: 15px auto; display: block;
         }
@@ -142,19 +139,54 @@
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
         .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
 
-        /* 角色導航區塊樣式 */
+        /* 角色導航區塊樣式 (置於底部) */
         .role-nav-container {
-            text-align: center; margin-top: 80px; margin-bottom: 50px; max-width: 1000px; margin-left: auto; margin-right: auto; background: rgba(255, 253, 245, 0.95); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
+            text-align: center;
+            margin-top: 80px; /* 與上方區塊保持距離 */
+            margin-bottom: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(255, 253, 245, 0.95); /* 與其他卡片風格一致 */
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
         }
-        .role-nav-title { font-size: 1.8rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold; }
-        .role-nav-subtitle { font-size: 1.1rem; color: #666; margin-bottom: 30px; }
-        .role-nav-grid { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
-        .role-card { flex: 1; min-width: 300px; max-width: 400px; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer; background: #fff; position: relative; text-decoration: none; display: block; }
-        .role-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); }
-        .role-card img { width: 100%; height: auto; display: block; border-bottom: 4px solid var(--sand-gold); }
-        .role-label { padding: 20px; font-size: 1.2rem; color: var(--primary-brown); font-weight: bold; background: #fff; }
+        .role-nav-title {
+            font-size: 1.8rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold;
+        }
+        .role-nav-subtitle {
+            font-size: 1.1rem; color: #666; margin-bottom: 30px;
+        }
+        .role-nav-grid {
+            display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+        }
+        /* 圖片卡片樣式 */
+        .role-card {
+            flex: 1; min-width: 300px; max-width: 400px;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            background: #fff;
+            position: relative;
+            text-decoration: none; /* 移除連結底線 */
+            display: block;
+        }
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); /* 金色光暈 */
+        }
+        .role-card img {
+            width: 100%; height: auto; display: block;
+            border-bottom: 4px solid var(--sand-gold);
+        }
+        .role-label {
+            padding: 20px; font-size: 1.2rem; color: var(--primary-brown); font-weight: bold; background: #fff;
+        }
         
-        /* --- [新增] Footer 頁腳樣式 --- */
+        /* Footer 樣式 */
         footer {
             background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
         }
@@ -174,7 +206,7 @@
             header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } 
             .right-section { align-items: center; width: 100%; } 
             .hero-title { font-size: 1.8rem; } 
-            main { padding-top: 200px; padding-bottom: 20px; } 
+            main { padding-top: 200px; } 
             .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
         }
     </style>
@@ -229,11 +261,13 @@
 
     <header>
         <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
+        
         <div class="logo-section">
             <a href="index.html">
                 <img src="images/logo_name.jpg" alt="劇沙成塔">
             </a>
         </div>
+
         <div class="right-section">
             <div id="headerRightSection">
                 <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
@@ -344,6 +378,7 @@
                 </a>
             </div>
         </div>
+
     </main>
 
     <footer>
