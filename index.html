@@ -19,7 +19,7 @@
             margin: 0; padding: 0;
             font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
             min-height: 100vh;
-            display: flex; flex-direction: column; /* 讓 footer 能置底 */
+            display: flex; flex-direction: column;
             color: var(--primary-brown);
             background-image: url('background.png'); 
             background-position: center bottom;
@@ -29,7 +29,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Header (修改配色為深色，與 Footer 一致) --- */
+        /* --- Header --- */
         header { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100px; 
             background: var(--primary-brown); /* 深咖啡色背景 */
@@ -39,7 +39,6 @@
             z-index: 1000; 
         }
 
-        /* 選單按鈕 (淺色以適應深背景) */
         .menu-btn { 
             font-size: 24px; cursor: pointer; padding: 10px; 
             border: 1px solid var(--warm-white); 
@@ -52,26 +51,17 @@
             border-color: var(--sand-gold);
         }
         
-        /* Logo 區域樣式 (圖片) */
         .logo-section { 
-            position: absolute; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
+            position: absolute; left: 50%; transform: translateX(-50%); 
+            display: flex; align-items: center; justify-content: center;
         }
         .logo-section a { display: block; }
         .logo-section img {
-            height: 60px; /* 控制 Logo 高度 */
-            width: auto;
-            display: block;
-            border-radius: 5px;
+            height: 60px; width: auto; display: block; border-radius: 5px;
         }
         
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
         
-        /* 登入按鈕 */
         .login-btn { 
             text-decoration: none; color: var(--primary-brown); font-weight: bold; 
             border: 1px solid var(--sand-gold); padding: 5px 20px; 
@@ -80,7 +70,6 @@
         }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
         
-        /* Header 文字改為淺色 */
         .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); }
         .member-link { cursor: pointer; color: var(--warm-white); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
@@ -126,10 +115,7 @@
         .hero-title { font-size: 2.5rem; color: var(--primary-brown); margin-bottom: 10px; letter-spacing: 3px; }
         .hero-subtitle { font-size: 1.2rem; color: #6d5645; line-height: 1.8; margin-top: 10px; }
         
-        /* Logo 樣式 */
-        .hero-logo {
-            max-width: 180px; height: auto; margin: 15px auto; display: block;
-        }
+        .hero-logo { max-width: 180px; height: auto; margin: 15px auto; display: block; }
 
         /* 數字統計區塊 */
         .stats-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 60px; padding: 0 10px; }
@@ -159,10 +145,7 @@
         .feature-list li { margin-bottom: 12px; padding-left: 25px; position: relative; color: #4e342e; }
         .feature-list li::before { content: "\f00c"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--sand-gold); position: absolute; left: 0; top: 2px; }
 
-        /* 角色導航區塊樣式 */
-        .role-nav-container {
-            text-align: center; margin-top: 80px; margin-bottom: 50px; max-width: 1000px; margin-left: auto; margin-right: auto; background: rgba(255, 253, 245, 0.95); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
-        }
+        .role-nav-container { text-align: center; margin-top: 80px; margin-bottom: 50px; max-width: 1000px; margin-left: auto; margin-right: auto; background: rgba(255, 253, 245, 0.95); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); }
         .role-nav-title { font-size: 1.8rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold; }
         .role-nav-subtitle { font-size: 1.1rem; color: #666; margin-bottom: 30px; }
         .role-nav-grid { display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; }
@@ -170,32 +153,8 @@
         .role-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(197, 160, 101, 0.3); }
         .role-card img { width: 100%; height: auto; display: block; border-bottom: 4px solid var(--sand-gold); }
         .role-label { padding: 20px; font-size: 1.2rem; color: var(--primary-brown); font-weight: bold; background: #fff; }
-        
-        /* --- Footer 頁腳樣式 --- */
-        footer {
-            background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
-        }
-        .footer-container { max-width: 1000px; margin: 0 auto; text-align: center; }
-        .footer-slogan { font-size: 1.6rem; font-weight: bold; color: var(--sand-gold); margin-bottom: 40px; letter-spacing: 3px; }
-        .footer-links-container { display: flex; justify-content: center; gap: 80px; margin-bottom: 50px; flex-wrap: wrap; text-align: left; }
-        .footer-column h4 { color: var(--sand-gold); font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid rgba(197, 160, 101, 0.5); padding-bottom: 10px; display: inline-block; }
-        .footer-column ul { list-style: none; padding: 0; margin: 0; }
-        .footer-column ul li { margin-bottom: 15px; }
-        .footer-column ul li a { color: rgba(250, 249, 246, 0.8); text-decoration: none; transition: 0.3s; font-size: 1.1rem; }
-        .footer-column ul li a:hover { color: var(--sand-gold); padding-left: 5px; }
-        .footer-bottom { border-top: 1px solid rgba(250, 249, 246, 0.1); padding-top: 25px; font-size: 0.9rem; color: rgba(250, 249, 246, 0.6); line-height: 1.8; }
-        .footer-contact { color: var(--sand-gold); font-weight: bold; margin-bottom: 10px; font-size: 1rem; }
 
-        @media screen and (max-width: 768px) { 
-            .logo-section { position: static; transform: none; margin: 0 auto; } 
-            header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } 
-            .right-section { align-items: center; width: 100%; } 
-            .hero-title { font-size: 1.8rem; } 
-            main { padding-top: 200px; padding-bottom: 20px; } 
-            .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
-        }
-
-        /* --- 機器人樣式 V2.0 --- */
+        /* --- 機器人樣式 V2.1 (強化錯誤顯示) --- */
         #sata-chat-toggle {
             position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
             background-color: #5D4037; color: white; border-radius: 50%;
@@ -224,9 +183,24 @@
         #chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; outline: none; }
         #chat-send { background-color: #5D4037; color: white; border: none; padding: 0 15px; border-radius: 5px; cursor: pointer; }
         .api-key-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+
+        /* Footer 樣式 */
+        footer { background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative; }
+        .footer-container { max-width: 1000px; margin: 0 auto; text-align: center; }
+        .footer-slogan { font-size: 1.6rem; font-weight: bold; color: var(--sand-gold); margin-bottom: 40px; letter-spacing: 3px; }
+        .footer-links-container { display: flex; justify-content: center; gap: 80px; margin-bottom: 50px; flex-wrap: wrap; text-align: left; }
+        .footer-column h4 { color: var(--sand-gold); font-size: 1.3rem; margin-bottom: 20px; border-bottom: 2px solid rgba(197, 160, 101, 0.5); padding-bottom: 10px; display: inline-block; }
+        .footer-column ul { list-style: none; padding: 0; margin: 0; }
+        .footer-column ul li { margin-bottom: 15px; }
+        .footer-column ul li a { color: rgba(250, 249, 246, 0.8); text-decoration: none; transition: 0.3s; font-size: 1.1rem; }
+        .footer-column ul li a:hover { color: var(--sand-gold); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid rgba(250, 249, 246, 0.1); padding-top: 25px; font-size: 0.9rem; color: rgba(250, 249, 246, 0.6); line-height: 1.8; }
+        .footer-contact { color: var(--sand-gold); font-weight: bold; margin-bottom: 10px; font-size: 1rem; }
+        @media screen and (max-width: 768px) { .logo-section { position: static; transform: none; margin: 0 auto; } header { height: auto; padding: 15px; flex-wrap: wrap; justify-content: center; gap: 15px; } .right-section { align-items: center; width: 100%; } .hero-title { font-size: 1.8rem; } main { padding-top: 200px; } .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; } }
     </style>
 </head>
 <body>
+
     <div id="overlay" onclick="toggleNav()"></div>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="close-btn" onclick="toggleNav()">&times;</a>
@@ -267,8 +241,7 @@
                 <h3><i class="fas fa-hand-holding-usd"></i> 投資意願管理</h3>
                 <table class="script-table">
                     <thead><tr><th>已標記投資意願之劇本</th><th>類型</th><th>狀態</th></tr></thead>
-                    <tbody id="investment-table-body">
-                        </tbody>
+                    <tbody id="investment-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -276,13 +249,11 @@
 
     <header>
         <div class="menu-btn" onclick="toggleNav()"><i class="fas fa-bars"></i></div>
-        
         <div class="logo-section">
             <a href="index.html">
                 <img src="images/logo_name.jpg" alt="劇沙成塔">
             </a>
         </div>
-
         <div class="right-section">
             <div id="headerRightSection">
                 <a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>
