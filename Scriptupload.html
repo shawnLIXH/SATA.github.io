@@ -6,79 +6,35 @@
     <title>劇本上架 - 劇沙成塔</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* --- 基礎 CSS --- */
+        /* --- 基礎設定 --- */
         :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         
-        /* [修改] 加入 display: flex; flex-direction: column; 以便讓 Footer 置底 */
+        /* 加入 flex: column 讓 Footer 置底 */
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; display: flex; flex-direction: column; }
         
-        /* --- Header (修改配色) --- */
-        header { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100px; 
-            /* [修改] 背景改為深咖啡色 (與頁尾一致) */
-            background: var(--primary-brown); 
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
-            box-sizing: border-box; 
-            border-bottom: 2px solid var(--sand-gold); /* 邊框改為金色 */
-            z-index: 1000; 
-        }
-
-        /* [修改] 選單按鈕改為淺色 */
-        .menu-btn { 
-            font-size: 24px; cursor: pointer; padding: 10px; 
-            border: 1px solid var(--warm-white); 
-            color: var(--warm-white); /* 淺色文字 */
-            width: 50px; text-align: center; transition: 0.3s; 
-        }
-        .menu-btn:hover { 
-            background-color: var(--sand-gold); 
-            color: var(--primary-brown); 
-            border-color: var(--sand-gold);
-        }
-
-        /* [修改] Logo 區域樣式 (圖片) */
-        .logo-section { 
-            position: absolute; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-        }
+        /* --- Header --- */
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: var(--primary-brown); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--sand-gold); z-index: 1000; }
+        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--warm-white); color: var(--warm-white); width: 50px; text-align: center; transition: 0.3s; }
+        .menu-btn:hover { background-color: var(--sand-gold); color: var(--primary-brown); border-color: var(--sand-gold); }
+        .logo-section { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .logo-section a { display: block; }
-        .logo-section img {
-            height: 60px; /* 控制 Logo 高度 */
-            width: auto;
-            display: block;
-            border-radius: 5px;
-        }
-        
-        /* 右側區塊 */
+        .logo-section img { height: 60px; width: auto; display: block; border-radius: 5px; }
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
-        
-        /* 登入按鈕保持白色背景 */
-        .login-btn { 
-            text-decoration: none; color: var(--primary-brown); font-weight: bold; 
-            border: 1px solid var(--sand-gold); padding: 5px 20px; 
-            background: #fff; display: inline-block; font-size: 14px; 
-            transition: 0.3s; cursor: pointer; border-radius: 3px;
-        }
+        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--sand-gold); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; border-radius: 3px; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
-        
-        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); } /* 修改文字顏色 */
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); }
         .member-link { cursor: pointer; color: var(--warm-white); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
-        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); } /* 修改分隔線顏色 */
-        
+        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); }
         .search-container input { padding: 5px 10px; border: none; font-size: 14px; width: 250px; outline: none; background-color: rgba(255,255,255,0.9); border-radius: 3px; }
-
+        
         /* Sidebar */
         .sidebar { height: 100%; width: 250px; position: fixed; z-index: 2000; top: 0; left: -250px; background-color: var(--warm-white); border-right: 1px solid var(--border-color); overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 2px 0 5px rgba(93, 64, 55, 0.1); }
         .sidebar a { padding: 15px 25px; text-decoration: none; font-size: 18px; color: var(--primary-brown); display: block; transition: 0.3s; border-bottom: 1px solid #eee; }
         .sidebar a:hover { background-color: #f1f1f1; color: var(--sand-gold); }
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
-
+        
         /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
@@ -89,8 +45,6 @@
         .login-form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         .login-submit-btn { width: 100%; padding: 10px; background-color: var(--primary-brown); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .login-submit-btn:hover { background-color: #4e342e; }
-
-        /* Manage Section */
         .manage-section { margin-bottom: 30px; }
         .manage-section h3 { border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--primary-brown); margin-top: 0; }
         .script-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -104,10 +58,8 @@
         .action-btn { display: inline-block; padding: 4px 10px; margin-right: 5px; background-color: var(--warm-white); border: 1px solid var(--border-color); color: var(--primary-brown); border-radius: 3px; cursor: pointer; font-size: 12px; text-decoration: none; }
         .action-btn:hover { background-color: var(--sand-gold); color: white; }
 
-        /* Script Page Specific */
-        /* [修改] 加入 flex: 1; 讓內容撐開高度，把 Footer 擠下去 */
+        /* 本頁專屬樣式 */
         main { padding-top: 150px; max-width: 900px; margin: 0 auto; padding-bottom: 100px; flex: 1; width: 100%; padding-left: 20px; padding-right: 20px; box-sizing: border-box; }
-        
         .analysis-card { background: var(--card-bg); border-radius: 12px; padding: 40px; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); text-align: center; border-top: 5px solid var(--sand-gold); margin-bottom: 40px; }
         .upload-area { border: 2px dashed var(--sand-gold); border-radius: 10px; padding: 50px; margin: 30px 0; background: #fff; cursor: pointer; transition: 0.3s; }
         .upload-area:hover { background-color: #fdfdfd; border-color: var(--primary-brown); }
@@ -122,10 +74,8 @@
         .feature-item i { color: var(--sand-gold); font-size: 1.4rem; }
         .feature-item p { color: #555; line-height: 1.5; font-size: 0.95rem; margin-bottom: 0; }
 
-        /* --- [新增] Footer 頁腳樣式 --- */
-        footer {
-            background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
-        }
+        /* Footer */
+        footer { background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative; }
         .footer-container { max-width: 1000px; margin: 0 auto; text-align: center; }
         .footer-slogan { font-size: 1.6rem; font-weight: bold; color: var(--sand-gold); margin-bottom: 40px; letter-spacing: 3px; }
         .footer-links-container { display: flex; justify-content: center; gap: 80px; margin-bottom: 50px; flex-wrap: wrap; text-align: left; }
@@ -140,6 +90,66 @@
         @media screen and (max-width: 768px) { 
             .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
         }
+
+        /* ==========================================================================
+           [新增] SATA Chatbot Widget 樣式 (聊天機器人專用)
+           ========================================================================== */
+        /* [重要] 左右切換箭頭與容器樣式 (Carousel UI) */
+        .quick-reply-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 10px; position: relative; padding: 0 5px; box-sizing: border-box; }
+        
+        /* 左右箭頭按鈕 */
+        .scroll-btn { width: 28px; height: 28px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.95); border: 1px solid var(--sand-gold); color: var(--primary-brown); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); flex-shrink: 0; transition: all 0.2s; }
+        .scroll-btn:hover { background-color: var(--sand-gold); color: white; }
+        .scroll-btn:active { transform: scale(0.9); }
+
+        /* 隱藏捲軸的容器 */
+        .quick-reply-container { display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth; padding: 5px; width: 100%; scrollbar-width: none; -ms-overflow-style: none; }
+        .quick-reply-container::-webkit-scrollbar { display: none; }
+
+        /* 卡片本體 */
+        .quick-reply-btn { background-color: #fff; border: 1px solid var(--border-color); color: var(--primary-brown); padding: 12px 10px; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(93, 64, 55, 0.08); font-family: "Microsoft JhengHei", sans-serif; min-width: 130px; max-width: 130px; height: 100px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; white-space: normal; line-height: 1.3; }
+        .quick-reply-btn:hover { background-color: var(--sand-gold); color: #fff; transform: translateY(-3px); border-color: var(--sand-gold); }
+        .quick-reply-btn:hover .quick-reply-icon { color: #fff; }
+        .quick-reply-btn.category { border-top: 3px solid var(--sand-gold); background: linear-gradient(to bottom, #fff 80%, #FFFDF5 100%); }
+        .quick-reply-icon { font-size: 1.6rem; margin-bottom: 8px; color: var(--sand-gold); transition: color 0.2s; }
+
+        /* Chatbot 一般樣式 */
+        #chat-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; font-family: "Microsoft JhengHei", sans-serif; }
+        #chat-toggle-btn { width: 60px; height: 60px; background-color: var(--primary-brown); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.3s, background 0.3s; border: 2px solid var(--sand-gold); }
+        #chat-toggle-btn:hover { transform: scale(1.1); background-color: #4e342e; }
+        #chat-toggle-btn i { color: var(--sand-gold); font-size: 28px; }
+        
+        /* 聊天視窗主體 (Fix: 確保高度正確計算) */
+        #chat-window { width: 350px; height: 500px; background-color: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: absolute; bottom: 80px; right: 0; display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border-color); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .chat-header { background-color: var(--primary-brown); color: var(--warm-white); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sand-gold); flex-shrink: 0; }
+        .chat-header h4 { margin: 0; font-size: 1.1rem; }
+        .close-chat { cursor: pointer; font-size: 1.2rem; }
+        
+        #api-key-overlay { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; background: #fafafa; overflow-y: auto; }
+        #api-key-overlay p { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        .api-input-field { width: 90%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .save-api-btn { background-color: var(--primary-brown); color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .save-api-btn:hover { background-color: #4e342e; }
+        
+        .reset-btn-inline { background-color: var(--primary-brown); color: #fff; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; width: 100%; margin-top: 5px; border: 1px solid var(--sand-gold); }
+        .reset-btn-inline:hover { background-color: #fff; color: var(--primary-brown); }
+
+        #chat-interface { display: none; flex-direction: column; height: 100%; flex: 1; overflow: hidden; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; background-color: #FAF9F6; display: flex; flex-direction: column; gap: 10px; }
+        
+        .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; }
+        .message.user { align-self: flex-end; background-color: var(--primary-brown); color: #fff; border-bottom-right-radius: 2px; }
+        .message.bot { align-self: flex-start; background-color: #fff; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .message.bot strong { color: var(--primary-brown); }
+        
+        .chat-input-area { padding: 10px; background-color: #fff; border-top: 1px solid #eee; display: flex; gap: 10px; flex-shrink: 0; z-index: 10; }
+        #chat-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        #chat-input:disabled { background-color: #f5f5f5; cursor: not-allowed; }
+        #chat-send-btn { background-color: var(--sand-gold); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        #chat-send-btn:hover { background-color: var(--primary-brown); }
+        .typing-indicator { font-size: 0.8rem; color: #888; margin-left: 10px; display: none; padding-bottom: 5px; padding-left: 15px;}
     </style>
 </head>
 <body>
@@ -249,6 +259,36 @@
         </div>
     </main>
 
+    <div id="chat-widget-container">
+        <div id="chat-window">
+            <div class="chat-header">
+                <h4><i class="fas fa-robot"></i> SATA聊天小夥伴-保羅</h4>
+                <span class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></span>
+            </div>
+            
+            <div id="api-key-overlay">
+                <i class="fas fa-key" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                <p>為了啟動 SATA 智能顧問，<br>請輸入您的 Google Gemini API Key</p>
+                <input type="password" id="api-key-input" class="api-input-field" placeholder="sk-...">
+                <div id="api-error-msg" style="color:red; font-size:0.85rem; display:none; margin-bottom:10px;"></div>
+                <button class="save-api-btn" onclick="saveApiKey()">啟動 AI 服務</button>
+            </div>
+
+            <div id="chat-interface">
+                <div id="chat-messages"></div>
+                <div class="typing-indicator" id="typing-indicator">SATA AI 正在思考中...</div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="請輸入問題..." onkeypress="handleEnter(event)">
+                    <button id="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="chat-toggle-btn" onclick="toggleChat()">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-container">
             <div class="footer-slogan">
@@ -285,6 +325,7 @@
             if (localStorage.getItem("sata_login") === "true") {
                 updateHeaderToLoggedIn();
             }
+            // Chatbot init is handled in chatbot.js
         }
 
         // --- UI 控制 ---
@@ -302,7 +343,7 @@
             var modal = document.getElementById("memberModal");
             modal.style.display = (modal.style.display === "flex") ? "none" : "flex";
             if (modal.style.display === "flex") {
-                renderMemberTable(); // 打開時更新列表
+                renderMemberTable();
             }
         }
 
@@ -347,7 +388,8 @@
                 return;
             }
             investments.forEach(item => {
-                tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`;
+                var row = `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`;
+                tbody.innerHTML += row;
             });
         }
 
@@ -378,5 +420,7 @@
             }
         }
     </script>
+
+    <script src="chatbot.js"></script>
 </body>
 </html>
