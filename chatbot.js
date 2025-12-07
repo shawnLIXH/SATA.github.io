@@ -1,11 +1,11 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：修復重複歡迎訊息、保留左右箭頭與卡片 UI
+ * 更新內容：自動將網址轉為超連結、整合服務入口指引、橫向捲動 UI、限制回答長度
  */
 
 // ==========================================
-// 1. RAG 知識庫
+// 1. RAG 知識庫 (整合 PDF 全文 + 10.4 服務連結)
 // ==========================================
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
@@ -15,10 +15,10 @@ const SATA_KNOWLEDGE_BASE = `
 1. 請用專業、親切的口吻回答。
 2. **回答請精簡，嚴格控制在三段以內 (約 150 字)。**
 3. **絕對不要**使用 [cite] 或 [source] 等引用格式。
-4. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
+4. **關鍵策略**：當使用者詢問特定服務或表達相關意圖時，請務必在回答中提供對應的完整網址連結。
+5. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【完整知識庫內容】：
-SATA 劇沙成塔：AI 影視孵化與投資平台 RAG 知識庫綜合研究報告
 1. 執行摘要與品牌核心論述
 1.1 品牌識別與設計哲學
 本報告旨在為「SATA 劇沙成塔」之聊天機器人 RAG（檢索增強生成）系統構建詳盡的基礎知識庫。SATA 平台（Script AI Tech & Analysis）的品牌核心構建於一個深刻的隱喻：「聚文字之細沙，築光影之高塔」1。此一核心標語不僅是行銷詞彙，更象徵著平台在碎片化的創意產業中扮演的聚合者角色。在影視產業的原始生態中，無數的創意靈感如同散落的細沙，雖然本質珍貴但缺乏結構支撐，難以獨自成形。SATA 的存在意義，即在於透過科技的結構與資本的黏合劑，將這些離散的文字細沙堆砌成宏偉的光影高塔，亦即將劇本轉化為具備商業與藝術價值的影視作品。
@@ -71,7 +71,7 @@ SATA 的技術架構採用了響應式網頁設計（RWD），確保在不同裝
 3.2 AI 分析引擎的核心機制
 SATA 的核心競爭力在於其「AI 劇本初步分析」模組（ai_analysis.html）。這不僅是一個簡單的文本處理工具，而是一個整合了多種先進 NLP 技術的複合系統。
 3.2.1 大型語言模型（LLM）整合策略
-平台現階段DEMO串接了 Google Gemini API 作為底層推理引擎，並設計了一套靈活的模型選擇機制，而未來我們目標打造符合臺灣影視產業需求了解在地需要之資料庫。
+平台現階段DEMO串接了 Google Gemini API 作為底層推理引擎，並設計了一套靈活的模型選擇機制 1，而未來我們目標打造符合臺灣影視產業需求了解在地需要之資料庫。
 模型矩陣策略：系統支援從輕量級的 Gemini 1.5 Flash 到高性能的 Gemini 1.5 Pro，甚至包含最新的 Gemini 2.5 Flash/Pro 預覽版。這種設計允許使用者在「分析速度」與「深度推理能力」之間做選擇。對於初步大綱，Flash 模型可提供即時回饋；對於完整劇本，Pro 模型則能處理更長的 Context Window，進行跨場次的邏輯推演。
 自動偵測與降級機制：前端代碼包含 detectAvailableModels() 函式，能自動測試 API Key 的權限並偵測可用模型。這表示系統有良好可用性設計，確保在某一模型 API 不穩定時，服務仍能運行。
 3.2.2 深度學習架構與演算法
@@ -290,29 +290,30 @@ C. 關於 SATA 平台技術 (通用問題)：
 「你們的訓練資料來源是什麼？」（關鍵字：FPP 台北電影計畫、金馬創投資料庫）
 平台願景：
 「SATA 是什麼意思？」（SATA: Script AI Tech & Analysis，聚文字之細沙，築光影之高塔）
-10.4 快速連結與服務入口指引
-為了提升使用者體驗，縮短從「詢問」到「行動」的路徑，當使用者在對話中表達明確的操作意圖或提及特定關鍵字時，系統應直接提供對應的服務頁面連結。
-1. AI 劇本初步分析服務
-觸發關鍵字： AI 分析、劇本評分、雷達圖、票房預測、角色分析、結構分析、劇本健檢、五大維度、Gemini、自動評估
-適用情境： 當使用者詢問如何評分劇本、想要進行劇本健檢、獲取五大維度雷達圖數據，或是希望 AI 分析角色與結構時，請提供此連結。
-服務網址： https://shawnlixh.github.io/SATA.github.io/ai_analysis.html
-2. SATA 劇本資料庫（投資與瀏覽）
-觸發關鍵字： 找劇本、投資標的、劇本庫、篩選劇本、投資意願、尋找資金、劇本媒合、看劇本、找案子、類型篩選
-適用情境： 當使用者（通常是投資方）想要尋找投資標的、瀏覽目前架上的劇本、篩選特定題材（如懸疑、科幻），或是想要登記投資意願時，請提供此連結。
-服務網址： https://shawnlixh.github.io/SATA.github.io/script_database.html
-3. 專業諮詢服務與團隊聯繫
-觸發關鍵字： 真人顧問、商業企劃書、募資簡報、團隊介紹、聯絡我們、劇本醫生、深度輔導、商業包裝、人工優化、李光翔、黃品文
-適用情境： 當使用者覺得 AI 分析不夠，需要真人顧問介入輔導、尋求商業計畫書撰寫協助（商業包裝）、想了解核心團隊背景，或是希望直接聯繫我們進行深度合作時，請提供此連結。
-服務網址： https://shawnlixh.github.io/SATA.github.io/consulting.html
-4. 劇本上傳與提交審核
-觸發關鍵字： 上傳劇本、提交作品、劇本上架、投稿、檔案上傳、審核申請、PDF 上傳、申請上架
-適用情境： 當創作者表示準備好提交作品、詢問哪裡可以上傳檔案，或是想要將劇本上架至平台爭取曝光時，請提供此連結。
-服務網址： https://shawnlixh.github.io/SATA.github.io/Scriptupload.html
 
+
+10.4 快速連結與服務入口指引 (Service Links)
+為了提升使用者體驗，當使用者提及以下關鍵字或意圖時，請務必在回應中包含對應的完整網址：
+
+1. AI 劇本初步分析服務
+   - 觸發關鍵字：AI 分析、劇本評分、雷達圖、票房預測、角色分析、結構分析、劇本健檢、五大維度
+   - 網址： https://shawnlixh.github.io/SATA.github.io/ai_analysis.html
+
+2. SATA 劇本資料庫（投資與瀏覽）
+   - 觸發關鍵字：找劇本、投資標的、劇本庫、篩選劇本、投資意願、尋找資金、看劇本、找案子
+   - 網址： https://shawnlixh.github.io/SATA.github.io/script_database.html
+
+3. 專業諮詢服務與團隊聯繫
+   - 觸發關鍵字：真人顧問、商業企劃書、募資簡報、團隊介紹、聯絡我們、劇本醫生、深度輔導
+   - 網址： https://shawnlixh.github.io/SATA.github.io/consulting.html
+
+4. 劇本上傳與提交審核
+   - 觸發關鍵字：上傳劇本、提交作品、劇本上架、投稿、檔案上傳、審核申請
+   - 網址： https://shawnlixh.github.io/SATA.github.io/Scriptupload.html
 `;
 
 // ==========================================
-// 2. 預設問題設定
+// 2. 預設問題設定 (User Persona FAQ)
 // ==========================================
 const QUICK_QUESTIONS = {
     "main": [
@@ -367,7 +368,7 @@ function initChatbot() {
 
     if (storedKey) {
         showChatInterface();
-        // [修改] 如果歷史紀錄是空的（例如剛清除快取），重新顯示歡迎詞
+        // 如果歷史紀錄是空的，重新顯示歡迎詞
         const history = localStorage.getItem('sata_chat_history');
         if (!history || history.trim() === "") {
             showWelcomeMessage();
@@ -379,7 +380,7 @@ function initChatbot() {
     }
 }
 
-// 獨立出歡迎訊息函式，避免重複代碼
+// 獨立出歡迎訊息函式
 function showWelcomeMessage() {
     const welcomeText = `<strong>系統：</strong>歡迎使用 SATA 平台，您可以問我以下問題：<br>1. 平台的商業模式<br>2. SATA的使命與願景<br>3. AI 技術架構<br>4. 團隊背景介紹`;
     appendMessage(welcomeText, 'bot', true);
@@ -422,7 +423,6 @@ async function saveApiKey() {
         localStorage.setItem('sata_gemini_model', bestModel);
 
         showChatInterface();
-        // [修改] 驗證成功後，只呼叫一次歡迎訊息
         showWelcomeMessage();
 
     } catch (error) {
@@ -438,11 +438,11 @@ async function saveApiKey() {
 function resetApiKey() {
     localStorage.removeItem('sata_gemini_key');
     localStorage.removeItem('sata_gemini_model');
-    localStorage.removeItem('sata_chat_history'); // 重設時也清空歷史，體驗較好
+    localStorage.removeItem('sata_chat_history');
     
     document.getElementById('api-key-input').value = ''; 
     document.getElementById('api-error-msg').style.display = 'none';
-    document.getElementById('chat-messages').innerHTML = ''; // 清空介面
+    document.getElementById('chat-messages').innerHTML = ''; 
     
     showApiKeyInput();
 }
@@ -560,7 +560,7 @@ function handleQuickReply(text, action) {
 }
 
 // ==========================================
-// 7. 訊息發送與 API 呼叫
+// 7. 訊息發送與 API 呼叫 (含文字淨化 & 網址轉換)
 // ==========================================
 
 function loadChatHistory() {
@@ -643,8 +643,19 @@ function appendMessage(content, sender, isHtml = false) {
     if (isHtml) {
         div.innerHTML = content;
     } else {
+        // 1. 處理粗體 (**text**)
         let formatted = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // 2. 處理換行 (\n)
         formatted = formatted.replace(/\n/g, '<br>');
+
+        // 3. 自動偵測網址並轉換為超連結 (支援 http/https)
+        const urlRegex = /(https?:\/\/[^\s<]+)/g;
+        formatted = formatted.replace(urlRegex, function(url) {
+            const cleanUrl = url.replace(/[).,]*$/, ''); 
+            return `<a href="${cleanUrl}" target="_blank" style="color: #007bff; text-decoration: underline;">點此前往服務頁面</a>`;
+        });
+
         div.innerHTML = formatted;
     }
 
