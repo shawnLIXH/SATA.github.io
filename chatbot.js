@@ -1,11 +1,11 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：修正網址錯誤（改用相對路徑）、強化連結辨識、UI 優化
+ * 更新內容：修復重複連結、清除 Markdown 語法、優化回答格式
  */
 
 // ==========================================
-// 1. RAG 知識庫 (已修正為相對路徑連結)
+// 1. RAG 知識庫
 // ==========================================
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
@@ -15,8 +15,8 @@ const SATA_KNOWLEDGE_BASE = `
 1. 請用專業、親切的口吻回答。
 2. **回答請精簡，嚴格控制在三段以內 (約 150 字)。**
 3. **絕對不要**使用 [cite] 或 [source] 等引用格式。
-4. **關鍵策略**：當使用者詢問特定服務或表達相關意圖時，請務必在回答中提供對應的網頁連結 (例如 ai_analysis.html)。
-5. **連結不重複**：針對同一個服務頁面，請在回答中**只列出一次連結**，切勿在同一則訊息中重複貼上相同的網址。
+4. **絕對不要**使用 Markdown 的連結語法 (如 [文字](網址))，直接寫出檔案名稱即可。
+5. **連結不重複**：針對同一個服務頁面，請在回答中**只列出一次連結**。
 6. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【完整知識庫內容】：
@@ -37,7 +37,6 @@ SATA 的戰略使命在於解決影視產業長久以來的結構性矛盾：將
 詳細論述： 承認 AI 的侷限性，引入資深編劇與製片人進行「Human-in-the-loop」的專業諮詢，將冷冰冰的數據轉化為有溫度的創作建議與商業策略 。
 3. 市場面：透明化的雙向媒合
 詳細論述： 打破資訊不對稱，建立即時更新的投資意願看板與劇本數據庫。讓創作方能看見市場需求，讓投資方能看見潛力標的，有效降低交易摩擦成本 。
-
 2. 影視產業市場結構與經濟學分析
 2.1 宏觀市場數據與趨勢分析
 SATA 的商業模式建立在堅實的市場成長數據之上，這些數據驗證了平台介入市場的時機具備高度合理性。
@@ -284,9 +283,7 @@ C. 關於 SATA 平台技術 (通用問題)：
 「你們的訓練資料來源是什麼？」（關鍵字：FPP 台北電影計畫、金馬創投資料庫）
 平台願景：
 「SATA 是什麼意思？」（SATA: Script AI Tech & Analysis，聚文字之細沙，築光影之高塔）
-
-
-10.4 快速連結與服務入口指引 (Service Links)
+10.4 快速連結與服務入口指引
 當使用者提及以下需求時，請提供對應頁面：
 
 1. AI 劇本初步分析服務
@@ -308,7 +305,6 @@ C. 關於 SATA 平台技術 (通用問題)：
    - 關鍵字：上傳劇本、提交作品、劇本上架、投稿、檔案上傳、審核申請、PDF 上傳、申請上架
    - 適用情境： 當創作者表示準備好提交作品、詢問哪裡可以上傳檔案，或是想要將劇本上架至平台爭取曝光時，請提供此連結。
    - 連結： Scriptupload.html
-
 `;
 
 // ==========================================
@@ -551,7 +547,7 @@ function handleQuickReply(text, action) {
 }
 
 // ==========================================
-// 7. 訊息發送與 API 呼叫 (含文字淨化 & 網址轉換)
+// 7. 訊息發送與 API 呼叫 (重要修復)
 // ==========================================
 
 function loadChatHistory() {
@@ -589,7 +585,7 @@ async function sendMessage() {
     try {
         let responseText = await callGeminiAPI(text, apiKey, modelName);
         
-        // --- 文字淨化 ---
+        // --- 最終淨化：移除所有 [cite] 相關標籤 ---
         responseText = responseText
             .replace(/\]*\]/g, "")
             .replace(/\]*\]/g, "")
@@ -626,7 +622,7 @@ async function sendMessage() {
     }
 }
 
-// [核心修改] 插入訊息與連結轉換
+// [核心修復]：Deduplication (連結去重) 與 Markdown 清理
 function appendMessage(content, sender, isHtml = false) {
     const chatMessages = document.getElementById('chat-messages');
     const div = document.createElement('div');
@@ -635,21 +631,32 @@ function appendMessage(content, sender, isHtml = false) {
     if (isHtml) {
         div.innerHTML = content;
     } else {
-        // 1. 處理粗體
-        let formatted = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        let formatted = content;
+
+        // 1. 強制拆除 AI 可能產生的 Markdown 連結格式 [文字](連結)
+        // 這樣就不會顯示成 "[點此...](ai_analysis.html)" 這種亂碼
+        // $2 代表只取 (連結) 裡面的內容
+        formatted = formatted.replace(/\[(.*?)\]\((.*?)\)/g, '$2');
+
+        // 2. 處理粗體
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         
-        // 2. 處理換行
+        // 3. 處理換行
         formatted = formatted.replace(/\n/g, '<br>');
 
-        // 3. [關鍵修正] 網址與檔案連結自動轉換 (支援 https:// 與 .html)
-        // Regex 邏輯：
-        // (https?:\/\/[^\s<]+) -> 抓取標準網址
-        // | ([\w-]+\.html)     -> 抓取相對路徑 (例如 ai_analysis.html)
+        // 4. [關鍵] 網址/檔案 自動轉超連結 (加入去重邏輯)
         const urlRegex = /(https?:\/\/[^\s<]+)|([\w-]+\.html)/g;
-        
+        const seenUrls = new Set(); // 記錄已經顯示過的連結
+
         formatted = formatted.replace(urlRegex, function(match) {
-            // 移除可能誤判的結尾符號
-            const cleanUrl = match.replace(/[).,]*$/, ''); 
+            const cleanUrl = match.replace(/[).,]*$/, ''); // 移除結尾的標點
+            
+            // 如果這個網址在這則訊息中已經出現過，就回傳空字串 (消除重複)
+            if (seenUrls.has(cleanUrl)) {
+                return ''; 
+            }
+            
+            seenUrls.add(cleanUrl);
             return `<a href="${cleanUrl}" target="_blank" style="color: #007bff; text-decoration: underline;">點此前往服務頁面</a>`;
         });
 
