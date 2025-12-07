@@ -1,15 +1,14 @@
 /**
  * chatbot.js
- * SATA 平台專用 AI 聊天機器人 (RAG + API Key 動態輸入版)
+ * SATA 平台專用 AI 聊天機器人 (RAG + 自動模型偵測 + 錯誤恢復版)
  */
 
 // ==========================================
-// 1. RAG 知識庫 (來源：SATA 綜合研究報告 PDF)
+// 1. RAG 知識庫
 // ==========================================
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
 請根據以下【RAG 知識庫綜合研究報告】的內容來回答使用者的問題。
-若問題超出此文件範圍，請禮貌地回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【SATA 平台核心資料】：
 1. 品牌核心：「聚文字之細沙，築光影之高塔」。主色調為大地深棕(#5D4037)與流沙金(#C5A065)。
@@ -17,7 +16,6 @@ const SATA_KNOWLEDGE_BASE = `
 3. 商業模式：
    - 創作者：免費 AI 初篩，進階付費諮詢 (約 40,000 TWD/次，毛利 83.75%)。
    - 投資者：付費解鎖深度報告 (約 100,000 TWD/份)，投資媒合成功收取 4% 佣金。
-   - 長期規劃：利潤分成 (Profit Sharing) 與成為 VC (風險投資)。
 4. 成功案例 (模擬數據)：
    - 《消失的檢察官》(懸疑)：1,520次瀏覽，高商業潛力，適合 Netflix。
    - 《愛在AI元年》(科幻)：2,100次瀏覽，平台最高分(4.9)，創意價值高。
@@ -25,41 +23,38 @@ const SATA_KNOWLEDGE_BASE = `
 5. AI技術：
    - 使用 Gemini 模型與 Hierarchical Transformer 分析長文本。
    - 能夠預測「全球票房」並細分五大洲市場。
-   - 產出「雷達圖」(5大維度) 與「長條圖」。
-6. 團隊背景：
-   - CEO 李光翔：經濟學碩士，負責戰略。
-   - CIO 黃品文：金融碩士，負責量化分析。
-   - CFO 江芸帆：專精 ESG 與風控。
-   - CMO 蔡堡丞：FinTech 技術與行銷。
-7. 市場數據：2025 台灣國片票房達 7.58 億 (年增 26%)；劇本軟體市場 CAGR 12%。
+6. 團隊背景：CEO 李光翔、CIO 黃品文、CFO 江芸帆、CMO 蔡堡丞。
 
 請用專業、親切、具備數據洞察力的語氣回答。
 `;
 
 // ==========================================
-// 2. 聊天機器人邏輯
+// 2. 全域變數與初始化
 // ==========================================
+
+// 將關鍵函數掛載到 window，確保 HTML 中的 onclick 找得到
+window.saveApiKey = saveApiKey;
+window.resetApiKey = resetApiKey;
+window.sendMessage = sendMessage;
+window.handleEnter = handleEnter;
+window.toggleChat = toggleChat;
 
 document.addEventListener('DOMContentLoaded', () => {
     initChatbot();
 });
 
-// 初始化
 function initChatbot() {
     const chatWindow = document.getElementById('chat-window');
-    const apiKeyOverlay = document.getElementById('api-key-overlay');
-    const chatInterface = document.getElementById('chat-interface');
     
-    // 檢查 LocalStorage 是否有 API Key
+    // 檢查 LocalStorage
     const storedKey = localStorage.getItem('sata_gemini_key');
     const isChatOpen = localStorage.getItem('sata_chat_open') === 'true';
 
     // 恢復視窗狀態
-    if (isChatOpen) {
+    if (isChatOpen && chatWindow) {
         chatWindow.style.display = 'flex';
     }
 
-    // 根據是否有 Key 決定顯示哪個畫面
     if (storedKey) {
         showChatInterface();
         loadChatHistory();
@@ -68,7 +63,95 @@ function initChatbot() {
     }
 }
 
-// 切換聊天視窗開關
+// ==========================================
+// 3. API Key 管理與自動偵測 (核心修正)
+// ==========================================
+
+async function saveApiKey() {
+    const inputField = document.getElementById('api-key-input');
+    const saveBtn = document.querySelector('.save-api-btn');
+    const errorMsg = document.getElementById('api-error-msg');
+    
+    const inputKey = inputField.value.trim();
+    if (!inputKey) {
+        alert("請輸入 API Key！");
+        return;
+    }
+
+    // UI 進入 Loading 狀態
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在檢測 Key...';
+    errorMsg.style.display = 'none';
+
+    try {
+        // 步驟 1: 測試 Key 並獲取可用模型列表 (解決 404 問題)
+        const modelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${inputKey}`;
+        const response = await fetch(modelsUrl);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error?.message || "無法連接 Google 伺服器");
+        }
+
+        // 步驟 2: 篩選出支援 generateContent 的模型
+        // 優先順序：gemini-1.5-flash -> gemini-2.0-flash -> 列表中的第一個 flash
+        const availableModels = data.models || [];
+        let bestModel = "";
+
+        const modelNames = availableModels.map(m => m.name.replace('models/', ''));
+        console.log("可用模型:", modelNames);
+
+        if (modelNames.includes("gemini-1.5-flash")) {
+            bestModel = "gemini-1.5-flash";
+        } else if (modelNames.some(m => m.includes("gemini-1.5-flash"))) {
+            bestModel = modelNames.find(m => m.includes("gemini-1.5-flash"));
+        } else if (modelNames.includes("gemini-2.0-flash-exp")) {
+            bestModel = "gemini-2.0-flash-exp";
+        } else {
+            // 隨便找一個 flash，如果沒有就拿第一個
+            bestModel = modelNames.find(m => m.includes("flash")) || modelNames[0];
+        }
+
+        if (!bestModel) {
+            throw new Error("您的 Key 有效，但找不到支援聊天的模型版本。");
+        }
+
+        // 步驟 3: 儲存 Key 和 模型名稱
+        localStorage.setItem('sata_gemini_key', inputKey);
+        localStorage.setItem('sata_gemini_model', bestModel); // 存下正確的模型名稱
+
+        // 成功，切換介面
+        showChatInterface();
+        appendMessage(`<strong>系統：</strong>連接成功！<br>已自動為您選擇模型：${bestModel}<br>我是 SATA AI 顧問，請問有什麼我可以幫您的？`, 'bot', true);
+
+    } catch (error) {
+        console.error(error);
+        errorMsg.innerText = `驗證失敗：${error.message}`;
+        errorMsg.style.display = 'block';
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = '啟動 AI 服務';
+    }
+}
+
+function resetApiKey() {
+    localStorage.removeItem('sata_gemini_key');
+    localStorage.removeItem('sata_gemini_model');
+    
+    // 清空輸入框
+    const inputField = document.getElementById('api-key-input');
+    if(inputField) inputField.value = ''; 
+    
+    const errorMsg = document.getElementById('api-error-msg');
+    if(errorMsg) errorMsg.style.display = 'none';
+
+    showApiKeyInput();
+}
+
+// ==========================================
+// 4. 介面控制
+// ==========================================
+
 function toggleChat() {
     const chatWindow = document.getElementById('chat-window');
     const isHidden = chatWindow.style.display === 'none' || chatWindow.style.display === '';
@@ -83,53 +166,33 @@ function toggleChat() {
     }
 }
 
-// 顯示 API 輸入介面
 function showApiKeyInput() {
-    document.getElementById('api-key-overlay').style.display = 'flex';
-    document.getElementById('chat-interface').style.display = 'none';
+    const overlay = document.getElementById('api-key-overlay');
+    const interface = document.getElementById('chat-interface');
+    if(overlay) overlay.style.display = 'flex';
+    if(interface) interface.style.display = 'none';
 }
 
-// 顯示聊天介面
 function showChatInterface() {
-    document.getElementById('api-key-overlay').style.display = 'none';
-    document.getElementById('chat-interface').style.display = 'flex';
+    const overlay = document.getElementById('api-key-overlay');
+    const interface = document.getElementById('chat-interface');
+    if(overlay) overlay.style.display = 'none';
+    if(interface) interface.style.display = 'flex';
 }
 
-// 儲存 API Key
-function saveApiKey() {
-    const inputKey = document.getElementById('api-key-input').value.trim();
-    if (!inputKey) {
-        alert("請輸入 API Key！");
-        return;
-    }
-    localStorage.setItem('sata_gemini_key', inputKey);
-    showChatInterface();
-    // 如果是第一次進入，可以自動發送一條歡迎訊息
-    if (!localStorage.getItem('sata_chat_history')) {
-        appendMessage("系統：API Key 已儲存。我是 SATA AI 顧問，請問有什麼我可以幫您的？", 'bot');
-    }
+function scrollToBottom() {
+    const chatMessages = document.getElementById('chat-messages');
+    if(chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// 重設 API Key (用於錯誤處理或手動重設)
-function resetApiKey() {
-    localStorage.removeItem('sata_gemini_key');
-    document.getElementById('api-key-input').value = ''; // 清空輸入框
-    document.getElementById('api-error-msg').style.display = 'none'; // 隱藏錯誤訊息
-    showApiKeyInput();
-}
-
-// 處理 Enter 鍵發送
 function handleEnter(e) {
     if (e.key === 'Enter') sendMessage();
 }
 
-// 捲動到底部
-function scrollToBottom() {
-    const chatMessages = document.getElementById('chat-messages');
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+// ==========================================
+// 5. 訊息處理與 API 呼叫
+// ==========================================
 
-// 載入歷史紀錄
 function loadChatHistory() {
     const history = localStorage.getItem('sata_chat_history');
     if (history) {
@@ -138,11 +201,12 @@ function loadChatHistory() {
     scrollToBottom();
 }
 
-// 發送訊息
 async function sendMessage() {
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
     const apiKey = localStorage.getItem('sata_gemini_key');
+    // 讀取剛剛自動偵測到的模型，如果沒有預設 fallback
+    const modelName = localStorage.getItem('sata_gemini_model') || 'gemini-1.5-flash';
 
     if (!text) return;
     if (!apiKey) {
@@ -150,53 +214,39 @@ async function sendMessage() {
         return;
     }
 
-    // 1. 顯示用戶訊息
+    // 顯示用戶訊息
     input.value = '';
     appendMessage(text, 'user');
     
-    // 2. 顯示 Loading
     const typingIndicator = document.getElementById('typing-indicator');
     typingIndicator.style.display = 'block';
     scrollToBottom();
 
     try {
-        // 3. 呼叫 Gemini API
-        const responseText = await callGeminiAPI(text, apiKey);
-        
-        // 4. 成功：顯示回應
+        const responseText = await callGeminiAPI(text, apiKey, modelName);
         typingIndicator.style.display = 'none';
         appendMessage(responseText, 'bot');
 
     } catch (error) {
-        // 5. 失敗：錯誤處理
         console.error("API Error:", error);
         typingIndicator.style.display = 'none';
         
-        let errorMsg = "連線發生錯誤。";
-        let isAuthError = false;
+        let errorMsg = `發生錯誤：${error.message}`;
+        let showResetBtn = true;
 
-        if (error.message.includes("400")) {
-            errorMsg = "請求格式錯誤 (400)。請檢查 API Key 是否正確。";
-            isAuthError = true;
-        } else if (error.message.includes("401") || error.message.includes("403")) {
-            errorMsg = "API Key 無效或權限不足 (401/403)。請重新輸入。";
-            isAuthError = true;
-        } else if (error.message.includes("429")) {
-            errorMsg = "請求次數過多 (429)。請稍後再試。";
-        } else {
-            errorMsg = `發生錯誤：${error.message}`;
-        }
-
-        // 顯示錯誤訊息並提供重設按鈕
+        // 錯誤 HTML 包含重新設定按鈕
         const errorHtml = `
-            <div style="color: red; margin-bottom: 5px;">${errorMsg}</div>
-            ${isAuthError ? '<button onclick="resetApiKey()" style="background:#5D4037; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">重新輸入 API Key</button>' : ''}
+            <div style="color: #D32F2F; margin-bottom: 8px;">
+                <i class="fas fa-exclamation-circle"></i> ${errorMsg}
+            </div>
+            <button onclick="window.resetApiKey()" class="reset-btn-inline">
+                <i class="fas fa-redo"></i> 重新設定 API Key
+            </button>
         `;
-        appendMessage(errorHtml, 'bot', true); // true 表示這是錯誤訊息，不一定存入歷史，這裡我們存入以便查看
+        appendMessage(errorHtml, 'bot', true);
     }
 }
 
-// 插入訊息到介面
 function appendMessage(content, sender, isHtml = false) {
     const chatMessages = document.getElementById('chat-messages');
     const div = document.createElement('div');
@@ -205,38 +255,30 @@ function appendMessage(content, sender, isHtml = false) {
     if (isHtml) {
         div.innerHTML = content;
     } else {
-        // 簡單的 Markdown 處理 (粗體)
         let formatted = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        // 處理換行
         formatted = formatted.replace(/\n/g, '<br>');
         div.innerHTML = formatted;
     }
 
     chatMessages.appendChild(div);
-    
-    // 儲存歷史紀錄 (限制長度避免 LocalStorage 爆掉，可選)
     localStorage.setItem('sata_chat_history', chatMessages.innerHTML);
     scrollToBottom();
 }
 
-// 實際呼叫 Gemini API
-async function callGeminiAPI(userQuery, key) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+async function callGeminiAPI(userQuery, key, model) {
+    // 使用動態偵測到的 model 名稱
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
     
     const requestBody = {
         contents: [
             {
                 role: "user",
                 parts: [
-                    { text: SATA_KNOWLEDGE_BASE }, // 注入 RAG 知識庫
+                    { text: SATA_KNOWLEDGE_BASE },
                     { text: "使用者問題：" + userQuery }
                 ]
             }
-        ],
-        generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 800,
-        }
+        ]
     };
 
     const response = await fetch(url, {
@@ -245,16 +287,15 @@ async function callGeminiAPI(userQuery, key) {
         body: JSON.stringify(requestBody)
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        // 拋出包含狀態碼的錯誤
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(`HTTP ${response.status} - ${errData.error?.message || response.statusText}`);
+        throw new Error(data.error?.message || `HTTP Error ${response.status}`);
     }
 
-    const data = await response.json();
     if(data.candidates && data.candidates[0].content) {
         return data.candidates[0].content.parts[0].text;
     } else {
-        throw new Error("API 回傳結構異常");
+        throw new Error("API 回傳結構異常，請稍後再試。");
     }
 }
