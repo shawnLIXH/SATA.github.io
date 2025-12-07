@@ -13,62 +13,19 @@
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; display: flex; flex-direction: column; }
         
         /* --- Header (修改配色) --- */
-        header { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100px; 
-            /* [修改] 背景改為深咖啡色 (與頁尾一致) */
-            background: var(--primary-brown); 
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
-            box-sizing: border-box; 
-            border-bottom: 2px solid var(--sand-gold); /* 邊框改為金色，增加質感 */
-            z-index: 1000; 
-        }
-
-        /* [修改] 選單按鈕改為淺色 */
-        .menu-btn { 
-            font-size: 24px; cursor: pointer; padding: 10px; 
-            border: 1px solid var(--warm-white); 
-            color: var(--warm-white); /* 淺色文字 */
-            width: 50px; text-align: center; transition: 0.3s; 
-        }
-        .menu-btn:hover { 
-            background-color: var(--sand-gold); 
-            color: var(--primary-brown); 
-            border-color: var(--sand-gold);
-        }
-        
-        /* Logo 區域樣式 (圖片) */
-        .logo-section { 
-            position: absolute; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            display: flex; 
-            align-items: center;
-            justify-content: center;
-        }
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: var(--primary-brown); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--sand-gold); z-index: 1000; }
+        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--warm-white); color: var(--warm-white); width: 50px; text-align: center; transition: 0.3s; }
+        .menu-btn:hover { background-color: var(--sand-gold); color: var(--primary-brown); border-color: var(--sand-gold); }
+        .logo-section { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .logo-section a { display: block; }
-        .logo-section img {
-            height: 60px; /* 控制 Logo 高度 */
-            width: auto;
-            display: block;
-            border-radius: 5px; /* 選用：若圖片背景與 Header 融合不佳，可加圓角或邊框 */
-        }
-
+        .logo-section img { height: 60px; width: auto; display: block; border-radius: 5px; }
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
-        
-        /* 登入按鈕保持白色背景，以突顯 */
-        .login-btn { 
-            text-decoration: none; color: var(--primary-brown); font-weight: bold; 
-            border: 1px solid var(--sand-gold); padding: 5px 20px; 
-            background: #fff; display: inline-block; font-size: 14px; 
-            transition: 0.3s; cursor: pointer; border-radius: 3px;
-        }
+        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--sand-gold); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; border-radius: 3px; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
-        
-        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); } /* 修改文字顏色 */
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); }
         .member-link { cursor: pointer; color: var(--warm-white); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
-        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); } /* 修改分隔線顏色 */
-        
+        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); }
         .search-container input { padding: 5px 10px; border: none; font-size: 14px; width: 250px; outline: none; background-color: rgba(255,255,255,0.9); border-radius: 3px; }
         
         /* Sidebar */
@@ -78,32 +35,12 @@
         .sidebar .close-btn { position: absolute; top: 10px; right: 25px; font-size: 36px; border: none; background: none; cursor: pointer; color: var(--primary-brown); }
         #overlay { position: fixed; display: none; width: 100%; height: 100%; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(93, 64, 55, 0.4); z-index: 1500; }
         
-        /* Modals (共用) */
+        /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 5px solid var(--sand-gold); animation: slideIn 0.3s ease-out; }
         .modal-box.wide { max-width: 800px; }
-        
-        /* 劇本內容視窗專用樣式 */
-        .modal-box.script-reader { 
-            max-width: 700px; 
-            height: 80vh; /* 固定高度 */
-            display: flex; 
-            flex-direction: column; 
-        }
-        .script-text-container {
-            flex-grow: 1;
-            overflow-y: auto; /* 內容過長自動捲動 */
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            font-family: "Courier New", Courier, monospace; /* 劇本常用字體 */
-            line-height: 1.8;
-            white-space: pre-wrap; /* 保留換行格式 */
-            text-align: left;
-        }
-
+        .modal-box.script-reader { max-width: 700px; height: 80vh; display: flex; flex-direction: column; }
+        .script-text-container { flex-grow: 1; overflow-y: auto; margin-top: 20px; padding: 20px; background-color: #f9f9f9; border: 1px solid #eee; border-radius: 5px; font-family: "Courier New", Courier, monospace; line-height: 1.8; white-space: pre-wrap; text-align: left; }
         @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; transition: 0.2s; }
         .modal-close-btn:hover { color: var(--primary-brown); }
@@ -119,17 +56,14 @@
 
         /* SATA劇本資料庫 專屬樣式 */
         main { padding-top: 150px; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; flex: 1; width: 100%; padding-left: 20px; padding-right: 20px; box-sizing: border-box;}
-        
         .category-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
         .cat-btn { padding: 10px 25px; border: 1px solid var(--primary-brown); background: rgba(255,255,255,0.8); color: var(--primary-brown); font-size: 16px; cursor: pointer; border-radius: 30px; transition: 0.3s; }
         .cat-btn:hover, .cat-btn.active { background: var(--primary-brown); color: #fff; }
-
         .scripts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; padding: 0 20px; }
         .script-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); border: 1px solid var(--border-color); transition: transform 0.3s; display: none; height: 100%; display: flex; flex-direction: column; }
         .script-card.visible { display: flex; animation: fadeIn 0.5s; }
         .script-card:hover { transform: translateY(-5px); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .card-image { width: 100%; height: 300px; background-color: #ddd; position: relative; overflow: hidden; }
         .card-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
         .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -137,25 +71,18 @@
         .script-summary { font-size: 0.95rem; color: #555; line-height: 1.6; margin-bottom: 15px; flex-grow: 1; }
         .meta-info { display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px; font-size: 0.9rem; color: #888; margin-bottom: 15px; }
         .rating-score { color: #FF9800; font-weight: bold; }
-
-        /* 按鈕區 */
         .card-actions { display: flex; gap: 10px; }
         .btn-invest, .btn-report, .btn-read { flex: 1; padding: 10px 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 5px;}
-        
         .btn-invest { background-color: #fff; border: 1px solid var(--sand-gold); color: var(--sand-gold); }
         .btn-invest:hover { background-color: #fff8e1; }
         .btn-invest.active { background-color: var(--sand-gold); color: #fff; }
-
         .btn-read { background-color: #607d8b; color: #fff; }
         .btn-read:hover { background-color: #455a64; }
-
         .btn-report { background-color: var(--primary-brown); color: #fff; }
         .btn-report:hover { background-color: #4e342e; }
 
-        /* --- Footer 頁腳樣式 --- */
-        footer {
-            background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
-        }
+        /* Footer */
+        footer { background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative; }
         .footer-container { max-width: 1000px; margin: 0 auto; text-align: center; }
         .footer-slogan { font-size: 1.6rem; font-weight: bold; color: var(--sand-gold); margin-bottom: 40px; letter-spacing: 3px; }
         .footer-links-container { display: flex; justify-content: center; gap: 80px; margin-bottom: 50px; flex-wrap: wrap; text-align: left; }
@@ -171,6 +98,65 @@
             .scripts-grid { grid-template-columns: 1fr; } 
             .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
         }
+
+        /* ==========================================================================
+           [新增] SATA Chatbot Widget 樣式 (聊天機器人專用)
+           ========================================================================== */
+        /* [重要] 左右切換箭頭與容器樣式 (Carousel UI) */
+        .quick-reply-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 10px; position: relative; padding: 0 5px; box-sizing: border-box; }
+        
+        /* 左右箭頭按鈕 */
+        .scroll-btn { width: 28px; height: 28px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.95); border: 1px solid var(--sand-gold); color: var(--primary-brown); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); flex-shrink: 0; transition: all 0.2s; }
+        .scroll-btn:hover { background-color: var(--sand-gold); color: white; }
+        .scroll-btn:active { transform: scale(0.9); }
+
+        /* 隱藏捲軸的容器 */
+        .quick-reply-container { display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth; padding: 5px; width: 100%; scrollbar-width: none; -ms-overflow-style: none; }
+        .quick-reply-container::-webkit-scrollbar { display: none; }
+
+        /* 卡片本體 */
+        .quick-reply-btn { background-color: #fff; border: 1px solid var(--border-color); color: var(--primary-brown); padding: 12px 10px; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(93, 64, 55, 0.08); font-family: "Microsoft JhengHei", sans-serif; min-width: 130px; max-width: 130px; height: 100px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; white-space: normal; line-height: 1.3; }
+        .quick-reply-btn:hover { background-color: var(--sand-gold); color: #fff; transform: translateY(-3px); border-color: var(--sand-gold); }
+        .quick-reply-btn:hover .quick-reply-icon { color: #fff; }
+        .quick-reply-btn.category { border-top: 3px solid var(--sand-gold); background: linear-gradient(to bottom, #fff 80%, #FFFDF5 100%); }
+        .quick-reply-icon { font-size: 1.6rem; margin-bottom: 8px; color: var(--sand-gold); transition: color 0.2s; }
+
+        /* Chatbot 一般樣式 */
+        #chat-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; font-family: "Microsoft JhengHei", sans-serif; }
+        #chat-toggle-btn { width: 60px; height: 60px; background-color: var(--primary-brown); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.3s, background 0.3s; border: 2px solid var(--sand-gold); }
+        #chat-toggle-btn:hover { transform: scale(1.1); background-color: #4e342e; }
+        #chat-toggle-btn i { color: var(--sand-gold); font-size: 28px; }
+        
+        #chat-window { width: 350px; height: 500px; background-color: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: absolute; bottom: 80px; right: 0; display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border-color); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .chat-header { background-color: var(--primary-brown); color: var(--warm-white); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sand-gold); flex-shrink: 0; }
+        .chat-header h4 { margin: 0; font-size: 1.1rem; }
+        .close-chat { cursor: pointer; font-size: 1.2rem; }
+        
+        #api-key-overlay { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; background: #fafafa; overflow-y: auto; }
+        #api-key-overlay p { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        .api-input-field { width: 90%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .save-api-btn { background-color: var(--primary-brown); color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .save-api-btn:hover { background-color: #4e342e; }
+        
+        .reset-btn-inline { background-color: var(--primary-brown); color: #fff; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; width: 100%; margin-top: 5px; border: 1px solid var(--sand-gold); }
+        .reset-btn-inline:hover { background-color: #fff; color: var(--primary-brown); }
+
+        #chat-interface { display: none; flex-direction: column; height: 100%; flex: 1; overflow: hidden; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; background-color: #FAF9F6; display: flex; flex-direction: column; gap: 10px; }
+        
+        .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; }
+        .message.user { align-self: flex-end; background-color: var(--primary-brown); color: #fff; border-bottom-right-radius: 2px; }
+        .message.bot { align-self: flex-start; background-color: #fff; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .message.bot strong { color: var(--primary-brown); }
+        
+        .chat-input-area { padding: 10px; background-color: #fff; border-top: 1px solid #eee; display: flex; gap: 10px; flex-shrink: 0; z-index: 10; }
+        #chat-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        #chat-input:disabled { background-color: #f5f5f5; cursor: not-allowed; }
+        #chat-send-btn { background-color: var(--sand-gold); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        #chat-send-btn:hover { background-color: var(--primary-brown); }
+        .typing-indicator { font-size: 0.8rem; color: #888; margin-left: 10px; display: none; padding-bottom: 5px; padding-left: 15px;}
     </style>
 </head>
 <body>
@@ -206,7 +192,7 @@
                 <table class="script-table">
                     <thead><tr><th>劇本名稱</th><th>點閱累積</th><th>潛在投資者</th></tr></thead>
                     <tbody>
-                        <tr><td>《我的模擬劇本A》</td><td>80 次</td><td><span class="status-tag tag-yes">有</span></td></tr>
+                         <tr><td>《我的模擬劇本A》</td><td>80 次</td><td><span class="status-tag tag-yes">有</span></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -358,6 +344,36 @@
         </div>
     </main>
 
+    <div id="chat-widget-container">
+        <div id="chat-window">
+            <div class="chat-header">
+                <h4><i class="fas fa-robot"></i> SATA聊天小夥伴-保羅</h4>
+                <span class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></span>
+            </div>
+            
+            <div id="api-key-overlay">
+                <i class="fas fa-key" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                <p>為了啟動 SATA 智能顧問，<br>請輸入您的 Google Gemini API Key</p>
+                <input type="password" id="api-key-input" class="api-input-field" placeholder="sk-...">
+                <div id="api-error-msg" style="color:red; font-size:0.85rem; display:none; margin-bottom:10px;"></div>
+                <button class="save-api-btn" onclick="saveApiKey()">啟動 AI 服務</button>
+            </div>
+
+            <div id="chat-interface">
+                <div id="chat-messages"></div>
+                <div class="typing-indicator" id="typing-indicator">SATA AI 正在思考中...</div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="請輸入問題..." onkeypress="handleEnter(event)">
+                    <button id="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="chat-toggle-btn" onclick="toggleChat()">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-container">
             <div class="footer-slogan">
@@ -408,6 +424,7 @@
         window.onload = function() {
             if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); }
             initInvestmentButtons();
+            // 聊天機器人初始化會由 chatbot.js 處理
         }
 
         // 開啟劇本閱讀視窗
@@ -420,7 +437,6 @@
                 "s001": "消失的檢察官", "s002": "迷霧追兇", "s003": "愛在AI元年",
                 "s004": "星際戀曲", "s005": "家的形狀", "s006": "聽見你的聲音"
             };
-
             document.getElementById("modal-script-title").innerText = titleMap[id];
             document.getElementById("modal-script-body").innerText = content;
             modal.style.display = "flex";
@@ -434,12 +450,14 @@
         // ... (以下維持原本的 toggleInvestment, login, renderMemberTable 等邏輯) ...
         function toggleInvestment(btn) {
             if (localStorage.getItem("sata_login") !== "true") { alert("請先登入會員才能登記投資意願！"); toggleLoginModal(); return; }
-            var id = btn.getAttribute("data-id"); var title = btn.getAttribute("data-title"); var type = btn.getAttribute("data-type");
+            var id = btn.getAttribute("data-id");
+            var title = btn.getAttribute("data-title"); var type = btn.getAttribute("data-type");
             var investments = JSON.parse(localStorage.getItem("sata_investments") || "[]");
             var index = investments.findIndex(item => item.id === id);
             
             if (index > -1) {
-                investments.splice(index, 1); alert("已取消對《" + title + "》的投資意願。");
+                investments.splice(index, 1);
+                alert("已取消對《" + title + "》的投資意願。");
                 btn.classList.remove("active"); btn.innerHTML = '<i class="far fa-heart"></i> 投資';
             } else {
                 investments.push({ id: id, title: title, type: type, status: "等待回覆" });
@@ -468,7 +486,8 @@
         }
 
         function filterScripts(category, btn) {
-            document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active")); btn.classList.add("active");
+            document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
             document.querySelectorAll(".script-card").forEach(card => {
                 if (category === "all" || card.getAttribute("data-category") === category) { card.classList.add("visible"); card.style.display = "flex"; }
                 else { card.classList.remove("visible"); card.style.display = "none"; }
@@ -483,5 +502,7 @@
         function updateHeaderToLoggedIn() { document.getElementById("headerRightSection").innerHTML=`<span class="member-menu"><a href="javascript:void(0)" class="member-link" onclick="toggleMemberModal()">會員管理</a><span class="divider">|</span><a href="javascript:void(0)" class="member-link" onclick="performLogout()">登出</a></span>`; }
         function performLogout() { if(confirm("確定登出?")){localStorage.removeItem("sata_login");document.getElementById("headerRightSection").innerHTML=`<a href="javascript:void(0)" class="login-btn" onclick="toggleLoginModal()">登入</a>`;document.getElementById("memberModal").style.display="none";} }
     </script>
+
+    <script src="chatbot.js"></script>
 </body>
 </html>
