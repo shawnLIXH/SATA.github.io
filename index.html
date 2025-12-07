@@ -15,13 +15,14 @@
             --border-color: #E0D0B0; 
         }
 
-        /* --- 新增：Chatbot 預設問題按鈕樣式 (Quick Replies) --- */
+        /* --- Chatbot 預設問題按鈕樣式 (Quick Replies) --- */
         .quick-reply-container {
             padding: 10px 15px;
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
             animation: fadeIn 0.5s;
+            margin-bottom: 10px; /* 增加底部間距，避免貼太近 */
         }
 
         .quick-reply-btn {
@@ -44,12 +45,12 @@
         }
 
         .quick-reply-btn.category {
-            background-color: #FAF3E0; /* 類別按鈕用不同底色區分 */
+            background-color: #FAF3E0;
             font-weight: bold;
             border-color: #E0D0B0;
         }
 
-        /* --- 新增：對話框內的重設按鈕樣式 --- */
+        /* --- 對話框內的重設按鈕樣式 --- */
         .reset-btn-inline {
             background-color: var(--primary-brown);
             color: #fff;
@@ -187,15 +188,35 @@
         .save-api-btn:hover { background-color: #4e342e; }
         
         /* Chat Interface */
-        #chat-interface { display: none; flex-direction: column; height: 100%; }
-        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; background-color: #FAF9F6; display: flex; flex-direction: column; gap: 10px; }
+        #chat-interface { display: none; flex-direction: column; height: 100%; box-sizing: border-box; }
+        
+        /* 訊息區 - 允許捲動 */
+        #chat-messages { 
+            flex: 1; 
+            padding: 15px; 
+            overflow-y: auto; 
+            background-color: #FAF9F6; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
         
         .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; }
         .message.user { align-self: flex-end; background-color: var(--primary-brown); color: #fff; border-bottom-right-radius: 2px; }
         .message.bot { align-self: flex-start; background-color: #fff; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .message.bot strong { color: var(--primary-brown); }
         
-        .chat-input-area { padding: 10px; background-color: #fff; border-top: 1px solid #eee; display: flex; gap: 10px; }
+        /* 輸入區 - 強制固定在底部 */
+        .chat-input-area { 
+            padding: 10px; 
+            background-color: #fff; 
+            border-top: 1px solid #eee; 
+            display: flex; 
+            gap: 10px; 
+            flex-shrink: 0; /* 關鍵：防止被擠壓 */
+            z-index: 10;
+        }
+        
         #chat-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
         #chat-send-btn { background-color: var(--sand-gold); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         #chat-send-btn:hover { background-color: var(--primary-brown); }
