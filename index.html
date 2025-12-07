@@ -15,39 +15,74 @@
             --border-color: #E0D0B0; 
         }
 
-        /* --- Chatbot 預設問題按鈕樣式 (Quick Replies) --- */
+        /* --- [修改] Quick Replies: 改為橫向捲動卡片樣式 --- */
         .quick-reply-container {
-            padding: 10px 15px;
+            padding: 10px 0; /* 上下留白，左右貼邊 */
             display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            animation: fadeIn 0.5s;
-            margin-bottom: 10px; /* 增加底部間距，避免貼太近 */
+            gap: 12px; /* 卡片間距 */
+            overflow-x: auto; /* 允許橫向捲動 */
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* 手機滑動更順暢 */
+            margin-bottom: 10px;
+            padding-left: 15px; /* 左側留白 */
+            padding-right: 15px; /* 右側留白 */
+            /* 隱藏捲軸但保留功能 (Chrome/Safari) */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        .quick-reply-container::-webkit-scrollbar {
+            display: none;
         }
 
+        /* --- 卡片本體 --- */
         .quick-reply-btn {
             background-color: #fff;
-            border: 1px solid var(--sand-gold);
+            border: 1px solid var(--border-color);
             color: var(--primary-brown);
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.85rem;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(93, 64, 55, 0.08); /* 輕微陰影 */
             font-family: "Microsoft JhengHei", sans-serif;
+            
+            /* 卡片固定寬度與不換行 */
+            min-width: 140px; 
+            max-width: 160px;
+            flex-shrink: 0; /* 防止被擠壓 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: normal; /* 允許文字換行 */
+            line-height: 1.4;
         }
 
+        /* 卡片懸停效果 */
         .quick-reply-btn:hover {
             background-color: var(--sand-gold);
             color: #fff;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(197, 160, 101, 0.4);
+            border-color: var(--sand-gold);
         }
 
+        /* 類別卡片 (加上左側邊框區分) */
         .quick-reply-btn.category {
-            background-color: #FAF3E0;
-            font-weight: bold;
-            border-color: #E0D0B0;
+            border-left: 4px solid var(--sand-gold);
+            background: linear-gradient(to bottom right, #fff, #FFFDF5);
+        }
+
+        /* 為卡片加入圖示 */
+        .quick-reply-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: var(--sand-gold);
+        }
+        .quick-reply-btn:hover .quick-reply-icon {
+            color: #fff;
         }
 
         /* --- 對話框內的重設按鈕樣式 --- */
