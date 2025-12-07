@@ -1,7 +1,7 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：修復輸入卡住問題、新增 PDF 預設問題選單、禁止引用標註
+ * 更新內容：橫向捲動卡片 UI、限制回答長度 (三段內)
  */
 
 // ==========================================
@@ -13,11 +13,12 @@ const SATA_KNOWLEDGE_BASE = `
 
 【重要指令】：
 1. 請用專業、親切的口吻回答。
-2. **絕對不要**使用, 或 這種引用格式。請將資訊消化後直接以自然語言回答。
-3. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
+2. **回答請精簡，嚴格控制在三段以內 (約 150 字)。**
+3. **絕對不要**使用 引用格式。
+4. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【SATA 平台核心資料】：
-1. 品牌核心：「聚文字之細沙，築光影之高塔」。主色調為大地深棕(#5D4037)與流沙金(#C5A065)。
+1. 品牌核心：「聚文字之細沙，築光影之高塔」。主色調為大地深棕與流沙金。
 2. 核心價值：解決創作者「缺乏商業轉化力」與投資者「篩選成本高」的雙向痛點。
 3. 商業模式：
    - 創作者：免費 AI 初篩，進階付費諮詢 (約 40,000 TWD/次)。
@@ -31,39 +32,37 @@ const SATA_KNOWLEDGE_BASE = `
    - 利用 LSTM 分析情感曲線，偵測「棄讀風險點」。
    - 採用 RAG 技術與在地化語料庫 (金馬創投、FPP)。
 6. 常見問答 (FAQ)：
-   - 版權保護：設有嚴格審核機制與區塊鏈技術，確保創意不被篡改。
-   - 數據信用：透過量化評分賦予素人編劇「數據信用」，解決缺乏人脈問題。
+   - 版權保護：設有嚴格審核機制與區塊鏈技術。
+   - 數據信用：透過量化評分賦予素人編劇「數據信用」。
    - 票房預測：系統能細分五大洲 (北美/歐洲/亞洲等) 的票房與受眾年齡層。
 `;
 
 // ==========================================
-// 2. 預設問題設定 (User Persona FAQ)
+// 2. 預設問題設定 (新增 icon)
 // ==========================================
 const QUICK_QUESTIONS = {
     "main": [
-        { text: "我是新銳創作者/編劇 ✍️", action: "category:creator" },
-        { text: "我是影視投資人 💰", action: "category:investor" },
-        { text: "平台技術與願景 🤖", action: "category:tech" }
+        { text: "我是新銳創作者", sub: "劇本分析與諮詢", icon: "fas fa-pen-fancy", action: "category:creator" },
+        { text: "我是影視投資人", sub: "尋找潛力標的", icon: "fas fa-sack-dollar", action: "category:investor" },
+        { text: "平台技術願景", sub: "AI 原理與數據", icon: "fas fa-robot", action: "category:tech" }
     ],
     "creator": [
-        { text: "分析我的劇本結構有什麼問題？", action: "ask" },
-        { text: "我的劇本商業潛力得分多少？", action: "ask" },
-        { text: "如何增強主角的動機？", action: "ask" },
-        { text: "專業諮詢服務費用是多少？", action: "ask" },
-        { text: "🔙 返回主選單", action: "category:main" }
+        { text: "分析劇本結構", sub: "找出劇情盲點", icon: "fas fa-search", action: "ask:請分析我的劇本結構有什麼常見問題？" },
+        { text: "商業潛力評估", sub: "預測市場價值", icon: "fas fa-chart-line", action: "ask:我的劇本在「商業潛力」這個維度通常如何評分？" },
+        { text: "專業諮詢費用", sub: "人工顧問輔導", icon: "fas fa-file-invoice-dollar", action: "ask:專業諮詢服務費用是多少？包含什麼？" },
+        { text: "返回主選單", sub: "回上一層", icon: "fas fa-undo", action: "category:main" }
     ],
     "investor": [
-        { text: "推薦懸疑/犯罪類型的高分劇本", action: "ask" },
-        { text: "幫我推薦熱度成長最快的作品", action: "ask" },
-        { text: "這部劇本的全球票房預估？", action: "ask" },
-        { text: "B2B 分析報告需要多少錢？", action: "ask" },
-        { text: "🔙 返回主選單", action: "category:main" }
+        { text: "推薦高分劇本", sub: "懸疑/犯罪類型", icon: "fas fa-star", action: "ask:最近有哪些「懸疑/犯罪」類型的高分劇本？" },
+        { text: "全球票房預估", sub: "AI 市場預測", icon: "fas fa-globe-asia", action: "ask:這部劇本的全球票房預估是如何計算的？" },
+        { text: "B2B 分析報告", sub: "盡職調查服務", icon: "fas fa-file-contract", action: "ask:取得一份完整的 B2B 劇本分析報告需要多少錢？" },
+        { text: "返回主選單", sub: "回上一層", icon: "fas fa-undo", action: "category:main" }
     ],
     "tech": [
-        { text: "你們的 AI 用什麼技術開發的？", action: "ask" },
-        { text: "SATA 是什麼意思？", action: "ask" },
-        { text: "訓練資料來源是什麼？", action: "ask" },
-        { text: "🔙 返回主選單", action: "category:main" }
+        { text: "AI 技術原理", sub: "Transformer & RAG", icon: "fas fa-microchip", action: "ask:你們的 AI 是用什麼技術開發的？" },
+        { text: "SATA 的意義", sub: "品牌名稱由來", icon: "fas fa-signature", action: "ask:SATA 是什麼意思？" },
+        { text: "訓練資料來源", sub: "金馬/FPP", icon: "fas fa-database", action: "ask:你們的訓練資料來源是什麼？" },
+        { text: "返回主選單", sub: "回上一層", icon: "fas fa-undo", action: "category:main" }
     ]
 };
 
@@ -125,7 +124,6 @@ async function saveApiKey() {
         const availableModels = data.models || [];
         const modelNames = availableModels.map(m => m.name.replace('models/', ''));
         
-        // 自動選擇最佳模型
         let bestModel = modelNames.find(m => m.includes("gemini-1.5-flash")) || 
                         modelNames.find(m => m.includes("flash")) || 
                         modelNames[0];
@@ -136,7 +134,7 @@ async function saveApiKey() {
         localStorage.setItem('sata_gemini_model', bestModel);
 
         showChatInterface();
-        appendMessage(`<strong>系統：</strong>連接成功！已選擇模型：${bestModel}<br>我是 SATA AI 顧問，請選擇您想了解的主題：`, 'bot', true);
+        appendMessage(`<strong>系統：</strong>連接成功！(${bestModel})<br>我是 SATA AI 顧問，請選擇您想了解的主題：`, 'bot', true);
         showQuickReplies('main');
 
     } catch (error) {
@@ -195,7 +193,7 @@ function handleEnter(e) {
 }
 
 // ==========================================
-// 6. 預設問題按鈕邏輯
+// 6. [修改] 卡片式預設問題邏輯
 // ==========================================
 
 function showQuickReplies(category) {
@@ -203,13 +201,21 @@ function showQuickReplies(category) {
     if (!questions) return;
 
     const container = document.createElement('div');
-    container.className = 'quick-reply-container';
+    container.className = 'quick-reply-container'; // 橫向捲動容器
 
     questions.forEach(q => {
-        const btn = document.createElement('button');
+        const btn = document.createElement('div'); // 改用 div 方便排版
         btn.className = 'quick-reply-btn';
         if (q.action.startsWith('category:')) btn.classList.add('category');
-        btn.innerText = q.text;
+        
+        // 卡片內容 HTML：Icon + 標題 + 副標題
+        btn.innerHTML = `
+            <i class="${q.icon} quick-reply-icon"></i>
+            <div style="font-weight:bold; margin-bottom:4px;">${q.text}</div>
+            <div style="font-size:0.75rem; color:#666;">${q.sub || ''}</div>
+        `;
+        
+        // 點擊事件
         btn.onclick = () => handleQuickReply(q.text, q.action);
         container.appendChild(btn);
     });
@@ -221,14 +227,16 @@ function showQuickReplies(category) {
 function handleQuickReply(text, action) {
     if (action.startsWith('category:')) {
         const category = action.split(':')[1];
+        // 隱藏舊的選單
         const oldContainers = document.querySelectorAll('.quick-reply-container');
-        oldContainers.forEach(el => el.style.display = 'none'); // 隱藏舊的選單
+        oldContainers.forEach(el => el.style.display = 'none'); 
         
         appendMessage(`<strong>已選擇：${text}</strong>`, 'user', true);
         showQuickReplies(category);
-    } else {
+    } else if (action.startsWith('ask:')) {
+        const question = action.split(':')[1];
         const input = document.getElementById('chat-input');
-        input.value = text;
+        input.value = question;
         sendMessage();
     }
 }
@@ -241,7 +249,7 @@ function loadChatHistory() {
     const history = localStorage.getItem('sata_chat_history');
     if (history) {
         document.getElementById('chat-messages').innerHTML = history;
-        showQuickReplies('main'); // 重新載入時顯示主選單
+        showQuickReplies('main'); 
     }
     scrollToBottom();
 }
@@ -256,14 +264,12 @@ async function sendMessage() {
     if (!text) return;
     if (!apiKey) { showApiKeyInput(); return; }
 
-    // UI 處理
     input.value = ''; 
-    input.disabled = true; // 鎖定
+    input.disabled = true; 
     sendBtn.disabled = true;
     
     appendMessage(text, 'user');
     
-    // 移除所有舊的按鈕選單，避免重複點擊
     const oldContainers = document.querySelectorAll('.quick-reply-container');
     oldContainers.forEach(el => el.remove());
 
@@ -276,7 +282,6 @@ async function sendMessage() {
         typingIndicator.style.display = 'none';
         appendMessage(responseText, 'bot');
         
-        // 根據問題類型顯示對應選單
         if (text.includes("AI") || text.includes("技術") || text.includes("SATA")) {
              showQuickReplies('tech');
         } else {
@@ -298,7 +303,6 @@ async function sendMessage() {
         `;
         appendMessage(errorHtml, 'bot', true);
     } finally {
-        // 解鎖輸入框
         input.disabled = false;
         sendBtn.disabled = false;
         input.focus();
