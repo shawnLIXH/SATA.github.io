@@ -9,65 +9,27 @@
         /* --- 基礎設定 --- */
         :root { --primary-brown: #5D4037; --sand-gold: #C5A065; --warm-white: #FAF9F6; --card-bg: rgba(255, 253, 245, 0.95); --border-color: #E0D0B0; }
         
-        /* [修改] 加入 display: flex; flex-direction: column; 以便讓 Footer 置底 */
+        /* 加入 display: flex; flex-direction: column; 以便讓 Footer 置底 */
         body { margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif; min-height: 100vh; color: var(--primary-brown); background-image: url('background.png'); background-position: center bottom; background-repeat: no-repeat; background-size: cover; background-attachment: fixed; overflow-x: hidden; display: flex; flex-direction: column; }
         
         /* --- Header (修改配色) --- */
-        header { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100px; 
-            /* [修改] 背景改為深咖啡色 (與頁尾一致) */
-            background: var(--primary-brown); 
-            display: flex; justify-content: space-between; align-items: center; padding: 0 20px; 
-            box-sizing: border-box; 
-            border-bottom: 2px solid var(--sand-gold); /* 邊框改為金色 */
-            z-index: 1000; 
-        }
-
-        /* [修改] 選單按鈕改為淺色 */
-        .menu-btn { 
-            font-size: 24px; cursor: pointer; padding: 10px; 
-            border: 1px solid var(--warm-white); 
-            color: var(--warm-white); /* 淺色文字 */
-            width: 50px; text-align: center; transition: 0.3s; 
-        }
-        .menu-btn:hover { 
-            background-color: var(--sand-gold); 
-            color: var(--primary-brown); 
-            border-color: var(--sand-gold);
-        }
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 100px; background: var(--primary-brown); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; border-bottom: 2px solid var(--sand-gold); z-index: 1000; }
+        .menu-btn { font-size: 24px; cursor: pointer; padding: 10px; border: 1px solid var(--warm-white); color: var(--warm-white); width: 50px; text-align: center; transition: 0.3s; }
+        .menu-btn:hover { background-color: var(--sand-gold); color: var(--primary-brown); border-color: var(--sand-gold); }
         
-        /* Logo 區域樣式 (圖片) */
-        .logo-section { 
-            position: absolute; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-        }
+        /* Logo 區域樣式 */
+        .logo-section { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
         .logo-section a { display: block; }
-        .logo-section img {
-            height: 60px; /* 根據 Header 高度 (100px) 設定適當大小 */
-            width: auto;
-            display: block;
-            border-radius: 5px;
-        }
+        .logo-section img { height: 60px; width: auto; display: block; border-radius: 5px; }
 
         .right-section { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 15px; }
-        
-        /* 登入按鈕保持白色背景 */
-        .login-btn { 
-            text-decoration: none; color: var(--primary-brown); font-weight: bold; 
-            border: 1px solid var(--sand-gold); padding: 5px 20px; 
-            background: #fff; display: inline-block; font-size: 14px; 
-            transition: 0.3s; cursor: pointer; border-radius: 3px;
-        }
+        .login-btn { text-decoration: none; color: var(--primary-brown); font-weight: bold; border: 1px solid var(--sand-gold); padding: 5px 20px; background: #fff; display: inline-block; font-size: 14px; transition: 0.3s; cursor: pointer; border-radius: 3px; }
         .login-btn:hover { background-color: var(--sand-gold); color: #fff; }
         
-        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); } /* 修改文字顏色 */
+        .member-menu { font-size: 14px; font-weight: bold; color: var(--warm-white); } 
         .member-link { cursor: pointer; color: var(--warm-white); text-decoration: none; transition: 0.3s; }
         .member-link:hover { color: var(--sand-gold); }
-        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); } /* 修改分隔線顏色 */
+        .divider { margin: 0 8px; color: rgba(255,255,255,0.5); } 
         
         .search-container input { padding: 5px 10px; border: none; font-size: 14px; width: 250px; outline: none; background-color: rgba(255,255,255,0.9); border-radius: 3px; }
         
@@ -96,15 +58,10 @@
         .tag-yes { background-color: #E8F5E9; color: #2E7D32; }
 
         /* --- 本頁專屬樣式 --- */
-        /* [修改] 加入 flex: 1; 讓內容撐開高度，把 Footer 擠下去 */
         main { padding-top: 150px; max-width: 1200px; margin: 0 auto; padding-bottom: 100px; padding-left: 20px; padding-right: 20px; flex: 1; width: 100%; box-sizing: border-box;}
 
         /* Section 1: 諮詢服務 */
-        .consulting-intro {
-            text-align: center; margin-bottom: 50px;
-            background: var(--card-bg); padding: 40px; border-radius: 15px;
-            border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08);
-        }
+        .consulting-intro { text-align: center; margin-bottom: 50px; background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(93, 64, 55, 0.08); }
         .section-title { font-size: 2rem; color: var(--primary-brown); margin-bottom: 20px; border-bottom: 2px solid var(--sand-gold); display: inline-block; padding-bottom: 10px; }
         .services-grid { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
         .service-item { flex: 1; min-width: 280px; max-width: 350px; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left; transition: transform 0.3s; }
@@ -114,83 +71,27 @@
 
         /* Section 2: 團隊介紹 (Grid 2x2 排版) */
         .team-section { margin-top: 60px; }
-        
-        .team-grid {
-            display: grid;
-            /* 關鍵設定：強制兩欄 */
-            grid-template-columns: 1fr 1fr; 
-            gap: 40px; /* 增加間距讓畫面不擁擠 */
-            max-width: 1000px; /* 限制最大寬度，讓卡片集中 */
-            margin: 0 auto;
-        }
-        
-        .team-card {
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s;
-        }
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto; }
+        .team-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(93, 64, 55, 0.1); border: 1px solid var(--border-color); display: flex; flex-direction: column; transition: transform 0.3s; }
         .team-card:hover { transform: translateY(-5px); border-color: var(--sand-gold); }
-
-        .team-img-box {
-            width: 100%;
-            height: 350px; /* 增加圖片區塊高度 */
-            background-color: #f8f8f8; /* 淺灰背景，避免圖片比例不同時留白太突兀 */
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .team-img-box img {
-            width: 100%;
-            height: 100%;
-            /* 關鍵設定：contain 確保整張圖都看得到，不會被切掉 */
-            object-fit: contain; 
-        }
-
+        .team-img-box { width: 100%; height: 350px; background-color: #f8f8f8; overflow: hidden; position: relative; display: flex; justify-content: center; align-items: center; }
+        .team-img-box img { width: 100%; height: 100%; object-fit: contain; }
         .team-info { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
         .team-name { font-size: 1.5rem; font-weight: bold; color: var(--primary-brown); margin: 0; }
         .team-title { font-size: 0.95rem; color: var(--sand-gold); font-weight: bold; margin-bottom: 15px; display: block; }
-        
-        /* 增加學歷區塊樣式 */
-        .team-edu { 
-            font-size: 0.9rem; color: #666; margin-bottom: 10px; 
-            padding-bottom: 10px; border-bottom: 1px dashed #eee;
-        }
-        
+        .team-edu { font-size: 0.9rem; color: #666; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #eee; }
         .team-tags { margin-bottom: 15px; }
-        .expert-tag { 
-            display: inline-block; background: #f0f0f0; color: #555; 
-            padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; 
-            margin-right: 5px; margin-bottom: 5px;
-        }
-
+        .expert-tag { display: inline-block; background: #f0f0f0; color: #555; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; margin-right: 5px; margin-bottom: 5px; }
         .team-bio { font-size: 0.95rem; color: #444; line-height: 1.7; text-align: justify; flex-grow: 1; }
 
         /* 聯繫我們區塊 */
-        .contact-cta {
-            margin-top: 60px; text-align: center; padding: 40px;
-            background: linear-gradient(to right, rgba(93, 64, 55, 0.9), rgba(197, 160, 101, 0.9));
-            color: #fff; border-radius: 12px;
-        }
+        .contact-cta { margin-top: 60px; text-align: center; padding: 40px; background: linear-gradient(to right, rgba(93, 64, 55, 0.9), rgba(197, 160, 101, 0.9)); color: #fff; border-radius: 12px; }
         .contact-cta h2 { margin-top: 0; color: #fff; }
-        .contact-btn {
-            background: #fff; color: var(--primary-brown); padding: 10px 30px;
-            border-radius: 30px; text-decoration: none; font-weight: bold;
-            display: inline-block; margin-top: 20px; transition: 0.3s;
-        }
+        .contact-btn { background: #fff; color: var(--primary-brown); padding: 10px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 20px; transition: 0.3s; }
         .contact-btn:hover { background: var(--sand-gold); color: #fff; }
 
         /* Footer 頁腳樣式 */
-        footer {
-            background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative;
-        }
+        footer { background-color: var(--primary-brown); color: var(--warm-white); padding: 50px 20px 20px; margin-top: auto; z-index: 100; position: relative; }
         .footer-container { max-width: 1000px; margin: 0 auto; text-align: center; }
         .footer-slogan { font-size: 1.6rem; font-weight: bold; color: var(--sand-gold); margin-bottom: 40px; letter-spacing: 3px; }
         .footer-links-container { display: flex; justify-content: center; gap: 80px; margin-bottom: 50px; flex-wrap: wrap; text-align: left; }
@@ -208,6 +109,64 @@
             .footer-links-container { flex-direction: column; align-items: center; text-align: center; gap: 40px; }
         }
 
+        /* ==========================================================================
+           [新增] SATA Chatbot Widget 樣式 (聊天機器人專用)
+           ========================================================================== */
+        /* [重要] 左右切換箭頭與容器樣式 (Carousel UI) */
+        .quick-reply-wrapper { display: flex; align-items: center; width: 100%; margin-bottom: 10px; position: relative; padding: 0 5px; box-sizing: border-box; }
+        
+        /* 左右箭頭按鈕 */
+        .scroll-btn { width: 28px; height: 28px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.95); border: 1px solid var(--sand-gold); color: var(--primary-brown); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.15); flex-shrink: 0; transition: all 0.2s; }
+        .scroll-btn:hover { background-color: var(--sand-gold); color: white; }
+        .scroll-btn:active { transform: scale(0.9); }
+
+        /* 隱藏捲軸的容器 */
+        .quick-reply-container { display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth; padding: 5px; width: 100%; scrollbar-width: none; -ms-overflow-style: none; }
+        .quick-reply-container::-webkit-scrollbar { display: none; }
+
+        /* 卡片本體 */
+        .quick-reply-btn { background-color: #fff; border: 1px solid var(--border-color); color: var(--primary-brown); padding: 12px 10px; border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(93, 64, 55, 0.08); font-family: "Microsoft JhengHei", sans-serif; min-width: 130px; max-width: 130px; height: 100px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; white-space: normal; line-height: 1.3; }
+        .quick-reply-btn:hover { background-color: var(--sand-gold); color: #fff; transform: translateY(-3px); border-color: var(--sand-gold); }
+        .quick-reply-btn:hover .quick-reply-icon { color: #fff; }
+        .quick-reply-btn.category { border-top: 3px solid var(--sand-gold); background: linear-gradient(to bottom, #fff 80%, #FFFDF5 100%); }
+        .quick-reply-icon { font-size: 1.6rem; margin-bottom: 8px; color: var(--sand-gold); transition: color 0.2s; }
+
+        /* Chatbot 一般樣式 */
+        #chat-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; font-family: "Microsoft JhengHei", sans-serif; }
+        #chat-toggle-btn { width: 60px; height: 60px; background-color: var(--primary-brown); border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.3s, background 0.3s; border: 2px solid var(--sand-gold); }
+        #chat-toggle-btn:hover { transform: scale(1.1); background-color: #4e342e; }
+        #chat-toggle-btn i { color: var(--sand-gold); font-size: 28px; }
+        
+        #chat-window { width: 350px; height: 500px; background-color: #fff; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: absolute; bottom: 80px; right: 0; display: none; flex-direction: column; overflow: hidden; border: 1px solid var(--border-color); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .chat-header { background-color: var(--primary-brown); color: var(--warm-white); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--sand-gold); flex-shrink: 0; }
+        .chat-header h4 { margin: 0; font-size: 1.1rem; }
+        .close-chat { cursor: pointer; font-size: 1.2rem; }
+        
+        #api-key-overlay { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; background: #fafafa; overflow-y: auto; }
+        #api-key-overlay p { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        .api-input-field { width: 90%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .save-api-btn { background-color: var(--primary-brown); color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .save-api-btn:hover { background-color: #4e342e; }
+        
+        .reset-btn-inline { background-color: var(--primary-brown); color: #fff; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; width: 100%; margin-top: 5px; border: 1px solid var(--sand-gold); }
+        .reset-btn-inline:hover { background-color: #fff; color: var(--primary-brown); }
+
+        #chat-interface { display: none; flex-direction: column; height: 100%; flex: 1; overflow: hidden; }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; background-color: #FAF9F6; display: flex; flex-direction: column; gap: 10px; }
+        
+        .message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; }
+        .message.user { align-self: flex-end; background-color: var(--primary-brown); color: #fff; border-bottom-right-radius: 2px; }
+        .message.bot { align-self: flex-start; background-color: #fff; border: 1px solid #ddd; color: #333; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .message.bot strong { color: var(--primary-brown); }
+        
+        .chat-input-area { padding: 10px; background-color: #fff; border-top: 1px solid #eee; display: flex; gap: 10px; flex-shrink: 0; z-index: 10; }
+        #chat-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        #chat-input:disabled { background-color: #f5f5f5; cursor: not-allowed; }
+        #chat-send-btn { background-color: var(--sand-gold); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        #chat-send-btn:hover { background-color: var(--primary-brown); }
+        .typing-indicator { font-size: 0.8rem; color: #888; margin-left: 10px; display: none; padding-bottom: 5px; padding-left: 15px;}
     </style>
 </head>
 <body>
@@ -299,8 +258,7 @@
                         <h3 class="team-name">黃品文 (Pin-Wen Huang)</h3>
                         <span class="team-title">投資長 兼 量化分析總監 (CIO)</span>
                         <div class="team-edu">
-                            國立臺北大學 金融與合作經營學系 碩士班<br>
-                            國立臺北大學 企業管理學系
+                            國立臺北大學 金融與合作經營學系 碩士班
                         </div>
                         <div class="team-tags">
                             <span class="expert-tag">財務工程</span>
@@ -321,7 +279,7 @@
                         <h3 class="team-name">江芸帆 (Yun-Fan Chiang)</h3>
                         <span class="team-title">財務長 兼 風險控管長 (CFO & CRO)</span>
                         <div class="team-edu">
-                            國立臺北商業大學 財務金融學系
+                            國立臺北商業技術學院
                         </div>
                         <div class="team-tags">
                             <span class="expert-tag">永續金融與ESG</span>
@@ -329,7 +287,7 @@
                             <span class="expert-tag">會計審計</span>
                         </div>
                         <div class="team-bio">
-                            團隊的穩健守護者，擁有跨領域的完整證照，涵蓋會計、證券、信託與保險。專責於財務報表的精確編制與法規遵循，並將ESG永續指標導入商業模式中。透過嚴謹的風險控管矩陣，為團隊的商業提案提供堅實的可行性保障。
+                            團隊的穩健守護者，擁有跨領域的完整證照拼圖，涵蓋會計、證券、信託與保險。專責於財務報表的精確編制與法規遵循，並將ESG永續指標導入商業模式中。透過嚴謹的風險控管矩陣，為團隊的商業提案提供堅實的可行性保障。
                         </div>
                     </div>
                 </div>
@@ -366,6 +324,36 @@
 
     </main>
 
+    <div id="chat-widget-container">
+        <div id="chat-window">
+            <div class="chat-header">
+                <h4><i class="fas fa-robot"></i> SATA聊天小夥伴-保羅</h4>
+                <span class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></span>
+            </div>
+            
+            <div id="api-key-overlay">
+                <i class="fas fa-key" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                <p>為了啟動 SATA 智能顧問，<br>請輸入您的 Google Gemini API Key</p>
+                <input type="password" id="api-key-input" class="api-input-field" placeholder="sk-...">
+                <div id="api-error-msg" style="color:red; font-size:0.85rem; display:none; margin-bottom:10px;"></div>
+                <button class="save-api-btn" onclick="saveApiKey()">啟動 AI 服務</button>
+            </div>
+
+            <div id="chat-interface">
+                <div id="chat-messages"></div>
+                <div class="typing-indicator" id="typing-indicator">SATA AI 正在思考中...</div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="請輸入問題..." onkeypress="handleEnter(event)">
+                    <button id="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="chat-toggle-btn" onclick="toggleChat()">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-container">
             <div class="footer-slogan">
@@ -398,7 +386,10 @@
 
     <script>
         // 通用 UI 與登入邏輯
-        window.onload = function() { if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); } }
+        window.onload = function() {
+            if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); }
+            // 聊天機器人初始化會由 chatbot.js 處理
+        }
         function toggleNav() { var s=document.getElementById("mySidebar");var o=document.getElementById("overlay");if(s.style.left==="0px"){s.style.left="-250px";o.style.display="none";}else{s.style.left="0px";o.style.display="block";} }
         function toggleLoginModal() { var m=document.getElementById("loginModal");m.style.display=(m.style.display==="flex")?"none":"flex"; }
         function toggleMemberModal() { var m=document.getElementById("memberModal");m.style.display=(m.style.display==="flex")?"none":"flex";if(m.style.display==="flex")renderMemberTable(); }
@@ -413,5 +404,7 @@
             investments.forEach(item => { tbody.innerHTML += `<tr><td>${item.title}</td><td>${item.type}</td><td><span class="status-tag tag-yes">${item.status}</span></td></tr>`; });
         }
     </script>
+
+    <script src="chatbot.js"></script>
 </body>
 </html>
