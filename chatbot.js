@@ -1,7 +1,7 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：修復輸入卡住問題、新增 PDF 預設問題選單
+ * 更新內容：修復輸入卡住問題、新增 PDF 預設問題選單、禁止引用標註
  */
 
 // ==========================================
@@ -10,28 +10,30 @@
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
 請根據以下【RAG 知識庫綜合研究報告】的內容來回答使用者的問題。
-若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
+
+【重要指令】：
+1. 請用專業、親切的口吻回答。
+2. **絕對不要**使用, 或 這種引用格式。請將資訊消化後直接以自然語言回答。
+3. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【SATA 平台核心資料】：
 1. 品牌核心：「聚文字之細沙，築光影之高塔」。主色調為大地深棕(#5D4037)與流沙金(#C5A065)。
-2. [cite_start]核心價值：解決創作者「缺乏商業轉化力」與投資者「篩選成本高」的雙向痛點 [cite: 168]。
-3. [cite_start]商業模式 [cite: 293]：
-   - [cite_start]創作者：免費 AI 初篩，進階付費諮詢 (約 40,000 TWD/次) [cite: 296]。
-   - [cite_start]投資者：付費解鎖深度報告 (約 100,000 TWD/份) [cite: 301][cite_start]，投資媒合成功收取 4% 佣金 [cite: 305]。
-4. [cite_start]成功案例 (模擬數據) [cite: 261, 272, 281]：
+2. 核心價值：解決創作者「缺乏商業轉化力」與投資者「篩選成本高」的雙向痛點。
+3. 商業模式：
+   - 創作者：免費 AI 初篩，進階付費諮詢 (約 40,000 TWD/次)。
+   - 投資者：付費解鎖深度報告 (約 100,000 TWD/份)，投資媒合成功收取 4% 佣金。
+4. 成功案例 (模擬數據)：
    - 《消失的檢察官》(懸疑)：1,520次瀏覽，適合 Netflix。
    - 《愛在AI元年》(科幻)：2,100次瀏覽，平台最高分(4.9)。
    - 《家的形狀》(劇情)：在地化故事，適合公視。
-5. [cite_start]AI技術 [cite: 196]：
+5. AI技術：
    - 使用 Hierarchical Transformer 與 NLP 分析敘事結構。
-   - [cite_start]利用 LSTM 分析情感曲線，偵測「棄讀風險點」 [cite: 208]。
-   - [cite_start]採用 RAG 技術與在地化語料庫 (金馬創投、FPP) [cite: 210]。
+   - 利用 LSTM 分析情感曲線，偵測「棄讀風險點」。
+   - 採用 RAG 技術與在地化語料庫 (金馬創投、FPP)。
 6. 常見問答 (FAQ)：
-   - [cite_start]版權保護：設有嚴格審核機制與區塊鏈技術，確保創意不被篡改 [cite: 358]。
-   - [cite_start]數據信用：透過量化評分賦予素人編劇「數據信用」，解決缺乏人脈問題 [cite: 181]。
-   - [cite_start]票房預測：系統能細分五大洲 (北美/歐洲/亞洲等) 的票房與受眾年齡層 [cite: 235]。
-
-請用專業、親切、具備數據洞察力的語氣回答。
+   - 版權保護：設有嚴格審核機制與區塊鏈技術，確保創意不被篡改。
+   - 數據信用：透過量化評分賦予素人編劇「數據信用」，解決缺乏人脈問題。
+   - 票房預測：系統能細分五大洲 (北美/歐洲/亞洲等) 的票房與受眾年齡層。
 `;
 
 // ==========================================
@@ -74,7 +76,7 @@ window.resetApiKey = resetApiKey;
 window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
 window.toggleChat = toggleChat;
-window.handleQuickReply = handleQuickReply; // 新增：處理按鈕點擊
+window.handleQuickReply = handleQuickReply;
 
 document.addEventListener('DOMContentLoaded', () => {
     initChatbot();
@@ -82,12 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initChatbot() {
     const chatWindow = document.getElementById('chat-window');
-    
-    // 檢查 LocalStorage
     const storedKey = localStorage.getItem('sata_gemini_key');
     const isChatOpen = localStorage.getItem('sata_chat_open') === 'true';
 
-    // 恢復視窗狀態
     if (isChatOpen && chatWindow) {
         chatWindow.style.display = 'flex';
     }
@@ -101,7 +100,7 @@ function initChatbot() {
 }
 
 // ==========================================
-// 4. API Key 管理 (保持不變)
+// 4. API Key 管理
 // ==========================================
 
 async function saveApiKey() {
@@ -137,7 +136,6 @@ async function saveApiKey() {
         localStorage.setItem('sata_gemini_model', bestModel);
 
         showChatInterface();
-        // 歡迎訊息後直接顯示主選單
         appendMessage(`<strong>系統：</strong>連接成功！已選擇模型：${bestModel}<br>我是 SATA AI 顧問，請選擇您想了解的主題：`, 'bot', true);
         showQuickReplies('main');
 
@@ -197,14 +195,13 @@ function handleEnter(e) {
 }
 
 // ==========================================
-// 6. 新增：預設問題按鈕邏輯
+// 6. 預設問題按鈕邏輯
 // ==========================================
 
 function showQuickReplies(category) {
     const questions = QUICK_QUESTIONS[category];
     if (!questions) return;
 
-    // 建立按鈕容器
     const container = document.createElement('div');
     container.className = 'quick-reply-container';
 
@@ -223,16 +220,13 @@ function showQuickReplies(category) {
 
 function handleQuickReply(text, action) {
     if (action.startsWith('category:')) {
-        // 如果是切換類別，顯示該類別的按鈕
         const category = action.split(':')[1];
-        // 移除舊的按鈕區 (可選，避免畫面太亂)
         const oldContainers = document.querySelectorAll('.quick-reply-container');
-        oldContainers.forEach(el => el.style.display = 'none');
+        oldContainers.forEach(el => el.style.display = 'none'); // 隱藏舊的選單
         
         appendMessage(`<strong>已選擇：${text}</strong>`, 'user', true);
         showQuickReplies(category);
     } else {
-        // 如果是問問題，直接發送
         const input = document.getElementById('chat-input');
         input.value = text;
         sendMessage();
@@ -240,15 +234,14 @@ function handleQuickReply(text, action) {
 }
 
 // ==========================================
-// 7. 訊息發送與 API 呼叫 (修復輸入卡住問題)
+// 7. 訊息發送與 API 呼叫
 // ==========================================
 
 function loadChatHistory() {
     const history = localStorage.getItem('sata_chat_history');
     if (history) {
         document.getElementById('chat-messages').innerHTML = history;
-        // 重新顯示主選單按鈕，方便使用者操作
-        showQuickReplies('main');
+        showQuickReplies('main'); // 重新載入時顯示主選單
     }
     scrollToBottom();
 }
@@ -263,14 +256,14 @@ async function sendMessage() {
     if (!text) return;
     if (!apiKey) { showApiKeyInput(); return; }
 
-    // 1. 顯示用戶訊息 & 清空輸入框 (防止卡住的關鍵)
+    // UI 處理
     input.value = ''; 
-    input.disabled = true; // 暫時鎖定防止重複提交
+    input.disabled = true; // 鎖定
     sendBtn.disabled = true;
     
     appendMessage(text, 'user');
     
-    // 移除舊的按鈕區 (避免誤觸)
+    // 移除所有舊的按鈕選單，避免重複點擊
     const oldContainers = document.querySelectorAll('.quick-reply-container');
     oldContainers.forEach(el => el.remove());
 
@@ -283,9 +276,8 @@ async function sendMessage() {
         typingIndicator.style.display = 'none';
         appendMessage(responseText, 'bot');
         
-        // 回答完後，再次顯示相關選單 (優化體驗)
-        // 簡單判斷：如果是問技術，回技術選單；否則回主選單
-        if (text.includes("AI") || text.includes("技術")) {
+        // 根據問題類型顯示對應選單
+        if (text.includes("AI") || text.includes("技術") || text.includes("SATA")) {
              showQuickReplies('tech');
         } else {
              showQuickReplies('main');
@@ -306,7 +298,7 @@ async function sendMessage() {
         `;
         appendMessage(errorHtml, 'bot', true);
     } finally {
-        // 無論成功失敗，一定要解鎖輸入框並聚焦
+        // 解鎖輸入框
         input.disabled = false;
         sendBtn.disabled = false;
         input.focus();
@@ -327,8 +319,6 @@ function appendMessage(content, sender, isHtml = false) {
     }
 
     chatMessages.appendChild(div);
-    // 這裡我們不存按鈕進歷史紀錄，只存文字對話，以免重整後按鈕失效或重複
-    // (這是一個選擇，為了簡單起見，我們存入 innerHTML，但在 load 時會重新 render 按鈕)
     localStorage.setItem('sata_chat_history', chatMessages.innerHTML);
     scrollToBottom();
 }
