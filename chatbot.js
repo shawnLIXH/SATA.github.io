@@ -135,7 +135,7 @@ async function saveApiKey() {
         localStorage.setItem('sata_gemini_model', bestModel);
 
         showChatInterface();
-        appendMessage(`<strong>系統：</strong>連接成功！(${bestModel})<br>我是 SATA AI 顧問，請選擇您想了解的主題：`, 'bot', true);
+        appendMessage(`<strong>系統：</strong>歡迎使用 SATA 平台，您可以問我以下問題：<br>1. 平台的商業模式<br>2. SATA的使命與願景<br>3. AI 技術架構<br>4. 團隊背景介紹`, 'bot', true);
         showQuickReplies('main');
 
     } catch (error) {
