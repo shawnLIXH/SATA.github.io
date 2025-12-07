@@ -1,11 +1,11 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：整合完整 PDF 知識庫、橫向捲動 UI、限制回答長度、修復輸入框
+ * 更新內容：修復重複歡迎訊息、保留左右箭頭與卡片 UI
  */
 
 // ==========================================
-// 1. RAG 知識庫 (來源：SATA 綜合研究報告 PDF 全文)
+// 1. RAG 知識庫
 // ==========================================
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
@@ -14,10 +14,11 @@ const SATA_KNOWLEDGE_BASE = `
 【重要指令】：
 1. 請用專業、親切的口吻回答。
 2. **回答請精簡，嚴格控制在三段以內 (約 150 字)。**
-3. **絕對不要**使用 引用格式。
+3. **絕對不要**使用 [cite] 或 [source] 等引用格式。
 4. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【完整知識庫內容】：
+SATA 劇沙成塔：AI 影視孵化與投資平台 RAG 知識庫綜合研究報告
 1. 執行摘要與品牌核心論述
 1.1 品牌識別與設計哲學
 本報告旨在為「SATA 劇沙成塔」之聊天機器人 RAG（檢索增強生成）系統構建詳盡的基礎知識庫。SATA 平台（Script AI Tech & Analysis）的品牌核心構建於一個深刻的隱喻：「聚文字之細沙，築光影之高塔」1。此一核心標語不僅是行銷詞彙，更象徵著平台在碎片化的創意產業中扮演的聚合者角色。在影視產業的原始生態中，無數的創意靈感如同散落的細沙，雖然本質珍貴但缺乏結構支撐，難以獨自成形。SATA 的存在意義，即在於透過科技的結構與資本的黏合劑，將這些離散的文字細沙堆砌成宏偉的光影高塔，亦即將劇本轉化為具備商業與藝術價值的影視作品。
@@ -70,9 +71,9 @@ SATA 的技術架構採用了響應式網頁設計（RWD），確保在不同裝
 3.2 AI 分析引擎的核心機制
 SATA 的核心競爭力在於其「AI 劇本初步分析」模組（ai_analysis.html）。這不僅是一個簡單的文本處理工具，而是一個整合了多種先進 NLP 技術的複合系統。
 3.2.1 大型語言模型（LLM）整合策略
-平台串接了 Google Gemini API 作為底層推理引擎，並設計了一套靈活的模型選擇機制 1。
+平台DEMO串接了 Google Gemini API 作為底層推理引擎，並設計了一套靈活的模型選擇機制 1，而「劇沙成塔」目標打造符合臺灣影視產業需求了解在地需要之資料庫。
 模型矩陣策略：系統支援從輕量級的 Gemini 1.5 Flash 到高性能的 Gemini 1.5 Pro，甚至包含最新的 Gemini 2.5 Flash/Pro 預覽版。這種設計允許使用者在「分析速度」與「深度推理能力」之間做選擇。對於初步大綱，Flash 模型可提供即時回饋；對於完整劇本，Pro 模型則能處理更長的 Context Window，進行跨場次的邏輯推演。
-自動偵測與降級機制：前端代碼包含 detectAvailableModels() 函式，能自動測試 API Key 的權限並偵測可用模型。這體現了系統的高可用性設計，確保在某一模型 API 不穩定時，服務仍能運行。
+自動偵測與降級機制：前端代碼包含 detectAvailableModels() 函式，能自動測試 API Key 的權限並偵測可用模型。這表示系統有良好可用性設計，確保在某一模型 API 不穩定時，服務仍能運行。
 3.2.2 深度學習架構與演算法
 除了通用的 LLM，SATA 在後端（根據商業企劃書 1）部署了專用的深度學習架構，以補足通用模型的不足：
 Hierarchical Transformer（階層式 Transformer）：劇本通常長達數萬字，普通的 Transformer 模型難以捕捉整體的長距離依賴。階層式架構先處理句子/場次層級的語義，再聚合為幕/劇本層級的結構，有效解決了長文本的遺忘問題。
@@ -289,10 +290,15 @@ C. 關於 SATA 平台技術 (通用問題)：
 「你們的訓練資料來源是什麼？」（關鍵字：FPP 台北電影計畫、金馬創投資料庫）
 平台願景：
 「SATA 是什麼意思？」（SATA: Script AI Tech & Analysis，聚文字之細沙，築光影之高塔）
+
+
+引用的著作
+初賽企劃書_SATA 劇沙成塔.pdf
+
 `;
 
 // ==========================================
-// 2. 預設問題設定 (User Persona FAQ)
+// 2. 預設問題設定
 // ==========================================
 const QUICK_QUESTIONS = {
     "main": [
@@ -347,10 +353,23 @@ function initChatbot() {
 
     if (storedKey) {
         showChatInterface();
-        loadChatHistory();
+        // [修改] 如果歷史紀錄是空的（例如剛清除快取），重新顯示歡迎詞
+        const history = localStorage.getItem('sata_chat_history');
+        if (!history || history.trim() === "") {
+            showWelcomeMessage();
+        } else {
+            loadChatHistory();
+        }
     } else {
         showApiKeyInput();
     }
+}
+
+// 獨立出歡迎訊息函式，避免重複代碼
+function showWelcomeMessage() {
+    const welcomeText = `<strong>系統：</strong>歡迎使用 SATA 平台，您可以問我以下問題：<br>1. 平台的商業模式<br>2. SATA的使命與願景<br>3. AI 技術架構<br>4. 團隊背景介紹`;
+    appendMessage(welcomeText, 'bot', true);
+    showQuickReplies('main');
 }
 
 // ==========================================
@@ -389,8 +408,8 @@ async function saveApiKey() {
         localStorage.setItem('sata_gemini_model', bestModel);
 
         showChatInterface();
-        appendMessage(`<strong>系統：</strong>歡迎使用 SATA 平台，您可以問我以下問題：<br>1. 平台的商業模式<br>2. SATA的使命與願景<br>3. AI 技術架構<br>4. 團隊背景介紹`, 'bot', true);
-        showQuickReplies('main');
+        // [修改] 驗證成功後，只呼叫一次歡迎訊息
+        showWelcomeMessage();
 
     } catch (error) {
         console.error(error);
@@ -405,8 +424,12 @@ async function saveApiKey() {
 function resetApiKey() {
     localStorage.removeItem('sata_gemini_key');
     localStorage.removeItem('sata_gemini_model');
+    localStorage.removeItem('sata_chat_history'); // 重設時也清空歷史，體驗較好
+    
     document.getElementById('api-key-input').value = ''; 
     document.getElementById('api-error-msg').style.display = 'none';
+    document.getElementById('chat-messages').innerHTML = ''; // 清空介面
+    
     showApiKeyInput();
 }
 
@@ -448,7 +471,7 @@ function handleEnter(e) {
 }
 
 // ==========================================
-// 6. 卡片式預設問題邏輯 (新增左右捲動)
+// 6. 卡片式預設問題邏輯
 // ==========================================
 
 function showQuickReplies(category) {
@@ -523,7 +546,7 @@ function handleQuickReply(text, action) {
 }
 
 // ==========================================
-// 7. 訊息發送與 API 呼叫 (含文字淨化)
+// 7. 訊息發送與 API 呼叫
 // ==========================================
 
 function loadChatHistory() {
