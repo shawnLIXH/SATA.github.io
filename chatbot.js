@@ -1,11 +1,11 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：自動將網址轉為超連結、整合服務入口指引、橫向捲動 UI、限制回答長度
+ * 更新內容：修正網址錯誤（改用相對路徑）、強化連結辨識、UI 優化
  */
 
 // ==========================================
-// 1. RAG 知識庫 (整合 PDF 全文 + 10.4 服務連結)
+// 1. RAG 知識庫 (已修正為相對路徑連結)
 // ==========================================
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
@@ -15,7 +15,7 @@ const SATA_KNOWLEDGE_BASE = `
 1. 請用專業、親切的口吻回答。
 2. **回答請精簡，嚴格控制在三段以內 (約 150 字)。**
 3. **絕對不要**使用 [cite] 或 [source] 等引用格式。
-4. **關鍵策略**：當使用者詢問特定服務或表達相關意圖時，請務必在回答中提供對應的完整網址連結。
+4. **關鍵策略**：當使用者詢問特定服務或表達相關意圖時，請務必在回答中提供對應的網頁連結 (例如 ai_analysis.html)。
 5. 若問題超出範圍，請回答「這超出了我的知識範圍，但我可以為您介紹 SATA 平台的核心服務。」
 
 【完整知識庫內容】：
@@ -293,27 +293,27 @@ C. 關於 SATA 平台技術 (通用問題)：
 
 
 10.4 快速連結與服務入口指引 (Service Links)
-為了提升使用者體驗，當使用者提及以下關鍵字或意圖時，請務必在回應中包含對應的完整網址：
+當使用者提及以下需求時，請提供對應頁面：
 
 1. AI 劇本初步分析服務
-   - 觸發關鍵字：AI 分析、劇本評分、雷達圖、票房預測、角色分析、結構分析、劇本健檢、五大維度
-   - 網址： https://shawnlixh.github.io/SATA.github.io/ai_analysis.html
+   - 關鍵字：AI 分析、劇本評分、雷達圖、票房預測、角色分析
+   - 連結： ai_analysis.html
 
 2. SATA 劇本資料庫（投資與瀏覽）
-   - 觸發關鍵字：找劇本、投資標的、劇本庫、篩選劇本、投資意願、尋找資金、看劇本、找案子
-   - 網址： https://shawnlixh.github.io/SATA.github.io/script_database.html
+   - 關鍵字：找劇本、投資標的、劇本庫、篩選劇本、投資意願
+   - 連結： script_database.html
 
 3. 專業諮詢服務與團隊聯繫
-   - 觸發關鍵字：真人顧問、商業企劃書、募資簡報、團隊介紹、聯絡我們、劇本醫生、深度輔導
-   - 網址： https://shawnlixh.github.io/SATA.github.io/consulting.html
+   - 關鍵字：真人顧問、商業企劃書、團隊介紹、聯絡我們
+   - 連結： consulting.html
 
 4. 劇本上傳與提交審核
-   - 觸發關鍵字：上傳劇本、提交作品、劇本上架、投稿、檔案上傳、審核申請
-   - 網址： https://shawnlixh.github.io/SATA.github.io/Scriptupload.html
+   - 關鍵字：上傳劇本、提交作品、劇本上架、投稿
+   - 連結： Scriptupload.html
 `;
 
 // ==========================================
-// 2. 預設問題設定 (User Persona FAQ)
+// 2. 預設問題設定
 // ==========================================
 const QUICK_QUESTIONS = {
     "main": [
@@ -368,7 +368,6 @@ function initChatbot() {
 
     if (storedKey) {
         showChatInterface();
-        // 如果歷史紀錄是空的，重新顯示歡迎詞
         const history = localStorage.getItem('sata_chat_history');
         if (!history || history.trim() === "") {
             showWelcomeMessage();
@@ -380,7 +379,6 @@ function initChatbot() {
     }
 }
 
-// 獨立出歡迎訊息函式
 function showWelcomeMessage() {
     const welcomeText = `<strong>系統：</strong>歡迎使用 SATA 平台，您可以問我以下問題：<br>1. 平台的商業模式<br>2. SATA的使命與願景<br>3. AI 技術架構<br>4. 團隊背景介紹`;
     appendMessage(welcomeText, 'bot', true);
@@ -492,21 +490,17 @@ function showQuickReplies(category) {
     const questions = QUICK_QUESTIONS[category];
     if (!questions) return;
 
-    // 建立外層 Wrapper (包含左右箭頭)
     const wrapper = document.createElement('div');
     wrapper.className = 'quick-reply-wrapper';
 
-    // 左箭頭
     const leftBtn = document.createElement('button');
     leftBtn.className = 'scroll-btn';
     leftBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
     leftBtn.onclick = () => scrollQuickReply(wrapper, -150);
 
-    // 容器
     const container = document.createElement('div');
     container.className = 'quick-reply-container';
 
-    // 產生卡片
     questions.forEach(q => {
         const btn = document.createElement('div');
         btn.className = 'quick-reply-btn';
@@ -521,13 +515,11 @@ function showQuickReplies(category) {
         container.appendChild(btn);
     });
 
-    // 右箭頭
     const rightBtn = document.createElement('button');
     rightBtn.className = 'scroll-btn';
     rightBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
     rightBtn.onclick = () => scrollQuickReply(wrapper, 150);
 
-    // 組裝
     wrapper.appendChild(leftBtn);
     wrapper.appendChild(container);
     wrapper.appendChild(rightBtn);
@@ -635,6 +627,7 @@ async function sendMessage() {
     }
 }
 
+// [核心修改] 插入訊息與連結轉換
 function appendMessage(content, sender, isHtml = false) {
     const chatMessages = document.getElementById('chat-messages');
     const div = document.createElement('div');
@@ -643,16 +636,21 @@ function appendMessage(content, sender, isHtml = false) {
     if (isHtml) {
         div.innerHTML = content;
     } else {
-        // 1. 處理粗體 (**text**)
+        // 1. 處理粗體
         let formatted = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         
-        // 2. 處理換行 (\n)
+        // 2. 處理換行
         formatted = formatted.replace(/\n/g, '<br>');
 
-        // 3. 自動偵測網址並轉換為超連結 (支援 http/https)
-        const urlRegex = /(https?:\/\/[^\s<]+)/g;
-        formatted = formatted.replace(urlRegex, function(url) {
-            const cleanUrl = url.replace(/[).,]*$/, ''); 
+        // 3. [關鍵修正] 網址與檔案連結自動轉換 (支援 https:// 與 .html)
+        // Regex 邏輯：
+        // (https?:\/\/[^\s<]+) -> 抓取標準網址
+        // | ([\w-]+\.html)     -> 抓取相對路徑 (例如 ai_analysis.html)
+        const urlRegex = /(https?:\/\/[^\s<]+)|([\w-]+\.html)/g;
+        
+        formatted = formatted.replace(urlRegex, function(match) {
+            // 移除可能誤判的結尾符號
+            const cleanUrl = match.replace(/[).,]*$/, ''); 
             return `<a href="${cleanUrl}" target="_blank" style="color: #007bff; text-decoration: underline;">點此前往服務頁面</a>`;
         });
 
