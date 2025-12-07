@@ -1,11 +1,11 @@
 /**
  * chatbot.js
  * SATA 平台專用 AI 聊天機器人
- * 更新內容：橫向捲動卡片 UI、限制回答長度 (三段內)
+ * 更新內容：橫向捲動卡片 UI、限制回答長度 (三段內)、過濾 [cite] 標籤
  */
 
 // ==========================================
-// 1. RAG 知識庫 (來源：SATA 綜合研究報告 PDF)
+// 1. RAG 知識庫
 // ==========================================
 const SATA_KNOWLEDGE_BASE = `
 你現在是 SATA (劇沙成塔) 平台的 AI 投資顧問與客服。
@@ -38,7 +38,7 @@ const SATA_KNOWLEDGE_BASE = `
 `;
 
 // ==========================================
-// 2. 預設問題設定 (新增 icon)
+// 2. 預設問題設定
 // ==========================================
 const QUICK_QUESTIONS = {
     "main": [
@@ -76,6 +76,7 @@ window.sendMessage = sendMessage;
 window.handleEnter = handleEnter;
 window.toggleChat = toggleChat;
 window.handleQuickReply = handleQuickReply;
+window.scrollQuickReply = scrollQuickReply; // 新增捲動函式
 
 document.addEventListener('DOMContentLoaded', () => {
     initChatbot();
@@ -193,43 +194,71 @@ function handleEnter(e) {
 }
 
 // ==========================================
-// 6. [修改] 卡片式預設問題邏輯
+// 6. 卡片式預設問題邏輯 (新增左右捲動)
 // ==========================================
 
 function showQuickReplies(category) {
     const questions = QUICK_QUESTIONS[category];
     if (!questions) return;
 
-    const container = document.createElement('div');
-    container.className = 'quick-reply-container'; // 橫向捲動容器
+    // 建立外層 Wrapper (包含左右箭頭)
+    const wrapper = document.createElement('div');
+    wrapper.className = 'quick-reply-wrapper';
 
+    // 左箭頭
+    const leftBtn = document.createElement('button');
+    leftBtn.className = 'scroll-btn';
+    leftBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    leftBtn.onclick = () => scrollQuickReply(wrapper, -150); // 往左捲動 150px
+
+    // 容器
+    const container = document.createElement('div');
+    container.className = 'quick-reply-container';
+
+    // 產生卡片
     questions.forEach(q => {
-        const btn = document.createElement('div'); // 改用 div 方便排版
+        const btn = document.createElement('div');
         btn.className = 'quick-reply-btn';
         if (q.action.startsWith('category:')) btn.classList.add('category');
         
-        // 卡片內容 HTML：Icon + 標題 + 副標題
         btn.innerHTML = `
             <i class="${q.icon} quick-reply-icon"></i>
             <div style="font-weight:bold; margin-bottom:4px;">${q.text}</div>
             <div style="font-size:0.75rem; color:#666;">${q.sub || ''}</div>
         `;
-        
-        // 點擊事件
         btn.onclick = () => handleQuickReply(q.text, q.action);
         container.appendChild(btn);
     });
 
-    document.getElementById('chat-messages').appendChild(container);
+    // 右箭頭
+    const rightBtn = document.createElement('button');
+    rightBtn.className = 'scroll-btn';
+    rightBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    rightBtn.onclick = () => scrollQuickReply(wrapper, 150); // 往右捲動 150px
+
+    // 組裝
+    wrapper.appendChild(leftBtn);
+    wrapper.appendChild(container);
+    wrapper.appendChild(rightBtn);
+
+    document.getElementById('chat-messages').appendChild(wrapper);
     scrollToBottom();
+}
+
+// 捲動函式
+function scrollQuickReply(wrapper, amount) {
+    const container = wrapper.querySelector('.quick-reply-container');
+    if (container) {
+        container.scrollBy({ left: amount, behavior: 'smooth' });
+    }
 }
 
 function handleQuickReply(text, action) {
     if (action.startsWith('category:')) {
         const category = action.split(':')[1];
-        // 隱藏舊的選單
-        const oldContainers = document.querySelectorAll('.quick-reply-container');
-        oldContainers.forEach(el => el.style.display = 'none'); 
+        // 隱藏舊的選單 Wrapper
+        const oldWrappers = document.querySelectorAll('.quick-reply-wrapper');
+        oldWrappers.forEach(el => el.style.display = 'none'); 
         
         appendMessage(`<strong>已選擇：${text}</strong>`, 'user', true);
         showQuickReplies(category);
@@ -242,7 +271,7 @@ function handleQuickReply(text, action) {
 }
 
 // ==========================================
-// 7. 訊息發送與 API 呼叫
+// 7. 訊息發送與 API 呼叫 (含文字淨化)
 // ==========================================
 
 function loadChatHistory() {
@@ -270,15 +299,24 @@ async function sendMessage() {
     
     appendMessage(text, 'user');
     
-    const oldContainers = document.querySelectorAll('.quick-reply-container');
-    oldContainers.forEach(el => el.remove());
+    // 移除舊的按鈕
+    const oldWrappers = document.querySelectorAll('.quick-reply-wrapper');
+    oldWrappers.forEach(el => el.remove());
 
     const typingIndicator = document.getElementById('typing-indicator');
     typingIndicator.style.display = 'block';
     scrollToBottom();
 
     try {
-        const responseText = await callGeminiAPI(text, apiKey, modelName);
+        let responseText = await callGeminiAPI(text, apiKey, modelName);
+        
+        // --- 文字淨化 ---
+        responseText = responseText
+            .replace(/\]*\]/g, "")
+            .replace(/\]*\]/g, "")
+            .replace(/\[cite_start\]/g, "")
+            .replace(/\[cite_end\]/g, "");
+
         typingIndicator.style.display = 'none';
         appendMessage(responseText, 'bot');
         
