@@ -59,9 +59,9 @@ const QUICK_QUESTIONS = {
         { text: "返回主選單", sub: "回上一層", icon: "fas fa-undo", action: "category:main" }
     ],
     "tech": [
-        { text: "AI 技術原理", sub: "Transformer & RAG", icon: "fas fa-microchip", action: "ask:你們的 AI 是用什麼技術開發的？" },
-        { text: "SATA 的意義", sub: "品牌名稱由來", icon: "fas fa-signature", action: "ask:SATA 是什麼意思？" },
-        { text: "訓練資料來源", sub: "金馬/FPP", icon: "fas fa-database", action: "ask:你們的訓練資料來源是什麼？" },
+        { text: "SATA 的使命與願景", sub: "品牌精神", icon: "fas fa-flag", action: "ask:SATA 的使命與願景是什麼？" }, // 修改這行
+        { text: "AI 技術架構", sub: "Transformer & RAG", icon: "fas fa-microchip", action: "ask:你們的 AI 是用什麼技術開發的？" },
+        { text: "團隊背景介紹", sub: "核心成員", icon: "fas fa-users", action: "ask:請介紹團隊背景與核心成員。" }, // 修改這行
         { text: "返回主選單", sub: "回上一層", icon: "fas fa-undo", action: "category:main" }
     ]
 };
