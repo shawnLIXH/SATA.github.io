@@ -75,7 +75,7 @@
         .result-panel { display: flex; flex-direction: column; gap: 20px; }
         .result-card { background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid var(--sand-gold); box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
         .result-title { font-size: 1.1rem; color: var(--primary-brown); margin-bottom: 10px; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 5px;}
-        .result-content { font-size: 1rem; color: #999; line-height: 1.6; font-style: italic; } /* 預設內容灰色 */
+        .result-content { font-size: 1rem; color: #999; line-height: 1.6; font-style: italic; }
 
         /* 圖表區 */
         .charts-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
@@ -322,32 +322,42 @@
         let radarChartInstance = null;
         let barChartInstance = null;
 
+        // 定義共用的標籤 (5大維度)
+        const LABELS = ['敘事結構完整度', '角色塑造深度', '情感曲線張力', '戲劇張力與節奏', '原創性與市場差異度'];
+
         // 頁面載入時初始化空圖表
         window.onload = function() { 
             if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); }
-            initEmptyCharts(); // 初始化空圖表
+            initEmptyCharts();
         }
 
-        // 初始化空圖表 (讓畫面不空白，並更新標籤)
+        // 初始化空圖表 (使用新的分組長條圖結構)
         function initEmptyCharts() {
             const ctxRadar = document.getElementById('radarChart').getContext('2d');
             radarChartInstance = new Chart(ctxRadar, {
                 type: 'radar',
                 data: {
-                    // [修改] 更新為新的 5 大維度
-                    labels: ['敘事結構完整度', '角色塑造深度', '情感曲線張力', '戲劇張力與節奏', '原創性與市場差異度'],
+                    labels: LABELS,
                     datasets: [{ label: '等待數據...', data: [0,0,0,0,0], backgroundColor: 'rgba(200,200,200,0.2)', borderColor: '#ddd', borderWidth: 1 }]
                 },
                 options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } } }
             });
+
+            // [修改] 初始化分組長條圖
             const ctxBar = document.getElementById('barChart').getContext('2d');
             barChartInstance = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: ['結構完整度', '情感張力', '市場契合度', '預算可行性', '對白品質'],
-                    datasets: [{ label: '等待數據...', data: [0,0,0,0,0], backgroundColor: '#eee', borderColor: '#ddd', borderWidth: 1 }]
+                    labels: LABELS,
+                    datasets: [
+                        { label: '本劇本得分', data: [0,0,0,0,0], backgroundColor: 'rgba(93, 64, 55, 0.7)' },
+                        { label: '同類型平均', data: [0,0,0,0,0], backgroundColor: 'rgba(197, 160, 101, 0.5)' }
+                    ]
                 },
-                options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 100 } } }
+                options: {
+                    indexAxis: 'y', // 橫向長條圖方便閱讀文字
+                    scales: { x: { beginAtZero: true, max: 10 } } // 統一為 10 分制
+                }
             });
         }
 
@@ -438,7 +448,7 @@
             }
         }
 
-        // 呼叫 API (本頁面專用)
+        // 呼叫 API (Prompt 更新)
         async function callScriptAnalysisAPI(script, key, modelName) {
             const prompt = `
                 請扮演專業電影分析師，針對以下劇本內容進行分析。
@@ -448,8 +458,8 @@
                     "genre": "劇本類型",
                     "investors": "3個適合的潛在投資方",
                     "suggestions": "3點具體劇本建議",
-                    "radar": [敘事結構完整度, 角色塑造深度, 情感曲線張力, 戲劇張力與節奏, 原創性與市場差異度] (填入1-10的數字),
-                    "bar": [結構完整度, 情感張力, 市場契合度, 預算可行性, 對白品質] (填入1-100的數字),
+                    "scores": [敘事結構, 角色塑造, 情感曲線, 戲劇張力, 原創性] (填入1-10的數字),
+                    "average_scores": [敘事結構, 角色塑造, 情感曲線, 戲劇張力, 原創性] (填入該類型電影的平均分數 1-10),
                     "global_box_office": "預估金額",
                     "continents": [
                         {"name": "北美", "revenue": "金額", "age": "主要年齡層"},
@@ -479,14 +489,14 @@
             return JSON.parse(jsonString);
         }
 
-        // 模擬數據
+        // 模擬數據 (結構更新)
         function getMockData() {
             return {
                 genre: "科幻 / 懸疑驚悚",
                 investors: "Netflix 原創內容部、華納兄弟、騰訊影業",
                 suggestions: "1. 開場節奏稍慢，建議在前五分鐘加入視覺鉤子。\n2. 主角動機不夠強烈，建議增加回憶片段強化情感。\n3. 對白過於文藝，建議修改得更口語化。",
-                radar: [8, 7, 6, 9, 8],
-                bar: [85, 70, 92, 65, 78],
+                scores: [8, 7, 6, 9, 8],
+                average_scores: [7, 7.5, 6.5, 7, 6], // 模擬平均值
                 global_box_office: "1.2 億 USD",
                 continents: [
                     { name: "北美", revenue: "4,500 萬", age: "18-35 歲" },
@@ -498,7 +508,7 @@
             };
         }
 
-        // 渲染結果
+        // 渲染結果 (含更新圖表數據)
         function renderResults(data) {
             document.getElementById('res-genre').innerText = data.genre;
             document.getElementById('res-genre').style.color = "#333";
@@ -515,38 +525,41 @@
             data.continents.forEach(c => {
                 contContainer.innerHTML += `<div class="continent-card"><span class="cont-name">${c.name}</span><span class="cont-money">${c.revenue}</span><span class="cont-age"><i class="fas fa-users"></i> ${c.age}</span></div>`;
             });
-            drawCharts(data.radar, data.bar);
+            drawCharts(data.scores, data.average_scores);
         }
 
-        function drawCharts(radarData, barData) {
+        // 繪製圖表 (雷達 + 對比長條)
+        function drawCharts(scores, averageScores) {
             if (radarChartInstance) radarChartInstance.destroy();
             if (barChartInstance) barChartInstance.destroy();
+            
+            // 雷達圖 (僅顯示劇本得分)
             const ctxRadar = document.getElementById('radarChart').getContext('2d');
             radarChartInstance = new Chart(ctxRadar, {
                 type: 'radar',
                 data: {
-                    // [修改] 更新為新的 5 大維度
-                    labels: ['敘事結構完整度', '角色塑造深度', '情感曲線張力', '戲劇張力與節奏', '原創性與市場差異度'],
-                    datasets: [{ label: '本劇本評分', data: radarData, backgroundColor: 'rgba(197, 160, 101, 0.2)', borderColor: 'rgba(197, 160, 101, 1)', pointBackgroundColor: 'rgba(197, 160, 101, 1)', borderWidth: 2 }]
+                    labels: LABELS,
+                    datasets: [{ label: '本劇本評分', data: scores, backgroundColor: 'rgba(197, 160, 101, 0.2)', borderColor: 'rgba(197, 160, 101, 1)', pointBackgroundColor: 'rgba(197, 160, 101, 1)', borderWidth: 2 }]
                 },
                 options: { scales: { r: { min: 0, max: 10, ticks: { display: false } } } }
             });
+
+            // 長條對比圖 (劇本 vs 平均)
             const ctxBar = document.getElementById('barChart').getContext('2d');
             barChartInstance = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: ['結構完整度', '情感張力', '市場契合度', '預算可行性', '對白品質'],
-                    datasets: [{ label: '細項指標 (滿分100)', data: barData, backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)'], borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'], borderWidth: 1 }]
+                    labels: LABELS,
+                    datasets: [
+                        { label: '本劇本得分', data: scores, backgroundColor: 'rgba(93, 64, 55, 0.8)' },
+                        { label: '同類型平均', data: averageScores, backgroundColor: 'rgba(197, 160, 101, 0.5)' }
+                    ]
                 },
-                options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 100 } } }
+                options: { indexAxis: 'y', scales: { x: { beginAtZero: true, max: 10 } } }
             });
         }
 
         // --- 通用 UI 與登入邏輯 ---
-        window.onload = function() { 
-            if (localStorage.getItem("sata_login") === "true") { updateHeaderToLoggedIn(); }
-            initEmptyCharts();
-        }
         function toggleNav() { var s=document.getElementById("mySidebar");var o=document.getElementById("overlay");if(s.style.left==="0px"){s.style.left="-250px";o.style.display="none";}else{s.style.left="0px";o.style.display="block";} }
         function toggleLoginModal() { var m=document.getElementById("loginModal");m.style.display=(m.style.display==="flex")?"none":"flex"; }
         function toggleMemberModal() { var m=document.getElementById("memberModal");m.style.display=(m.style.display==="flex")?"none":"flex";if(m.style.display==="flex")renderMemberTable(); }
